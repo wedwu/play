@@ -1,2 +1,2 @@
 # play
-default respo for playground
+default repo for playground
