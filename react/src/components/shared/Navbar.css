@@ -7,13 +7,13 @@
   color: var(--nav-text);
 }
 
-.brand {
+.navbar-brand {
   font-size: 20px;
   font-weight: bold;
   color: var(--accent);
 }
 
-.nav-links {
+.navbar-links {
   display: flex;
   gap: 24px;
   list-style: none;

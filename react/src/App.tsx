@@ -3,9 +3,12 @@ import Navbar from "@/components/shared/Navbar";
 import Footer from "@/components/shared/Footer";
 import Home from "@/pages/Home";
 import Playground from "@/pages/Playground";
+import { useTheme } from "@/hooks/useTheme";
 import "@/App.css";
 
 const App = () => {
+  const { theme, toggleTheme } = useTheme();
+
   return (
     <BrowserRouter>
       <div
@@ -16,7 +19,7 @@ const App = () => {
           fontFamily: "sans-serif",
         }}
       >
-        <Navbar />
+        <Navbar theme={theme} onToggleTheme={toggleTheme} />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/playground" element={<Playground />} />

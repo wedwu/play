@@ -12,4 +12,7 @@
       </li>
     }
   </ul>
+  <button class="theme-toggle" (click)="themeService.toggle()" aria-label="Toggle theme">
+    <span class="material-icons">{{ themeService.theme() === 'dark' ? 'light_mode' : 'dark_mode' }}</span>
+  </button>
 </nav>

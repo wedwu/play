@@ -1,8 +1,8 @@
 .footer {
   text-align: center;
   padding: 24px;
-  background-color: #1e1e2e;
-  color: #aaa;
+  background-color: var(--footer-bg);
+  color: var(--footer-text);
   font-size: 14px;
   margin-top: auto;
 
@@ -17,7 +17,7 @@
     gap: 16px;
 
     a {
-      color: #646cff;
+      color: var(--accent);
       text-decoration: none;
     }
   }

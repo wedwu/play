@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { ThemeService } from '../theme.service';
 
 const navItems = [
   { label: 'Home', href: '/' },
@@ -14,4 +15,5 @@ const navItems = [
 })
 export class Navbar {
   navItems = navItems;
+  themeService = inject(ThemeService);
 }
