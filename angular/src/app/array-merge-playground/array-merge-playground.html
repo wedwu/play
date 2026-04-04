@@ -8,12 +8,22 @@
   <div class="playground-inputs">
     <div class="playground-panel">
       <label for="arr1">Array 1 (archive history)</label>
-      <textarea id="arr1" [ngModel]="input1()" (ngModelChange)="input1.set($event)" spellcheck="false"></textarea>
+      <textarea
+        id="arr1"
+        [ngModel]="input1()"
+        (ngModelChange)="input1.set($event)"
+        spellcheck="false"
+      ></textarea>
     </div>
 
     <div class="playground-panel">
       <label for="arr2">Array 2 (archive metadata)</label>
-      <textarea id="arr2" [ngModel]="input2()" (ngModelChange)="input2.set($event)" spellcheck="false"></textarea>
+      <textarea
+        id="arr2"
+        [ngModel]="input2()"
+        (ngModelChange)="input2.set($event)"
+        spellcheck="false"
+      ></textarea>
     </div>
   </div>
 

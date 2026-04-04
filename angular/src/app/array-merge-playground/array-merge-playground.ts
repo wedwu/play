@@ -19,7 +19,7 @@ const DEFAULT_ARR1 = JSON.stringify(
     },
   ],
   null,
-  2
+  2,
 );
 
 const DEFAULT_ARR2 = JSON.stringify(
@@ -42,16 +42,17 @@ const DEFAULT_ARR2 = JSON.stringify(
     },
   ],
   null,
-  2
+  2,
 );
 
 const mergeArrays = (arr1: Record<string, unknown>[], arr2: Record<string, unknown>[]) => {
   return arr1.map((item) => {
     const match = arr2.find((i) => i['id'] === item['archiveId']);
-    const { archiveVersion: _, ...rest } = match ?? {};
-    return { ...item, ...rest };
+    const merged = { ...(match ?? {}) };
+    delete merged['archiveVersion'];
+    return { ...item, ...merged };
   });
-}
+};
 
 @Component({
   selector: 'app-array-merge-playground',

@@ -1,0 +1,34 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 32px;
+  background-color: #1e1e2e;
+  color: #fff;
+}
+
+.brand {
+  font-size: 20px;
+  font-weight: bold;
+  color: #646cff;
+}
+
+.nav-links {
+  display: flex;
+  gap: 24px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 400;
+
+    &.active {
+      color: #646cff;
+      font-weight: 600;
+    }
+  }
+}

@@ -1,0 +1,139 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: #1e1e1e;
+  color: #d4d4d4;
+  font-family: monospace;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: #2d2d2d;
+  border-bottom: 1px solid #3c3c3c;
+}
+
+.title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #cccccc;
+  font-family: sans-serif;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hint {
+  font-size: 11px;
+  color: #666;
+  font-family: sans-serif;
+}
+
+.run-btn {
+  padding: 5px 16px;
+  background: #0e7a0d;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: sans-serif;
+}
+
+.clear-btn {
+  padding: 5px 12px;
+  background: #3c3c3c;
+  color: #ccc;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: sans-serif;
+}
+
+.body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.editor-pane {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  border-right: 1px solid #3c3c3c;
+}
+
+.output-pane {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.pane-label {
+  padding: 4px 12px;
+  font-size: 11px;
+  color: #888;
+  background: #252525;
+  border-bottom: 1px solid #3c3c3c;
+  font-family: sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.editor {
+  flex: 1;
+  background: #1e1e1e;
+  color: #d4d4d4;
+  border: none;
+  outline: none;
+  padding: 16px;
+  font-size: 13px;
+  line-height: 1.6;
+  resize: none;
+  font-family: 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+  tab-size: 2;
+}
+
+.output {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  background: #1e1e1e;
+  text-align: start;
+}
+
+.placeholder {
+  color: #555;
+  font-size: 13px;
+  font-family: sans-serif;
+}
+
+.log-line {
+  margin: 0 0 4px;
+  font-size: 13px;
+  color: #d4d4d4;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.error-line {
+  margin: 0 0 4px;
+  font-size: 13px;
+  color: #f48771;
+  white-space: pre-wrap;
+  word-break: break-word;
+}

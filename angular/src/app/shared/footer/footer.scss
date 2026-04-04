@@ -1,0 +1,24 @@
+.footer {
+  text-align: center;
+  padding: 24px;
+  background-color: #1e1e2e;
+  color: #aaa;
+  font-size: 14px;
+  margin-top: auto;
+
+  p {
+    margin: 0;
+  }
+
+  .links {
+    margin-top: 8px;
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+
+    a {
+      color: #646cff;
+      text-decoration: none;
+    }
+  }
+}

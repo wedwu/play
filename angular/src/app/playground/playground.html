@@ -1,0 +1,41 @@
+<div class="page">
+  <div class="header">
+    <h2 class="title">JS Playground</h2>
+    <div class="actions">
+      <span class="hint">⌘ + Enter to run</span>
+      <button class="clear-btn" (click)="clearOutput()">Clear</button>
+      <button class="run-btn" (click)="runCode()">Run</button>
+    </div>
+  </div>
+
+  <div class="body">
+    <div class="editor-pane">
+      <div class="pane-label">Code</div>
+      <textarea
+        #editor
+        class="editor"
+        [value]="code()"
+        (input)="code.set($any($event.target).value)"
+        (keydown)="handleKeyDown($event)"
+        spellcheck="false"
+        autocapitalize="off"
+        autocorrect="off"
+      ></textarea>
+    </div>
+
+    <div class="output-pane">
+      <div class="pane-label">Output</div>
+      <div class="output">
+        @if (!hasRun()) {
+          <span class="placeholder">Run your code to see output...</span>
+        }
+        @if (hasRun() && output().length === 0) {
+          <span class="placeholder">No output</span>
+        }
+        @for (line of output(); track $index) {
+          <pre [class]="line.type === 'error' ? 'error-line' : 'log-line'">{{ line.text }}</pre>
+        }
+      </div>
+    </div>
+  </div>
+</div>

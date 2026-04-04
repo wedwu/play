@@ -1,0 +1,24 @@
+<main class="home">
+  <h1>Welcome to MyApp</h1>
+
+  <section class="buttons">
+    <app-button label="Primary" variant="primary" (clicked)="onButtonClick('Primary')" />
+    <app-button label="Secondary" variant="secondary" (clicked)="onButtonClick('Secondary')" />
+    <app-button label="Danger" variant="danger" (clicked)="onButtonClick('Danger')" />
+  </section>
+
+  <section class="cards">
+    <app-card
+      title="Card One"
+      description="This is the first card. It shows a title and a short description."
+    />
+    <app-card
+      title="Card Two"
+      description="This is the second card. You can pass an image prop too."
+    />
+    <app-card
+      title="Card Three"
+      description="This is the third card. All cards are reusable components."
+    />
+  </section>
+</main>
