@@ -1,0 +1,28 @@
+<section class="playground">
+  <h2>Array Merge Playground</h2>
+  <p class="playground-desc">
+    Merges two arrays by matching <code>archiveId</code> → <code>id</code>, keeping
+    <code>archiveVersion</code> from arr1.
+  </p>
+
+  <div class="playground-inputs">
+    <div class="playground-panel">
+      <label for="arr1">Array 1 (archive history)</label>
+      <textarea id="arr1" [ngModel]="input1()" (ngModelChange)="input1.set($event)" spellcheck="false"></textarea>
+    </div>
+
+    <div class="playground-panel">
+      <label for="arr2">Array 2 (archive metadata)</label>
+      <textarea id="arr2" [ngModel]="input2()" (ngModelChange)="input2.set($event)" spellcheck="false"></textarea>
+    </div>
+  </div>
+
+  <div class="playground-output">
+    <label>Result</label>
+    @if (result().error) {
+      <pre class="playground-error">{{ result().error }}</pre>
+    } @else {
+      <pre class="playground-result">{{ resultJson() }}</pre>
+    }
+  </div>
+</section>
