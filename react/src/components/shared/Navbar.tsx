@@ -4,6 +4,8 @@ import "./Navbar.css";
 const navItems = [
   { label: "Home", href: "/" },
   { label: "Playground", href: "/playground" },
+  { label: "Cheatsheet", href: "/cheatsheet" },
+  { label: "ES6", href: "/cheatsheet-es6" },
 ];
 
 interface NavbarProps {

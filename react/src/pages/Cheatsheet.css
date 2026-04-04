@@ -1,0 +1,90 @@
+.cheatsheet {
+  padding: 40px 32px;
+  max-width: 1400px;
+  margin: 0 auto;
+  text-align: left;
+
+  @media (max-width: 768px) {
+    padding: 24px 16px;
+  }
+}
+
+.cheatsheet h1 {
+  font-size: 2rem;
+  font-weight: 600;
+  margin: 0 0 8px;
+}
+
+.subtitle {
+  color: var(--text);
+  margin: 0 0 40px !important;
+  font-size: 0.95rem;
+}
+
+.cs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+  gap: 20px;
+  align-items: start;
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.cs-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 20px;
+
+  h2 {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    margin: 0 0 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--card-border);
+  }
+}
+
+.cs-item {
+  margin-bottom: 16px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.cs-label {
+  font-size: 0.78rem;
+  color: var(--card-text);
+  margin: 0 0 6px !important;
+  font-weight: 500;
+}
+
+.cs-card pre {
+  margin: 0;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.25);
+  padding: 12px 14px;
+  overflow-x: auto;
+
+  code {
+    font-family: "Fira Code", "Cascadia Code", ui-monospace, Consolas, monospace;
+    font-size: 12px;
+    line-height: 1.65;
+    color: #e2e8f0;
+    white-space: pre;
+  }
+}
+
+[data-theme="light"] .cs-card pre {
+  background: #f1f3f5;
+
+  code {
+    color: #1a202c;
+  }
+}

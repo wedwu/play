@@ -3,6 +3,8 @@ import Navbar from "@/components/shared/Navbar";
 import Footer from "@/components/shared/Footer";
 import Home from "@/pages/Home";
 import Playground from "@/pages/Playground";
+import Cheatsheet from "@/pages/Cheatsheet";
+import CheatsheetES6 from "@/pages/CheatsheetES6";
 import { useTheme } from "@/hooks/useTheme";
 import "@/App.css";
 
@@ -23,6 +25,8 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/playground" element={<Playground />} />
+          <Route path="/cheatsheet" element={<Cheatsheet />} />
+          <Route path="/cheatsheet-es6" element={<CheatsheetES6 />} />
         </Routes>
         <Footer />
       </div>
