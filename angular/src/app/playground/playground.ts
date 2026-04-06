@@ -37,13 +37,16 @@ const arr2 = [
 ];
 
 const combined = arr1.map(item => {
-  const { archiveVersion, ...rest } = arr2.find(i => i.id === item.archiveId) ?? {};
-  return { ...item, ...rest };
+  const match = arr2.find(i => i.id === item.archiveId);
+  if (!match) return item;
+  const entries = Object.entries(match);
+  const matchVersion = entries.find(([k]) => k === 'archiveVersion')?.[1];
+  const rest = Object.fromEntries(entries.filter(([k]) => k !== 'archiveVersion'));
+  return { ...item, ...rest, isDeployed: item.archiveVersion === matchVersion };
 });
 
 console.log(JSON.stringify(combined, null, 2));
 `;
-
 export type OutputLine = { type: 'log' | 'error'; text: string };
 
 @Component({
