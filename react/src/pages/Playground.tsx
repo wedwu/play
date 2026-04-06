@@ -37,7 +37,11 @@ const arr2 = [
 ];
 
 const combined = arr1.map(item => {
-  const { archiveVersion, ...rest } = arr2.find(i => i.id === item.archiveId) ?? {};
+  const match = arr2.find(i => i.id === item.archiveId);
+  if (!match) return item;
+  const rest = Object.fromEntries(
+    Object.entries(match).filter(([k]) => k !== 'archiveVersion')
+  );
   return { ...item, ...rest };
 });
 
