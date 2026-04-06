@@ -42,7 +42,10 @@ const combined = arr1.map(item => {
   const entries = Object.entries(match);
   const matchVersion = entries.find(([k]) => k === 'archiveVersion')?.[1];
   const rest = Object.fromEntries(entries.filter(([k]) => k !== 'archiveVersion'));
-  return { ...item, ...rest, isDeployed: item.archiveVersion === matchVersion };
+  const d = new Date(item.timestamp);
+  const pad = n => String(n).padStart(2, '0');
+  const timestamp = pad(d.getMonth() + 1) + '/' + pad(d.getDate()) + '/' + d.getFullYear() + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds());
+  return { ...item, ...rest, isDeployed: item.archiveVersion === matchVersion, timestamp };
 });
 
 console.log(JSON.stringify(combined, null, 2));
