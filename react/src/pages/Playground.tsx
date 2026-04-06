@@ -39,10 +39,10 @@ const arr2 = [
 const combined = arr1.map(item => {
   const match = arr2.find(i => i.id === item.archiveId);
   if (!match) return item;
-  const rest = Object.fromEntries(
-    Object.entries(match).filter(([k]) => k !== 'archiveVersion')
-  );
-  return { ...item, ...rest };
+  const entries = Object.entries(match);
+  const matchVersion = entries.find(([k]) => k === 'archiveVersion')?.[1];
+  const rest = Object.fromEntries(entries.filter(([k]) => k !== 'archiveVersion'));
+  return { ...item, ...rest, isDeployed: item.archiveVersion === matchVersion };
 });
 
 console.log(JSON.stringify(combined, null, 2));
