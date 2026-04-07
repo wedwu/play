@@ -1,0 +1,18 @@
+<div class="cheatsheet">
+  <h1>TypeScript Cheatsheet</h1>
+  <p class="subtitle">Types, generics, utility types, and type-level programming patterns.</p>
+
+  <div class="grid">
+    @for (section of sections; track section.title) {
+      <div class="card">
+        <h2>{{ section.title }}</h2>
+        @for (item of section.items; track item.label) {
+          <div class="item">
+            <p class="item-label">{{ item.label }}</p>
+            <pre><code>{{ item.code }}</code></pre>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

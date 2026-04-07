@@ -68,18 +68,14 @@ const Playground = () => {
     console.log = (...args: unknown[]) => {
       lines.push({
         type: "log",
-        text: args
-          .map((a) => (typeof a === "string" ? a : JSON.stringify(a, null, 2)))
-          .join(" "),
+        text: args.map((a) => (typeof a === "string" ? a : JSON.stringify(a, null, 2))).join(" "),
       });
       originalLog(...args);
     };
     console.error = (...args: unknown[]) => {
       lines.push({
         type: "error",
-        text: args
-          .map((a) => (typeof a === "string" ? a : JSON.stringify(a, null, 2)))
-          .join(" "),
+        text: args.map((a) => (typeof a === "string" ? a : JSON.stringify(a, null, 2))).join(" "),
       });
       originalError(...args);
     };
@@ -111,8 +107,7 @@ const Playground = () => {
       e.preventDefault();
       const el = textareaRef.current!;
       const { selectionStart, selectionEnd } = el;
-      const next =
-        code.substring(0, selectionStart) + "  " + code.substring(selectionEnd);
+      const next = code.substring(0, selectionStart) + "  " + code.substring(selectionEnd);
       setCode(next);
       requestAnimationFrame(() => {
         el.selectionStart = el.selectionEnd = selectionStart + 2;
@@ -153,21 +148,10 @@ const Playground = () => {
         <div style={styles.outputPane}>
           <div style={styles.paneLabel}>Output</div>
           <div style={styles.output}>
-            {!hasRun && (
-              <span style={styles.placeholder}>
-                Run your code to see output...
-              </span>
-            )}
-            {output.length === 0 && hasRun && (
-              <span style={styles.placeholder}>No output</span>
-            )}
+            {!hasRun && <span style={styles.placeholder}>Run your code to see output...</span>}
+            {output.length === 0 && hasRun && <span style={styles.placeholder}>No output</span>}
             {output.map((line, i) => (
-              <pre
-                key={i}
-                style={
-                  line.type === "error" ? styles.errorLine : styles.logLine
-                }
-              >
+              <pre key={i} style={line.type === "error" ? styles.errorLine : styles.logLine}>
                 {line.text}
               </pre>
             ))}

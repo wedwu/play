@@ -7,6 +7,7 @@ const navItems = [
   { label: 'Playground', href: '/playground' },
   { label: 'Cheatsheet', href: '/cheatsheet' },
   { label: 'ES6', href: '/cheatsheet-es6' },
+  { label: 'TypeScript', href: '/cheatsheet-ts' },
 ];
 
 @Component({

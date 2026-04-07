@@ -5,6 +5,7 @@ import Home from "@/pages/Home";
 import Playground from "@/pages/Playground";
 import Cheatsheet from "@/pages/Cheatsheet";
 import CheatsheetES6 from "@/pages/CheatsheetES6";
+import CheatsheetTS from "@/pages/CheatsheetTS";
 import { useTheme } from "@/hooks/useTheme";
 import "@/App.css";
 
@@ -27,6 +28,7 @@ const App = () => {
           <Route path="/playground" element={<Playground />} />
           <Route path="/cheatsheet" element={<Cheatsheet />} />
           <Route path="/cheatsheet-es6" element={<CheatsheetES6 />} />
+          <Route path="/cheatsheet-ts" element={<CheatsheetTS />} />
         </Routes>
         <Footer />
       </div>
