@@ -17,7 +17,7 @@ describe('LoginComponent', () => {
   let fixture: ComponentFixture<LoginComponent>;
   let component: LoginComponent;
   let authService: any;
-  let router: jasmine.SpyObj<Router>;
+  let router: any;
 
   beforeEach(async () => {
     authService = mockAuthService();
@@ -118,7 +118,7 @@ describe('LoginComponent', () => {
       component.submit();
       tick();
 
-      expect(component.loading()).toBeFalse();
+      expect(component.loading()).toBe(false);
     }));
 
     it('does not call register in login mode', fakeAsync(() => {
@@ -190,7 +190,7 @@ describe('LoginComponent', () => {
       fixture.detectChanges();
 
       const btn = fixture.debugElement.query(By.css('button[type="submit"]'));
-      expect(btn.nativeElement.disabled).toBeTrue();
+      expect(btn.nativeElement.disabled).toBe(true);
     }));
   });
 

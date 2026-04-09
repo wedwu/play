@@ -33,7 +33,7 @@ const makeProject = (tasks: any[] = [makeTask()]) => ({
 describe('ProjectComponent', () => {
   let fixture: ComponentFixture<ProjectComponent>;
   let component: ProjectComponent;
-  let taskService: jasmine.SpyObj<TaskService>;
+  let taskService: any;
   let projectSubject: Subject<any>;
   let subscriptionSubject: Subject<any>;
 
@@ -138,7 +138,7 @@ describe('ProjectComponent', () => {
     emitProject();
     tick();
     fixture.detectChanges();
-    expect(component.showForm()).toBeFalse();
+    expect(component.showForm()).toBe(false);
   }));
 
   it('shows form on "+ Add Task" click', fakeAsync(() => {
@@ -151,7 +151,7 @@ describe('ProjectComponent', () => {
     addBtn!.nativeElement.click();
     fixture.detectChanges();
 
-    expect(component.showForm()).toBeTrue();
+    expect(component.showForm()).toBe(true);
     expect(fixture.debugElement.query(By.css('input[name="title"]'))).toBeTruthy();
   }));
 
@@ -170,7 +170,7 @@ describe('ProjectComponent', () => {
     expect(taskService.createTask).toHaveBeenCalledWith(
       jasmine.objectContaining({ title: 'My new task', projectId: 'proj-1' })
     );
-    expect(component.showForm()).toBeFalse();
+    expect(component.showForm()).toBe(false);
   }));
 
   it('resets title after task creation', fakeAsync(() => {

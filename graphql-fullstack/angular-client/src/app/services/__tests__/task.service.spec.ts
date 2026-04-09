@@ -187,7 +187,7 @@ describe('TaskService', () => {
       op.flushData({ deleteTask: true });
       tick();
 
-      expect(result).toBeTrue();
+      expect(result).toBe(true);
     }));
   });
 
@@ -249,7 +249,7 @@ describe('TaskService', () => {
       op.flush({ data: { taskUpdated: { task: { ...mockTask, title: 'Second update' }, updatedBy: mockUser } } });
       tick();
 
-      expect(payloads).toHaveSize(2);
+      expect(payloads).toHaveLength(2);
       expect(payloads[0].task.title).toBe('First update');
       expect(payloads[1].task.title).toBe('Second update');
     }));

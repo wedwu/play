@@ -108,7 +108,7 @@ describe('DashboardComponent', () => {
 
   it('hides new project form initially', () => {
     flushProjects();
-    expect(component.showForm()).toBeFalse();
+    expect(component.showForm()).toBe(false);
     expect(fixture.debugElement.query(By.css('input[name="name"]'))).toBeNull();
   });
 
@@ -122,7 +122,7 @@ describe('DashboardComponent', () => {
     btn!.nativeElement.click();
     fixture.detectChanges();
 
-    expect(component.showForm()).toBeTrue();
+    expect(component.showForm()).toBe(true);
     expect(fixture.debugElement.query(By.css('input[name="name"]'))).toBeTruthy();
   }));
 
@@ -139,7 +139,7 @@ describe('DashboardComponent', () => {
     cancelBtn!.nativeElement.click();
     fixture.detectChanges();
 
-    expect(component.showForm()).toBeFalse();
+    expect(component.showForm()).toBe(false);
   }));
 
   it('calls createProject with input values', fakeAsync(() => {
@@ -165,7 +165,7 @@ describe('DashboardComponent', () => {
     tick();
     fixture.detectChanges();
 
-    expect(component.showForm()).toBeFalse();
+    expect(component.showForm()).toBe(false);
   }));
 
   // ─── Logout ────────────────────────────────────────────────────────────────

@@ -17,7 +17,7 @@ const mockUser = {
 describe('AuthService', () => {
   let service: AuthService;
   let controller: ApolloTestingController;
-  let router: jasmine.SpyObj<Router>;
+  let router: any;
 
   beforeEach(() => {
     router = jasmine.createSpyObj('Router', ['navigate']);
@@ -48,7 +48,7 @@ describe('AuthService', () => {
     });
 
     it('isAuthenticated() starts as false', () => {
-      expect(service.isAuthenticated()).toBeFalse();
+      expect(service.isAuthenticated()).toBe(false);
     });
   });
 
@@ -62,7 +62,7 @@ describe('AuthService', () => {
       tick();
 
       expect(service.user()).toEqual(mockUser);
-      expect(service.isAuthenticated()).toBeTrue();
+      expect(service.isAuthenticated()).toBe(true);
     }));
 
     it('sets user to null when ME_QUERY returns null', fakeAsync(() => {
@@ -72,7 +72,7 @@ describe('AuthService', () => {
       tick();
 
       expect(service.user()).toBeNull();
-      expect(service.isAuthenticated()).toBeFalse();
+      expect(service.isAuthenticated()).toBe(false);
     }));
   });
 
@@ -95,7 +95,7 @@ describe('AuthService', () => {
       tick();
 
       expect(service.user()).toEqual(mockUser);
-      expect(service.isAuthenticated()).toBeTrue();
+      expect(service.isAuthenticated()).toBe(true);
     }));
 
     it('emits auth payload from observable', fakeAsync(() => {
@@ -131,7 +131,7 @@ describe('AuthService', () => {
       tick();
 
       expect(localStorage.getItem('token')).toBeNull();
-      expect(errorCaught).toBeTrue();
+      expect(errorCaught).toBe(true);
     }));
   });
 
@@ -179,12 +179,12 @@ describe('AuthService', () => {
       op.flushData({ login: { token: 'tok', user: mockUser } });
       tick();
 
-      expect(service.isAuthenticated()).toBeTrue();
+      expect(service.isAuthenticated()).toBe(true);
       service.logout();
       tick();
 
       expect(service.user()).toBeNull();
-      expect(service.isAuthenticated()).toBeFalse();
+      expect(service.isAuthenticated()).toBe(false);
     }));
 
     it('navigates to /login', fakeAsync(() => {
