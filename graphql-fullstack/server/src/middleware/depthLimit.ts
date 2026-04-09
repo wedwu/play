@@ -106,6 +106,17 @@ export function depthLimitPlugin(options: DepthLimitOptions = {}): ApolloServerP
             throw new GraphQLError('Operation is required');
           }
 
+          // Skip depth/alias checks for introspection queries. The standard
+          // introspection query walks ofType chains 7+ levels deep to describe
+          // nullable/list wrappers — blocking it would break Apollo Sandbox
+          // and any tooling that relies on schema introspection.
+          const isIntrospection = operation.selectionSet.selections.every(
+            (sel) =>
+              sel.kind === 'Field' &&
+              (sel as import('graphql').FieldNode).name.value.startsWith('__')
+          );
+          if (isIntrospection) return;
+
           // Build fragment map for spread resolution
           const fragments: Record<string, FragmentDefinitionNode> = {};
           for (const def of document.definitions) {
