@@ -159,19 +159,19 @@ export const typeDefs = gql`
   # ──────────────────────────────────────────────────────────────
 
   input RegisterInput {
-    email: String!
+    email: String! @sanitize(trim: true, lowercase: true)
     password: String!
-    name: String!
+    name: String!  @sanitize(trim: true, maxLength: 100)
   }
 
   input LoginInput {
-    email: String!
+    email: String! @sanitize(trim: true, lowercase: true)
     password: String!
   }
 
   input CreateProjectInput {
-    name: String!
-    description: String
+    name: String!        @sanitize(trim: true, maxLength: 120)
+    description: String  @sanitize(trim: true, maxLength: 500)
   }
 
   input UpdateProjectInput {
@@ -214,48 +214,48 @@ export const typeDefs = gql`
   # ──────────────────────────────────────────────────────────────
 
   type Query {
-    # Auth
+    # Auth — public
     me: User
 
-    # Users (admin only)
-    users: [User!]!
-    user(id: ID!): User
+    # Users — admin only
+    users: [User!]! @auth(requires: ADMIN)
+    user(id: ID!): User @auth
 
-    # Projects
-    projects(first: Int, after: String): ProjectConnection!
-    project(id: ID!): Project
+    # Projects — members only
+    projects(first: Int, after: String): ProjectConnection! @auth
+    project(id: ID!): Project @auth
 
-    # Tasks
-    tasks(filter: TaskFilterInput, first: Int, after: String): TaskConnection!
-    task(id: ID!): Task
+    # Tasks — members only
+    tasks(filter: TaskFilterInput, first: Int, after: String): TaskConnection! @auth
+    task(id: ID!): Task @auth
 
-    # Tags
-    tags: [Tag!]!
+    # Tags — members only
+    tags: [Tag!]! @auth
   }
 
   type Mutation {
-    # Auth
+    # Auth — public (rate limited at HTTP layer)
     register(input: RegisterInput!): AuthPayload!
     login(input: LoginInput!): AuthPayload!
 
-    # Projects
-    createProject(input: CreateProjectInput!): Project!
-    updateProject(id: ID!, input: UpdateProjectInput!): Project!
-    deleteProject(id: ID!): Boolean!
-    addProjectMember(projectId: ID!, userId: ID!): Project!
-    removeProjectMember(projectId: ID!, userId: ID!): Project!
+    # Projects — members only
+    createProject(input: CreateProjectInput!): Project! @auth @rateLimit(max: 10, window: 60)
+    updateProject(id: ID!, input: UpdateProjectInput!): Project! @auth
+    deleteProject(id: ID!): Boolean! @auth
+    addProjectMember(projectId: ID!, userId: ID!): Project! @auth(requires: ADMIN)
+    removeProjectMember(projectId: ID!, userId: ID!): Project! @auth(requires: ADMIN)
 
-    # Tasks
-    createTask(input: CreateTaskInput!): Task!
-    updateTask(id: ID!, input: UpdateTaskInput!): Task!
-    deleteTask(id: ID!): Boolean!
+    # Tasks — members only
+    createTask(input: CreateTaskInput!): Task! @auth @rateLimit(max: 30, window: 60)
+    updateTask(id: ID!, input: UpdateTaskInput!): Task! @auth
+    deleteTask(id: ID!): Boolean! @auth
 
-    # Comments
-    addComment(taskId: ID!, content: String!): Comment!
-    deleteComment(id: ID!): Boolean!
+    # Comments — rate limited to prevent spam
+    addComment(taskId: ID!, content: String!): Comment! @auth @rateLimit(max: 60, window: 60)
+    deleteComment(id: ID!): Boolean! @auth
 
-    # Admin
-    updateUserRole(userId: ID!, role: Role!): User!
+    # Admin only
+    updateUserRole(userId: ID!, role: Role!): User! @auth(requires: ADMIN)
   }
 
   type Subscription {

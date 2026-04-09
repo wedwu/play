@@ -69,17 +69,17 @@ export const taskResolvers = {
   Subscription: {
     taskUpdated: {
       subscribe: (_: unknown, { projectId }: { projectId: string }) =>
-        pubsub.asyncIterableIterator(`${TASK_UPDATED}.${projectId}`),
+        pubsub.asyncIterator(`${TASK_UPDATED}.${projectId}`),
     },
 
     taskCreated: {
       subscribe: (_: unknown, { projectId }: { projectId: string }) =>
-        pubsub.asyncIterableIterator(`${TASK_CREATED}.${projectId}`),
+        pubsub.asyncIterator(`${TASK_CREATED}.${projectId}`),
     },
 
     commentAdded: {
       subscribe: (_: unknown, { taskId }: { taskId: string }) =>
-        pubsub.asyncIterableIterator(`${COMMENT_ADDED}.${taskId}`),
+        pubsub.asyncIterator(`${COMMENT_ADDED}.${taskId}`),
     },
   },
 

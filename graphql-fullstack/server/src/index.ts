@@ -13,6 +13,15 @@ import { typeDefs } from './schema';
 import { resolvers } from './resolvers';
 import { buildContext } from './context';
 import { seedDatabase } from './datasources/db';
+import { requestLoggerPlugin } from './middleware/requestLogger';
+import { defaultLimiter, authLimiter } from './middleware/rateLimiter';
+import { depthLimitPlugin } from './middleware/depthLimit';
+import {
+  applyDirectives,
+  authDirectiveTypeDefs,
+  rateLimitDirectiveTypeDefs,
+  sanitizeDirectiveTypeDefs,
+} from './directives';
 
 const PORT = process.env.PORT ?? 4000;
 
@@ -23,7 +32,17 @@ async function bootstrap() {
   const app = express();
   const httpServer = http.createServer(app);
 
-  const schema = makeExecutableSchema({ typeDefs, resolvers });
+  const schema = applyDirectives(
+    makeExecutableSchema({
+      typeDefs: [
+        typeDefs,
+        authDirectiveTypeDefs,
+        rateLimitDirectiveTypeDefs,
+        sanitizeDirectiveTypeDefs,
+      ],
+      resolvers,
+    })
+  );
 
   // WebSocket server for subscriptions
   const wsServer = new WebSocketServer({ server: httpServer, path: '/graphql' });
@@ -45,6 +64,8 @@ async function bootstrap() {
     schema,
     plugins: [
       ApolloServerPluginDrainHttpServer({ httpServer }),
+      requestLoggerPlugin(),
+      depthLimitPlugin({ maxDepth: 7, maxAliases: 10 }),
       {
         async serverWillStart() {
           return {
@@ -70,6 +91,18 @@ async function bootstrap() {
     '/graphql',
     cors<cors.CorsRequest>({ origin: ['http://localhost:5173', 'http://localhost:4200'] }),
     bodyParser.json(),
+    // General rate limit for all operations
+    defaultLimiter,
+    // Stricter limit for login/register — checked after body is parsed so we
+    // can read operationName without a separate body-parse pass
+    (req, res, next) => {
+      const body = req.body as { operationName?: string } | undefined;
+      const op = body?.operationName ?? '';
+      if (op === 'Login' || op === 'Register') {
+        return authLimiter(req, res, next);
+      }
+      return next();
+    },
     expressMiddleware(server, { context: buildContext })
   );
 
