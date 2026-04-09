@@ -1,0 +1,20 @@
+{
+  "folders": [
+    {
+      "name": "angular (v21)",
+      "path": "angular"
+    },
+    {
+      "name": "angular-client (v17)",
+      "path": "graphql-fullstack/angular-client"
+    },
+    {
+      "name": "graphql-fullstack",
+      "path": "graphql-fullstack"
+    },
+    {
+      "name": "react",
+      "path": "react"
+    }
+  ]
+}
