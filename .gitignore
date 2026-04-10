@@ -106,3 +106,6 @@ ehthumbs.db
 **/*.pem
 **/.vercel
 **/.netlify
+.history/*
+
+/system-map/*

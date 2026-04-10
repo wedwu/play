@@ -144,10 +144,10 @@ Opens at **http://localhost:4200**. Points directly to `http://localhost:4000/gr
 
 ### Demo credentials
 
-| Email | Password | Role |
-|---|---|---|
-| `admin@taskflow.dev` | `admin123` | ADMIN |
-| `bob@taskflow.dev` | `member123` | MEMBER |
+| Email                | Password    | Role   |
+| -------------------- | ----------- | ------ |
+| `admin@taskflow.dev` | `admin123`  | ADMIN  |
+| `bob@taskflow.dev`   | `member123` | MEMBER |
 | `carol@taskflow.dev` | `member123` | MEMBER |
 
 ---
@@ -162,18 +162,39 @@ The schema is defined SDL-first using a single `gql` tagged template. This keeps
 
 #### Custom Scalars
 
-| Scalar | Behaviour |
-|---|---|
+| Scalar     | Behaviour                                                                                          |
+| ---------- | -------------------------------------------------------------------------------------------------- |
 | `DateTime` | Serializes as ISO 8601 string; parses from string or `Date` object. Provided by `graphql-scalars`. |
-| `JSON` | Accepts and returns arbitrary JSON values. Used for extension points. |
+| `JSON`     | Accepts and returns arbitrary JSON values. Used for extension points.                              |
 
 #### Enums
 
 ```graphql
-enum Role        { ADMIN MEMBER VIEWER }
-enum TaskStatus  { BACKLOG TODO IN_PROGRESS IN_REVIEW DONE CANCELLED }
-enum TaskPriority{ URGENT HIGH MEDIUM LOW }
-enum ProjectStatus { ACTIVE PAUSED COMPLETED ARCHIVED }
+enum Role {
+  ADMIN
+  MEMBER
+  VIEWER
+}
+enum TaskStatus {
+  BACKLOG
+  TODO
+  IN_PROGRESS
+  IN_REVIEW
+  DONE
+  CANCELLED
+}
+enum TaskPriority {
+  URGENT
+  HIGH
+  MEDIUM
+  LOW
+}
+enum ProjectStatus {
+  ACTIVE
+  PAUSED
+  COMPLETED
+  ARCHIVED
+}
 ```
 
 #### Core Types
@@ -214,8 +235,8 @@ Paginated fields return `Connection` types following the [Relay Cursor Connectio
 
 ```graphql
 type TaskConnection {
-  edges: [TaskEdge!]!      # each edge carries a cursor + the node
-  pageInfo: PageInfo!      # hasNextPage, hasPreviousPage, startCursor, endCursor
+  edges: [TaskEdge!]! # each edge carries a cursor + the node
+  pageInfo: PageInfo! # hasNextPage, hasPreviousPage, startCursor, endCursor
   totalCount: Int!
 }
 
@@ -288,12 +309,12 @@ GET user WHERE id = 'c'
 
 #### Loaders Created Per Request
 
-| Loader | Batches | Cache |
-|---|---|---|
-| `userLoader` | IDs → `User[]` | Per-request (keyed by user ID) |
-| `tasksByProjectLoader` | Project IDs → `Task[][]` | Per-request |
-| `commentsByTaskLoader` | Task IDs → `Comment[][]` | Per-request |
-| `tagsByIdsLoader` | Tag ID sets → `Tag[][]` | Per-request |
+| Loader                 | Batches                  | Cache                          |
+| ---------------------- | ------------------------ | ------------------------------ |
+| `userLoader`           | IDs → `User[]`           | Per-request (keyed by user ID) |
+| `tasksByProjectLoader` | Project IDs → `Task[][]` | Per-request                    |
+| `commentsByTaskLoader` | Task IDs → `Comment[][]` | Per-request                    |
+| `tagsByIdsLoader`      | Tag ID sets → `Tag[][]`  | Per-request                    |
 
 **Important:** A new `createLoaders()` call happens inside `buildContext` for every request. DataLoaders are never shared between requests — the cache is intentionally short-lived to prevent stale reads.
 
@@ -381,11 +402,11 @@ Real-time events are implemented with `graphql-subscriptions` (`PubSub`) over We
 
 #### Events
 
-| Event constant | Published when | Scoped to |
-|---|---|---|
-| `TASK_UPDATED.<projectId>` | `updateTask` mutation completes | Project |
-| `TASK_CREATED.<projectId>` | `createTask` mutation completes | Project |
-| `COMMENT_ADDED.<taskId>` | `addComment` mutation completes | Task |
+| Event constant             | Published when                  | Scoped to |
+| -------------------------- | ------------------------------- | --------- |
+| `TASK_UPDATED.<projectId>` | `updateTask` mutation completes | Project   |
+| `TASK_CREATED.<projectId>` | `createTask` mutation completes | Project   |
+| `COMMENT_ADDED.<taskId>`   | `addComment` mutation completes | Task      |
 
 Scoping the channel name by ID means a subscriber on project A never receives events from project B.
 
@@ -394,7 +415,7 @@ Scoping the channel name by ID means a subscriber on project A never receives ev
 ```typescript
 // After a successful updateTask:
 pubsub.publish(`TASK_UPDATED.${task.projectId}`, {
-  taskUpdated: { task, updatedBy: resolvedUser }
+  taskUpdated: { task, updatedBy: resolvedUser },
 });
 ```
 
@@ -420,12 +441,12 @@ type Subscription {
 
 All custom errors extend `GraphQLError` with a typed `extensions.code` field that clients can match on:
 
-| Class | Code | When to throw |
-|---|---|---|
-| `NotFoundError` | `NOT_FOUND` | Entity doesn't exist in the DB |
-| `ValidationError` | `BAD_USER_INPUT` | Invalid input (duplicate email, bad format) |
-| `ForbiddenError` | `FORBIDDEN` | Authenticated but not authorized |
-| (built-in) `GraphQLError` | `UNAUTHENTICATED` | No valid token |
+| Class                     | Code              | When to throw                               |
+| ------------------------- | ----------------- | ------------------------------------------- |
+| `NotFoundError`           | `NOT_FOUND`       | Entity doesn't exist in the DB              |
+| `ValidationError`         | `BAD_USER_INPUT`  | Invalid input (duplicate email, bad format) |
+| `ForbiddenError`          | `FORBIDDEN`       | Authenticated but not authorized            |
+| (built-in) `GraphQLError` | `UNAUTHENTICATED` | No valid token                              |
 
 In production mode (`NODE_ENV=production`), the server's `formatError` hook strips stack traces and replaces unhandled errors with a generic message. Errors with an explicit `code` extension are always forwarded as-is.
 
@@ -437,13 +458,13 @@ In production mode (`NODE_ENV=production`), the server's `formatError` hook stri
 
 The data layer uses in-memory `Map` stores that mirror how a real ORM/repository layer would be structured. Each API class has a single responsibility:
 
-| Class | Responsibility |
-|---|---|
-| `UserAPI` | Register, authenticate, find users, update roles |
+| Class        | Responsibility                                   |
+| ------------ | ------------------------------------------------ |
+| `UserAPI`    | Register, authenticate, find users, update roles |
 | `ProjectAPI` | Create/update/delete projects, manage membership |
-| `TaskAPI` | CRUD tasks, filter by status/priority/assignee |
-| `CommentAPI` | Create/delete comments scoped to a task |
-| `TagAPI` | Read-only tag lookup |
+| `TaskAPI`    | CRUD tasks, filter by status/priority/assignee   |
+| `CommentAPI` | Create/delete comments scoped to a task          |
+| `TagAPI`     | Read-only tag lookup                             |
 
 To swap in a real database (e.g. Postgres via Prisma), replace the `Map` operations in each method body — the resolver code and tests don't change.
 
@@ -501,23 +522,23 @@ Fragments are spread into documents at definition time (before the Apollo Client
 
 #### Operations Reference
 
-| Export | Type | Purpose |
-|---|---|---|
-| `ME_QUERY` | Query | Fetch authenticated user |
-| `PROJECTS_QUERY` | Query | Paginated project list for current user |
-| `PROJECT_QUERY` | Query | Single project with paginated, filterable tasks |
-| `TASK_QUERY` | Query | Single task with comments |
-| `TAGS_QUERY` | Query | All available tags |
-| `LOGIN_MUTATION` | Mutation | Authenticate and receive JWT |
-| `REGISTER_MUTATION` | Mutation | Create account and receive JWT |
-| `CREATE_PROJECT_MUTATION` | Mutation | New project (owner = current user) |
-| `CREATE_TASK_MUTATION` | Mutation | New task in a project |
-| `UPDATE_TASK_MUTATION` | Mutation | Partial task update |
-| `DELETE_TASK_MUTATION` | Mutation | Remove task |
-| `ADD_COMMENT_MUTATION` | Mutation | Add comment to task |
-| `TASK_UPDATED_SUBSCRIPTION` | Subscription | Live task updates for a project |
-| `TASK_CREATED_SUBSCRIPTION` | Subscription | New tasks for a project |
-| `COMMENT_ADDED_SUBSCRIPTION` | Subscription | New comments for a task |
+| Export                       | Type         | Purpose                                         |
+| ---------------------------- | ------------ | ----------------------------------------------- |
+| `ME_QUERY`                   | Query        | Fetch authenticated user                        |
+| `PROJECTS_QUERY`             | Query        | Paginated project list for current user         |
+| `PROJECT_QUERY`              | Query        | Single project with paginated, filterable tasks |
+| `TASK_QUERY`                 | Query        | Single task with comments                       |
+| `TAGS_QUERY`                 | Query        | All available tags                              |
+| `LOGIN_MUTATION`             | Mutation     | Authenticate and receive JWT                    |
+| `REGISTER_MUTATION`          | Mutation     | Create account and receive JWT                  |
+| `CREATE_PROJECT_MUTATION`    | Mutation     | New project (owner = current user)              |
+| `CREATE_TASK_MUTATION`       | Mutation     | New task in a project                           |
+| `UPDATE_TASK_MUTATION`       | Mutation     | Partial task update                             |
+| `DELETE_TASK_MUTATION`       | Mutation     | Remove task                                     |
+| `ADD_COMMENT_MUTATION`       | Mutation     | Add comment to task                             |
+| `TASK_UPDATED_SUBSCRIPTION`  | Subscription | Live task updates for a project                 |
+| `TASK_CREATED_SUBSCRIPTION`  | Subscription | New tasks for a project                         |
+| `COMMENT_ADDED_SUBSCRIPTION` | Subscription | New comments for a task                         |
 
 ---
 
@@ -603,14 +624,14 @@ Wraps all task-related Apollo operations and returns `Observable` streams. Consu
 
 Key methods:
 
-| Method | Returns | Notes |
-|---|---|---|
-| `getProject(id)` | `Observable<Project>` | `watchQuery` — emits on every cache update |
-| `createTask(input)` | `Observable<Task>` | Refetches project query after creation |
-| `updateTask(id, input)` | `Observable<Task>` | Sends optimistic response |
-| `deleteTask(id)` | `Observable<boolean>` | |
-| `addComment(taskId, content)` | `Observable<Comment>` | |
-| `subscribeToTaskUpdates(projectId)` | `Observable<TaskUpdatedPayload>` | Maps over WS subscription |
+| Method                              | Returns                          | Notes                                      |
+| ----------------------------------- | -------------------------------- | ------------------------------------------ |
+| `getProject(id)`                    | `Observable<Project>`            | `watchQuery` — emits on every cache update |
+| `createTask(input)`                 | `Observable<Task>`               | Refetches project query after creation     |
+| `updateTask(id, input)`             | `Observable<Task>`               | Sends optimistic response                  |
+| `deleteTask(id)`                    | `Observable<boolean>`            |                                            |
+| `addComment(taskId, content)`       | `Observable<Comment>`            |                                            |
+| `subscribeToTaskUpdates(projectId)` | `Observable<TaskUpdatedPayload>` | Maps over WS subscription                  |
 
 ---
 
@@ -658,22 +679,22 @@ function authGuard() {
   const router = inject(Router);
   return apollo.watchQuery({ query: ME_QUERY }).valueChanges.pipe(
     map((r) => r.data?.me),
-    map((user) => user ? true : router.parseUrl('/login'))
+    map((user) => (user ? true : router.parseUrl("/login"))),
   );
 }
 ```
 
-| Route | Guard | Behaviour |
-|---|---|---|
-| `/login` | `publicGuard` | Redirects authenticated users to `/` |
-| `/` | `authGuard` | Redirects unauthenticated users to `/login` |
-| `/projects/:id` | `authGuard` | Same |
+| Route           | Guard         | Behaviour                                   |
+| --------------- | ------------- | ------------------------------------------- |
+| `/login`        | `publicGuard` | Redirects authenticated users to `/`        |
+| `/`             | `authGuard`   | Redirects unauthenticated users to `/login` |
+| `/projects/:id` | `authGuard`   | Same                                        |
 
 ---
 
 ## Testing
 
-**File:** [server/src/__tests__/resolvers.test.ts](server/src/__tests__/resolvers.test.ts)
+**File:** [server/src/**tests**/resolvers.test.ts](server/src/__tests__/resolvers.test.ts)
 
 The server has Jest integration tests. They run against the actual in-memory data layer — no mocking — which means they catch real data-access bugs that unit tests with mocks would miss.
 
@@ -686,14 +707,14 @@ npm test
 
 ### Test coverage
 
-| Suite | What it tests |
-|---|---|
-| `JWT utilities` | `signToken` → `verifyToken` round-trip; invalid token rejection |
-| `Password utilities` | bcrypt hash + verify; wrong password returns false |
-| `UserAPI` | Find all users; authenticate success; wrong password; duplicate email; new user role |
-| `ProjectAPI` | Member-scoped project lookup |
-| `TaskAPI` | Status filter; create task in project |
-| `paginate()` | First N; cursor-based page 2; no-arg returns all |
+| Suite                | What it tests                                                                        |
+| -------------------- | ------------------------------------------------------------------------------------ |
+| `JWT utilities`      | `signToken` → `verifyToken` round-trip; invalid token rejection                      |
+| `Password utilities` | bcrypt hash + verify; wrong password returns false                                   |
+| `UserAPI`            | Find all users; authenticate success; wrong password; duplicate email; new user role |
+| `ProjectAPI`         | Member-scoped project lookup                                                         |
+| `TaskAPI`            | Status filter; create task in project                                                |
+| `paginate()`         | First N; cursor-based page 2; no-arg returns all                                     |
 
 ### Test philosophy
 
@@ -723,11 +744,26 @@ The seed is deterministic in structure but uses `uuid()` for IDs, so IDs differ 
 
 ### Server
 
-| Variable | Default | Description |
-|---|---|---|
-| `PORT` | `4000` | HTTP server port |
-| `JWT_SECRET` | `dev-secret-change-in-prod` | HMAC secret for JWT signing |
-| `JWT_EXPIRES_IN` | `7d` | Token lifetime (any `ms`-compatible string) |
-| `NODE_ENV` | — | Set to `production` to suppress error details |
+| Variable         | Default                     | Description                                   |
+| ---------------- | --------------------------- | --------------------------------------------- |
+| `PORT`           | `4000`                      | HTTP server port                              |
+| `JWT_SECRET`     | `dev-secret-change-in-prod` | HMAC secret for JWT signing                   |
+| `JWT_EXPIRES_IN` | `7d`                        | Token lifetime (any `ms`-compatible string)   |
+| `NODE_ENV`       | —                           | Set to `production` to suppress error details |
 
 Create a `server/.env` file for local overrides. **Never commit real secrets.**
+
+-▬▬.◙.▬▬‐
+▂▄▄▓▄▄▂
+◢◤ █▀▀████▄▄▄◢◤
+█▄ █ █▄ ███▀▀▀▀▀▀╬
+◥█████◤
+══╩══╩══
+╬═╬
+╬═╬  
+╬═╬  
+╬═╬  
+╬═╬
+╬═╬ ☻/
+╬═╬/▌
+╬═╬/ \
