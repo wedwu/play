@@ -517,9 +517,7 @@ gen.next().value; // 2`,
 const CheatsheetES6 = () => (
   <div className="cheatsheet">
     <h1>ES6+ Cheatsheet</h1>
-    <p className="subtitle">
-      Modern JavaScript syntax and features from ES2015 onwards.
-    </p>
+    <p className="subtitle">Modern JavaScript syntax and features from ES2015 onwards.</p>
 
     <div className="cs-grid">
       {sections.map((section) => (

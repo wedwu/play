@@ -19,7 +19,7 @@ const DEFAULT_ARR1 = JSON.stringify(
     },
   ],
   null,
-  2,
+  2
 );
 
 const DEFAULT_ARR2 = JSON.stringify(
@@ -42,15 +42,13 @@ const DEFAULT_ARR2 = JSON.stringify(
     },
   ],
   null,
-  2,
+  2
 );
 
 const mergeArrays = (arr1: unknown[], arr2: unknown[]): unknown[] => {
   return arr1.map((item) => {
     const record = item as Record<string, unknown>;
-    const match = (arr2 as Record<string, unknown>[]).find(
-      (i) => i.id === record.archiveId,
-    );
+    const match = (arr2 as Record<string, unknown>[]).find((i) => i.id === record.archiveId);
     const merged = { ...(match ?? {}) };
     delete merged.archiveVersion;
     return { ...record, ...merged };
@@ -79,7 +77,7 @@ const ArrayMergePlayground = () => {
       <h2>Array Merge Playground</h2>
       <p className="playground-desc">
         Merges two arrays by matching <code>archiveId</code> → <code>id</code>,
-        keeping <code>archiveVersion</code> from arr1.
+        <code>archiveVersion</code> from arr1.
       </p>
 
       <div className="playground-inputs">
@@ -109,9 +107,7 @@ const ArrayMergePlayground = () => {
         {error ? (
           <pre className="playground-error">{error}</pre>
         ) : (
-          <pre className="playground-result">
-            {JSON.stringify(result, null, 2)}
-          </pre>
+          <pre className="playground-result">{JSON.stringify(result, null, 2)}</pre>
         )}
       </div>
     </section>

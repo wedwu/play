@@ -10,9 +10,7 @@ const Footer = () => {
         marginTop: "auto",
       }}
     >
-      <p style={{ margin: 0 }}>
-        © {new Date().getFullYear()} MyApp. All rights reserved.
-      </p>
+      <p style={{ margin: 0 }}>© {new Date().getFullYear()} MyApp. All rights reserved.</p>
       <div
         style={{
           marginTop: "8px",

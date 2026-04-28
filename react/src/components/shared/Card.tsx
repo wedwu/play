@@ -25,9 +25,7 @@ const Card = ({ title, description, image }: CardProps) => {
         />
       )}
       <div style={{ padding: "16px" }}>
-        <h3 style={{ margin: "0 0 8px", fontSize: "18px", color: "#646cff" }}>
-          {title}
-        </h3>
+        <h3 style={{ margin: "0 0 8px", fontSize: "18px", color: "#646cff" }}>{title}</h3>
         <p
           style={{
             margin: 0,

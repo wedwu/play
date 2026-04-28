@@ -515,9 +515,7 @@ declare module '*.svg' {
 const CheatsheetTS = () => (
   <div className="cheatsheet">
     <h1>TypeScript Cheatsheet</h1>
-    <p className="subtitle">
-      Types, generics, utility types, and type-level programming patterns.
-    </p>
+    <p className="subtitle">Types, generics, utility types, and type-level programming patterns.</p>
 
     <div className="cs-grid">
       {sections.map((section) => (

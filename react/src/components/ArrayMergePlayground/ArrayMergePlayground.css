@@ -76,7 +76,7 @@
   white-space: pre-wrap;
   word-break: break-word;
   margin: 0;
-      text-align: start;
+  text-align: start;
 }
 
 .playground-error {

@@ -7,6 +7,8 @@ const navItems = [
   { label: "Cheatsheet", href: "/cheatsheet" },
   { label: "ES6", href: "/cheatsheet-es6" },
   { label: "TypeScript", href: "/cheatsheet-ts" },
+  { label: "Playoffs", href: "/RadialChartBuilder" },
+  { label: "TS Interview Widget", href: "/TypescriptInterviewWidget" },
 ];
 
 interface NavbarProps {
@@ -23,23 +25,14 @@ const Navbar = ({ theme, onToggleTheme }: NavbarProps) => {
       <ul className="navbar-links">
         {navItems.map((item) => (
           <li key={item.label}>
-            <Link
-              to={item.href}
-              className={pathname === item.href ? "active" : ""}
-            >
+            <Link to={item.href} className={pathname === item.href ? "active" : ""}>
               {item.label}
             </Link>
           </li>
         ))}
       </ul>
-      <button
-        className="theme-toggle"
-        onClick={onToggleTheme}
-        aria-label="Toggle theme"
-      >
-        <span className="material-icons">
-          {theme === "dark" ? "light_mode" : "dark_mode"}
-        </span>
+      <button className="theme-toggle" onClick={onToggleTheme} aria-label="Toggle theme">
+        <span className="material-icons">{theme === "dark" ? "light_mode" : "dark_mode"}</span>
       </button>
     </nav>
   );
