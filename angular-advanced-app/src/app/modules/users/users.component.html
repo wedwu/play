@@ -3,28 +3,48 @@
     <div>
       <h1 class="page-title">Team</h1>
       @if (users$ | async; as users) {
-        <p class="page-subtitle">{{ users.length }} members across all departments</p>
+        <p class="page-subtitle" role="status">{{ users.length }} members across all departments</p>
       }
     </div>
-    <button class="btn btn-primary" appRipple (click)="addRandomUser()">+ Add Member</button>
+    <button type="button" class="btn btn-primary" appRipple (click)="addRandomUser()">
+      + Add Member
+    </button>
   </header>
 
-  <!-- Dept tabs -->
-  <div class="dept-tabs">
-    <button class="tab" [class.active]="!filterDept" (click)="setDept(null)" appRipple>All</button>
+  <!-- Department filter tabs -->
+  <div class="dept-tabs" role="tablist" aria-label="Filter by department">
+    <button type="button" class="tab" role="tab"
+            [attr.aria-selected]="!filterDept"
+            [class.active]="!filterDept"
+            (click)="setDept(null)"
+            appRipple>All</button>
     @for (dept of departments; track dept) {
-      <button class="tab" [class.active]="filterDept === dept" (click)="setDept(dept)" appRipple>
+      <button type="button" class="tab" role="tab"
+              [attr.aria-selected]="filterDept === dept"
+              [class.active]="filterDept === dept"
+              (click)="setDept(dept)"
+              appRipple>
         {{ dept }}
       </button>
     }
   </div>
 
   <!-- Search -->
-  <div class="search-bar">
-    <input class="search-input" [(ngModel)]="search"
+  <div class="search-bar" role="search">
+    <label for="team-search" class="sr-only">Search team members</label>
+    <input id="team-search"
+           class="search-input"
+           [(ngModel)]="search"
            (ngModelChange)="userService.setQuery($event)"
-           placeholder="Search team members..."/>
-    <select class="filter-select" [(ngModel)]="filterRole" (ngModelChange)="userService.setFilter('role', $event || null)">
+           placeholder="Search team members..."
+           aria-label="Search team members"
+           type="search"/>
+    <label for="role-filter" class="sr-only">Filter by role</label>
+    <select id="role-filter"
+            class="filter-select"
+            [(ngModel)]="filterRole"
+            (ngModelChange)="userService.setFilter('role', $event || null)"
+            aria-label="Filter by role">
       <option value="">All Roles</option>
       @for (r of roles; track r) { <option [value]="r">{{ r }}</option> }
     </select>
@@ -32,74 +52,101 @@
 
   <!-- User grid -->
   @if (users$ | async; as users) {
-    <div class="users-grid" [@gridIn]="users.length">
+    <div class="users-grid"
+         [@gridIn]="users.length"
+         role="list"
+         aria-label="Team members">
       @for (user of users; track user.id) {
-        <app-user-card
-          [user]="user"
-          [selected]="selectedUser?.id === user.id"
-          (userClick)="selectUser($event)">
-        </app-user-card>
+        <div role="listitem">
+          <app-user-card
+            [user]="user"
+            [selected]="selectedUser?.id === user.id"
+            (userClick)="selectUser($event)">
+          </app-user-card>
+        </div>
       }
       @empty {
-        <div class="empty-state">No team members found</div>
+        <div class="empty-state" role="status">No team members found</div>
       }
     </div>
   }
 
   <!-- Detail panel -->
   @if (selectedUser) {
-    <div class="detail-panel">
+    <section class="detail-panel"
+             role="region"
+             [attr.aria-label]="selectedUser.fullName + ' details'"
+             aria-live="polite">
       <div class="panel-header">
-        <div class="panel-avatar" [style.background]="getUserColor(selectedUser.id)">{{ selectedUser.initials }}</div>
+        <div class="panel-avatar" aria-hidden="true" [style.background]="getUserColor(selectedUser.id)">
+          {{ selectedUser.initials }}
+        </div>
         <div>
-          <h2>{{ selectedUser.fullName }}</h2>
+          <h2 id="detail-name">{{ selectedUser.fullName }}</h2>
           <p class="panel-email">{{ selectedUser.email }}</p>
-          <div class="panel-badges">
+          <div class="panel-badges" aria-label="User badges">
             <span class="badge badge--role">{{ selectedUser.role }}</span>
             <span class="badge badge--dept">{{ selectedUser.department }}</span>
             <span class="badge" [ngClass]="'badge--' + selectedUser.status">{{ selectedUser.status }}</span>
           </div>
         </div>
-        <button class="close-btn" (click)="selectedUser = null"><span class="material-icons">close</span></button>
+        <button type="button"
+                class="close-btn"
+                [attr.aria-label]="'Close ' + selectedUser.fullName + ' details'"
+                (click)="selectedUser = null">
+          <span class="material-icons" aria-hidden="true">close</span>
+        </button>
       </div>
 
       @if (selectedUser.bio) {
         <p class="panel-bio">{{ selectedUser.bio }}</p>
       }
 
-      <div class="panel-section">
-        <h3>Skills ({{ selectedUser.skills.length }})</h3>
-        <div class="skills-list">
+      <div class="panel-section" aria-labelledby="skills-heading">
+        <h3 id="skills-heading">Skills ({{ selectedUser.skills.length }})</h3>
+        <div class="skills-list" role="list" [attr.aria-label]="selectedUser.fullName + ' skills'">
           @for (skill of selectedUser.skills; track skill) {
-            <span class="skill-badge">{{ skill }}
-              <button class="skill-remove" (click)="removeSkill(skill)">×</button>
+            <span class="skill-badge" role="listitem">
+              {{ skill }}
+              <button type="button"
+                      class="skill-remove"
+                      [attr.aria-label]="'Remove skill: ' + skill"
+                      (click)="removeSkill(skill)">×</button>
             </span>
           }
-          <button class="add-skill-btn" appRipple (click)="addSkillPrompt()">+ Add Skill</button>
+          <button type="button" class="add-skill-btn" appRipple (click)="addSkillPrompt()"
+                  [attr.aria-label]="'Add a skill to ' + selectedUser.fullName">
+            + Add Skill
+          </button>
         </div>
       </div>
 
-      <div class="panel-section">
-        <h3>Permissions</h3>
-        <div class="permissions-grid">
+      <div class="panel-section" aria-labelledby="permissions-heading">
+        <h3 id="permissions-heading">Permissions</h3>
+        <dl class="permissions-grid">
           @for (entry of getPermissions(selectedUser); track entry.key) {
             <div class="perm-item" [ngClass]="{ allowed: entry.value }">
-              <span class="material-icons">{{ entry.value ? 'check' : 'close' }}</span>
-              <span class="perm-label">{{ entry.key }}</span>
+              <span class="material-icons" aria-hidden="true">{{ entry.value ? 'check' : 'close' }}</span>
+              <dt class="perm-label">{{ entry.key }}</dt>
+              <dd class="sr-only">{{ entry.value ? 'Allowed' : 'Denied' }}</dd>
             </div>
           }
-        </div>
+        </dl>
       </div>
 
-      <div class="panel-section">
-        <h3>Change Role</h3>
-        <div class="role-btns">
+      <div class="panel-section" aria-labelledby="role-heading">
+        <h3 id="role-heading">Change Role</h3>
+        <div class="role-btns" role="group" [attr.aria-label]="'Assign role to ' + selectedUser.fullName">
           @for (r of roles; track r) {
-            <button class="btn btn-sm" [class.active]="selectedUser.role === r"
-              appRipple (click)="changeRole(r)">{{ r }}</button>
+            <button type="button"
+                    class="btn btn-sm"
+                    [class.active]="selectedUser.role === r"
+                    [attr.aria-pressed]="selectedUser.role === r"
+                    appRipple
+                    (click)="changeRole(r)">{{ r }}</button>
           }
         </div>
       </div>
-    </div>
+    </section>
   }
 </div>

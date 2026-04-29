@@ -1,4 +1,6 @@
-.dashboard { max-width: 1200px; }
+.dashboard {
+  max-width: 1200px;
+}
 
 // ── Header ────────────────────────────────────
 
@@ -10,7 +12,7 @@
 }
 
 .page-title {
-  font-family: 'Syne', sans-serif;
+  font-family: "Syne", sans-serif;
   font-weight: 800;
   font-size: 2rem;
   margin: 0;
@@ -18,7 +20,7 @@
 
 .page-subtitle {
   color: var(--text-secondary);
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   font-size: 0.8rem;
   margin: 0.25rem 0 0;
 }
@@ -44,14 +46,14 @@
 }
 
 .stat-value {
-  font-family: 'Syne', sans-serif;
+  font-family: "Syne", sans-serif;
   font-weight: 800;
   font-size: 2.5rem;
   line-height: 1;
 }
 
 .stat-label {
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   font-size: 0.7rem;
   color: var(--text-secondary);
   margin-top: 0.5rem;
@@ -89,7 +91,9 @@
   border-radius: 12px;
   padding: 1.5rem;
 
-  &--debug { grid-column: 1 / -1; }
+  &--debug {
+    grid-column: 1 / -1;
+  }
 }
 
 .card-header {
@@ -99,7 +103,7 @@
   margin-bottom: 1.25rem;
 
   h2 {
-    font-family: 'Syne', sans-serif;
+    font-family: "Syne", sans-serif;
     font-weight: 700;
     font-size: 1rem;
     margin: 0;
@@ -107,7 +111,7 @@
 }
 
 .card-link {
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   font-size: 0.75rem;
   color: var(--accent);
   text-decoration: none;
@@ -124,18 +128,20 @@
   background: var(--bg-elevated);
   margin-bottom: 0.5rem;
 
-  &.urgent { border-left: 3px solid #ff6b6b; }
+  &.urgent {
+    border-left: 3px solid #ff6b6b;
+  }
 }
 
 .task-title {
-  font-family: 'Syne', sans-serif;
+  font-family: "Syne", sans-serif;
   font-weight: 600;
   font-size: 0.85rem;
   display: block;
 }
 
 .task-meta {
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   font-size: 0.7rem;
   color: var(--text-secondary);
 }
@@ -153,7 +159,7 @@
   align-items: center;
   gap: 0.5rem;
   margin-bottom: 0.5rem;
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   font-size: 0.7rem;
   color: var(--text-secondary);
 }
@@ -169,7 +175,7 @@
   background: var(--bg-elevated);
   border-radius: 10px;
   padding: 1px 6px;
-  font-size: 0.65rem;
+  font-size: 0.7rem;
 }
 
 .kanban-card {
@@ -178,20 +184,24 @@
   padding: 0.5rem;
   font-size: 0.75rem;
   margin-bottom: 0.35rem;
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   border-left: 2px solid var(--border);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 
-  &.priority-4 { border-left-color: #ff6b6b; }
-  &.priority-3 { border-left-color: #ffeaa7; }
+  &.priority-4 {
+    border-left-color: #ff6b6b;
+  }
+  &.priority-3 {
+    border-left-color: #ffeaa7;
+  }
 }
 
 .kanban-more {
-  font-size: 0.65rem;
+  font-size: 0.7rem;
   color: var(--text-secondary);
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   text-align: center;
   padding: 0.25rem;
 }
@@ -217,30 +227,32 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Syne', sans-serif;
+  font-family: "Syne", sans-serif;
   font-weight: 700;
   font-size: 0.75rem;
   color: #000;
   flex-shrink: 0;
 }
 
-.member-info { flex: 1; }
+.member-info {
+  flex: 1;
+}
 
 .member-name {
-  font-family: 'Syne', sans-serif;
+  font-family: "Syne", sans-serif;
   font-weight: 600;
   font-size: 0.85rem;
   display: block;
 }
 
 .member-role {
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   font-size: 0.7rem;
   color: var(--text-secondary);
 }
 
 .member-skills {
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   font-size: 0.7rem;
   color: var(--accent);
   cursor: help;
@@ -256,7 +268,7 @@
 }
 
 .debug-entry {
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   font-size: 0.7rem;
   background: var(--bg-elevated);
   border: 1px solid var(--accent);
@@ -266,7 +278,7 @@
 }
 
 .debug-meta {
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   font-size: 0.7rem;
   color: var(--text-secondary);
 }
@@ -275,7 +287,7 @@
 
 .empty-state {
   color: var(--text-secondary);
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   font-size: 0.8rem;
   text-align: center;
   padding: 1rem;
@@ -287,7 +299,7 @@
   border: none;
   border-radius: 8px;
   padding: 0.6rem 1.25rem;
-  font-family: 'Syne', sans-serif;
+  font-family: "Syne", sans-serif;
   font-weight: 700;
   font-size: 0.85rem;
   cursor: pointer;

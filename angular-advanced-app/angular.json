@@ -6,7 +6,9 @@
     "angular-advanced-app": {
       "projectType": "application",
       "schematics": {
-        "@schematics/angular:component": { "style": "scss" }
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
       },
       "root": "",
       "sourceRoot": "src",
@@ -18,10 +20,17 @@
             "outputPath": "dist/angular-advanced-app",
             "index": "src/index.html",
             "browser": "src/main.ts",
-            "polyfills": ["zone.js"],
+            "polyfills": [
+              "zone.js"
+            ],
             "tsConfig": "tsconfig.json",
-            "assets": ["src/favicon.ico", "src/assets"],
-            "styles": ["src/styles.scss"],
+            "assets": [
+              "src/favicon.ico",
+              "src/assets"
+            ],
+            "styles": [
+              "src/styles.scss"
+            ],
             "scripts": []
           },
           "configurations": {
@@ -58,8 +67,16 @@
               "outputHashing": "all",
               "sourceMap": false,
               "budgets": [
-                { "type": "initial", "maximumWarning": "500kb", "maximumError": "1mb" },
-                { "type": "anyComponentStyle", "maximumWarning": "2kb", "maximumError": "4kb" }
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
               ],
               "fileReplacements": [
                 {
@@ -74,14 +91,36 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
-            "local":       { "buildTarget": "angular-advanced-app:build:local" },
-            "development": { "buildTarget": "angular-advanced-app:build:development" },
-            "staging":     { "buildTarget": "angular-advanced-app:build:staging" },
-            "production":  { "buildTarget": "angular-advanced-app:build:production" }
+            "local": {
+              "buildTarget": "angular-advanced-app:build:local"
+            },
+            "development": {
+              "buildTarget": "angular-advanced-app:build:development"
+            },
+            "staging": {
+              "buildTarget": "angular-advanced-app:build:staging"
+            },
+            "production": {
+              "buildTarget": "angular-advanced-app:build:production"
+            }
           },
           "defaultConfiguration": "local"
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
+            ]
+          }
         }
       }
     }
+  },
+  "cli": {
+    "schematicCollections": [
+      "angular-eslint"
+    ]
   }
 }

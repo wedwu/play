@@ -2,7 +2,7 @@
 // TOAST COMPONENT — ES6 Arrow Functions
 // ============================================================
 
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef, inject } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { NgClass } from '@angular/common';
 import { trigger, transition, style, animate } from '@angular/animations';
@@ -42,7 +42,8 @@ export class ToastComponent implements OnInit, OnDestroy {
   readonly icons = { success: 'check_circle', error: 'error', warn: 'warning', info: 'info' } as const;
   private readonly destroy$ = new Subject<void>();
 
-  constructor(private notificationService: NotificationService, private cdr: ChangeDetectorRef) {}
+  private readonly notificationService = inject(NotificationService);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   ngOnInit = (): void => {
     this.notificationService.notifications$.pipe(takeUntil(this.destroy$))

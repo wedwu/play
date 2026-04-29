@@ -2,7 +2,7 @@
 // NAV COMPONENT — ES6 Arrow Functions
 // ============================================================
 
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { NotificationService } from '../../../core/services/notification.service';
 
@@ -23,5 +23,5 @@ export class NavComponent {
     { path: '/users',     label: 'Team',      icon: 'group'     },
   ];
 
-  constructor(public notifications: NotificationService) {}
+  readonly notifications = inject(NotificationService);
 }

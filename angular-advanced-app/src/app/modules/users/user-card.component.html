@@ -1,16 +1,26 @@
-<div class="user-card" [ngClass]="{ selected }" (click)="userClick.emit(user)" appRipple>
+<div class="user-card"
+     [ngClass]="{ selected }"
+     tabindex="0"
+     role="button"
+     [attr.aria-label]="user.fullName + ', ' + user.role + ', ' + user.department + (selected ? ', selected' : '')"
+     [attr.aria-pressed]="selected"
+     (click)="userClick.emit(user)"
+     (keydown.enter)="userClick.emit(user)"
+     (keydown.space)="userClick.emit(user); $event.preventDefault()"
+     appRipple>
   <div class="avatar-wrap">
-    <div class="avatar" [style.background]="color">{{ user.initials }}</div>
-    <span class="status-dot" [ngClass]="user.status"></span>
+    <div class="avatar" aria-hidden="true" [style.background]="color">{{ user.initials }}</div>
+    <span class="status-dot" aria-hidden="true" [ngClass]="user.status"></span>
+    <span class="sr-only">{{ user.status }}</span>
   </div>
-  <div class="user-details">
+  <div class="user-details" aria-hidden="true">
     <div class="user-name">{{ user.fullName }}</div>
     <div class="user-role">{{ user.role }}</div>
     <div class="user-dept">{{ user.department }}</div>
   </div>
-  <div class="user-skills">
+  <div class="user-skills" aria-hidden="true">
     @for (skill of user.skills.slice(0,3); track skill) {
-      <span class="skill-chip" [appTooltip]="skill">{{ skill }}</span>
+      <span class="skill-chip">{{ skill }}</span>
     }
     @if (user.skills.length > 3) {
       <span class="skill-more">+{{ user.skills.length - 3 }}</span>

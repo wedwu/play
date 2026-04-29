@@ -4,76 +4,114 @@
       <h1 class="page-title">Dashboard</h1>
       <p class="page-subtitle">Good {{ greeting }}, Admin</p>
     </div>
-    <button class="btn btn-primary" appRipple (click)="addQuickTask()">+ Quick Task</button>
+    <button type="button" class="btn btn-primary" appRipple (click)="addQuickTask()">
+      + Quick Task
+    </button>
   </header>
 
   @if (stats$ | async; as stats) {
-    <div class="stats-grid" [@staggerCards]="stats">
-      <div class="stat-card" [appTooltip]="'Total tasks in system'">
-        <div class="stat-value">{{ stats.total }}</div>
+    <div class="stats-grid" [@staggerCards]="stats" role="list" aria-label="Task statistics">
+      <div class="stat-card" role="listitem" [attr.aria-label]="'Total tasks: ' + stats.total">
+        <div class="stat-value" aria-hidden="true">{{ stats.total }}</div>
         <div class="stat-label">Total Tasks</div>
-        <div class="stat-bar"><div class="stat-fill" [style.width.%]="100" style="background:var(--accent)"></div></div>
+        <div class="stat-bar" aria-hidden="true">
+          <div class="stat-fill" [style.width.%]="100" style="background:var(--accent)"></div>
+        </div>
       </div>
-      <div class="stat-card">
-        <div class="stat-value" style="color:#4ECDC4">{{ stats.done }}</div>
+      <div class="stat-card" role="listitem" [attr.aria-label]="'Completed tasks: ' + stats.done">
+        <div class="stat-value" aria-hidden="true">{{ stats.done }}</div>
         <div class="stat-label">Completed</div>
-        <div class="stat-bar"><div class="stat-fill" [style.width.%]="(stats.done / (stats.total || 1)) * 100" style="background:#4ECDC4"></div></div>
+        <div class="stat-bar"
+             role="progressbar"
+             [attr.aria-valuenow]="stats.total ? (stats.done / stats.total * 100 | number:'1.0-0') : 0"
+             aria-valuemin="0" aria-valuemax="100"
+             [attr.aria-label]="stats.done + ' of ' + stats.total + ' tasks completed'">
+          <div class="stat-fill" [style.width.%]="(stats.done / (stats.total || 1)) * 100" style="background:#4ECDC4" aria-hidden="true"></div>
+        </div>
       </div>
-      <div class="stat-card">
-        <div class="stat-value" style="color:#45B7D1">{{ stats.inProgress }}</div>
+      <div class="stat-card" role="listitem" [attr.aria-label]="'In-progress tasks: ' + stats.inProgress">
+        <div class="stat-value" aria-hidden="true">{{ stats.inProgress }}</div>
         <div class="stat-label">In Progress</div>
-        <div class="stat-bar"><div class="stat-fill" [style.width.%]="(stats.inProgress / (stats.total || 1)) * 100" style="background:#45B7D1"></div></div>
+        <div class="stat-bar"
+             role="progressbar"
+             [attr.aria-valuenow]="stats.total ? (stats.inProgress / stats.total * 100 | number:'1.0-0') : 0"
+             aria-valuemin="0" aria-valuemax="100"
+             [attr.aria-label]="stats.inProgress + ' tasks in progress'">
+          <div class="stat-fill" [style.width.%]="(stats.inProgress / (stats.total || 1)) * 100" style="background:#45B7D1" aria-hidden="true"></div>
+        </div>
       </div>
-      <div class="stat-card">
-        <div class="stat-value" style="color:#FF6B6B">{{ stats.overdue }}</div>
+      <div class="stat-card" role="listitem" [attr.aria-label]="'Overdue tasks: ' + stats.overdue">
+        <div class="stat-value" aria-hidden="true">{{ stats.overdue }}</div>
         <div class="stat-label">Overdue</div>
-        <div class="stat-bar"><div class="stat-fill" [style.width.%]="(stats.overdue / (stats.total || 1)) * 100" style="background:#FF6B6B"></div></div>
+        <div class="stat-bar"
+             role="progressbar"
+             [attr.aria-valuenow]="stats.total ? (stats.overdue / stats.total * 100 | number:'1.0-0') : 0"
+             aria-valuemin="0" aria-valuemax="100"
+             [attr.aria-label]="stats.overdue + ' tasks overdue'">
+          <div class="stat-fill" [style.width.%]="(stats.overdue / (stats.total || 1)) * 100" style="background:#FF6B6B" aria-hidden="true"></div>
+        </div>
       </div>
     </div>
   }
 
   <div class="dashboard-grid">
-    <section class="card" [@fadeInUp]>
+    <section class="card" [@fadeInUp] aria-labelledby="urgent-heading">
       <header class="card-header">
-        <h2><span class="material-icons" style="vertical-align:middle;font-size:1rem">warning</span> Urgent</h2>
-        <a routerLink="/tasks" class="card-link">View all →</a>
+        <h2 id="urgent-heading">
+          <span class="material-icons" style="vertical-align:middle;font-size:1rem" aria-hidden="true">warning</span>
+          Urgent
+        </h2>
+        <a routerLink="/tasks" class="card-link">View all <span class="sr-only">tasks</span> →</a>
       </header>
       @if (urgentTasks$ | async; as urgent) {
         @if (urgent.length === 0) {
-          <p class="empty-state">No urgent tasks</p>
+          <p class="empty-state" role="status">No urgent tasks</p>
         } @else {
-          @for (task of urgent; track task.id) {
-            <div class="task-row urgent">
-              <div class="task-info">
-                <span class="task-title">{{ task.title }}</span>
-                <span class="task-meta">{{ task.priority | priorityLabel }} · {{ task.taskStatus }}</span>
-              </div>
-              <button class="btn btn-sm" appRipple
-                (click)="taskService.transitionTask(task.id, TaskStatus.IN_PROGRESS)">
-                Start
-              </button>
-            </div>
-          }
+          <ul role="list" class="urgent-list" aria-label="Urgent tasks">
+            @for (task of urgent; track task.id) {
+              <li class="task-row urgent">
+                <div class="task-info">
+                  <span class="task-title">{{ task.title }}</span>
+                  <span class="task-meta">{{ task.priority | priorityLabel }} · {{ task.taskStatus }}</span>
+                </div>
+                <button type="button" class="btn btn-sm" appRipple
+                  [attr.aria-label]="'Start ' + task.title"
+                  (click)="taskService.transitionTask(task.id, TaskStatus.IN_PROGRESS)">
+                  Start
+                </button>
+              </li>
+            }
+          </ul>
         }
       }
     </section>
 
-    <section class="card" [@fadeInUp]>
-      <header class="card-header"><h2><span class="material-icons" style="vertical-align:middle;font-size:1rem">view_kanban</span> Board Overview</h2></header>
+    <section class="card" [@fadeInUp] aria-labelledby="board-heading">
+      <header class="card-header">
+        <h2 id="board-heading">
+          <span class="material-icons" style="vertical-align:middle;font-size:1rem" aria-hidden="true">view_kanban</span>
+          Board Overview
+        </h2>
+      </header>
       @if (tasksByStatus$ | async; as byStatus) {
-        <div class="kanban-mini">
+        <div class="kanban-mini" role="list" aria-label="Task counts by status">
           @for (col of statusCols; track col.status) {
-            <div class="kanban-col">
-              <div class="kanban-col-header">
+            <div class="kanban-col" role="listitem" [attr.aria-label]="col.label + ': ' + (byStatus[col.status] || []).length + ' tasks'">
+              <div class="kanban-col-header" aria-hidden="true">
                 <span class="kanban-dot" [style.background]="col.color"></span>
                 <span>{{ col.label }}</span>
                 <span class="kanban-count">{{ (byStatus[col.status] || []).length }}</span>
               </div>
               @for (task of (byStatus[col.status] || []).slice(0, 3); track task.id) {
-                <div class="kanban-card" [ngClass]="'priority-' + task.priority">{{ task.title }}</div>
+                <div class="kanban-card" [ngClass]="'priority-' + task.priority"
+                     [attr.aria-label]="task.title + ' — ' + (task.priority | priorityLabel)">
+                  {{ task.title }}
+                </div>
               }
               @if ((byStatus[col.status] || []).length > 3) {
-                <div class="kanban-more">+{{ (byStatus[col.status] || []).length - 3 }} more</div>
+                <div class="kanban-more" aria-hidden="true">
+                  +{{ (byStatus[col.status] || []).length - 3 }} more
+                </div>
               }
             </div>
           }
@@ -81,37 +119,56 @@
       }
     </section>
 
-    <section class="card" [@fadeInUp]>
+    <section class="card" [@fadeInUp] aria-labelledby="team-heading">
       <header class="card-header">
-        <h2><span class="material-icons" style="vertical-align:middle;font-size:1rem">group</span> Team</h2>
-        <a routerLink="/users" class="card-link">Manage →</a>
+        <h2 id="team-heading">
+          <span class="material-icons" style="vertical-align:middle;font-size:1rem" aria-hidden="true">group</span>
+          Team
+        </h2>
+        <a routerLink="/users" class="card-link">Manage <span class="sr-only">team</span> →</a>
       </header>
       @if (users$ | async; as users) {
-        <div class="team-list">
+        <ul class="team-list" role="list" aria-label="Team members">
           @for (user of users.slice(0, 5); track user.id) {
-            <div class="team-member">
-              <div class="member-avatar" [style.background]="getAvatarColor(user.id)">{{ user.initials }}</div>
+            <li class="team-member">
+              <div class="member-avatar" aria-hidden="true" [style.background]="getAvatarColor(user.id)">
+                {{ user.initials }}
+              </div>
               <div class="member-info">
                 <span class="member-name">{{ user.fullName }}</span>
                 <span class="member-role">{{ user.role }} · {{ user.department }}</span>
               </div>
-              <span class="member-skills" [appTooltip]="'Skills: ' + user.skills.join(', ')">
+              <span class="member-skills"
+                    [appTooltip]="'Skills: ' + user.skills.join(', ')"
+                    [attr.aria-label]="user.fullName + ' has ' + user.skills.length + ' skills: ' + user.skills.join(', ')">
                 {{ user.skills.length }} skills
               </span>
-            </div>
+            </li>
           }
-        </div>
+        </ul>
       }
     </section>
 
-    <section class="card card--debug" [@fadeInUp] #debugPanel>
-      <header class="card-header"><h2><span class="material-icons" style="vertical-align:middle;font-size:1rem">settings</span> Lifecycle Debug</h2></header>
-      <div class="debug-list">
+    <section class="card card--debug" [@fadeInUp] #debugPanel aria-labelledby="debug-heading">
+      <header class="card-header">
+        <h2 id="debug-heading">
+          <span class="material-icons" style="vertical-align:middle;font-size:1rem" aria-hidden="true">settings</span>
+          Lifecycle Debug
+        </h2>
+      </header>
+      <div class="debug-list" aria-label="Lifecycle hook log" role="log" aria-live="off">
         @for (hook of hookLog; track hook) {
           <div class="debug-entry">{{ hook }}</div>
         }
       </div>
-      <div class="debug-meta">Renders: {{ renderCount }} | ViewChild bound: <span class="material-icons" style="font-size:0.75rem;vertical-align:middle">{{ viewChildReady ? 'check_circle' : 'hourglass_empty' }}</span></div>
+      <div class="debug-meta">
+        Renders: {{ renderCount }} |
+        ViewChild bound:
+        <span aria-hidden="true" class="material-icons" style="font-size:0.75rem;vertical-align:middle">
+          {{ viewChildReady ? 'check_circle' : 'hourglass_empty' }}
+        </span>
+        <span class="sr-only">{{ viewChildReady ? 'Yes' : 'No' }}</span>
+      </div>
     </section>
   </div>
 </div>

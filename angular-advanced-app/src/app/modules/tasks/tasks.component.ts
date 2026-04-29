@@ -46,7 +46,7 @@ import {
 import { trigger, transition, style, animate } from "@angular/animations";
 
 /** Shape of a single kanban board column definition. */
-type KanbanCol = {
+interface KanbanCol {
   status: TaskStatus;
   label: string;
   color: string;
@@ -216,8 +216,6 @@ export class TasksComponent implements OnInit, AfterContentInit, OnDestroy {
     { value: TaskPriority.HIGH, label: "High" },
     { value: TaskPriority.URGENT, label: "Urgent" },
   ];
-
-  constructor() {}
 
   // ── Lifecycle Hooks ──
 

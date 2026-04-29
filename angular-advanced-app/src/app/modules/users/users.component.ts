@@ -174,8 +174,6 @@ export class UsersComponent implements OnInit, OnDestroy {
     "#FFEAA7",
   ];
 
-  constructor() {}
-
   // ── Lifecycle Hooks ──
 
   ngOnInit(): void {

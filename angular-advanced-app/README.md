@@ -197,6 +197,17 @@ const task = new TaskBuilder("Fix auth bug", "alice")
 - `authGuard` — checks localStorage token
 - `roleGuard(...roles)` — factory guard for RBAC
 
+### Dependency Injection
+
+All services and dependencies are injected using Angular's modern `inject()` function rather than constructor parameters, keeping constructors lean and making DI tree-shakeable:
+
+```typescript
+// Modern inject() pattern used throughout
+readonly taskService  = inject(TaskService);
+private readonly cdr  = inject(ChangeDetectorRef);
+private readonly fb   = inject(FormBuilder);
+```
+
 ### Performance
 
 - `ChangeDetectionStrategy.OnPush` on all components
@@ -211,6 +222,58 @@ const task = new TaskBuilder("Fix auth bug", "alice")
 - `trigger('cardIn')` — scale-in for task cards
 - `trigger('toastAnim')` — slide-in/out for toasts
 - `trigger('gridIn')` — staggered grid for users
+
+---
+
+## <span class="material-icons" style="vertical-align:middle">accessibility</span> Accessibility (WCAG 2.1)
+
+The application targets **WCAG 2.1 Level AA** conformance. Changes applied across every component:
+
+### Global (`src/index.html`, `src/styles.scss`)
+
+- **Skip link** — `<a class="skip-link" href="#main-content">` visible on keyboard focus, bypasses the nav bar (2.4.1)
+- **Focus ring** — `:focus-visible` accent-coloured outline with `:focus` fallback for older browsers (2.4.7)
+- **Reduced motion** — `@media (prefers-reduced-motion: reduce)` disables all transitions and animations (2.3.3)
+- **`--text-secondary` contrast** — updated from `#7a7f8e` to `#b5b9c5` to exceed 4.5:1 against the dark background (1.4.3)
+- **`.sr-only` utility class** — visually hidden text for screen-reader-only labels
+
+### Navigation
+
+- `<nav aria-label="Main navigation">` landmark (1.3.1)
+- `[attr.aria-current]="rla.isActive ? 'page' : null"` on active links (2.4.4)
+- Decorative icons marked `aria-hidden="true"`; navigation icon text is the visible label (1.1.1)
+
+### Toast / Notifications
+
+- Container: `aria-live="polite"` + `aria-atomic="true"` for automatic announcements (4.1.3)
+- Error toasts use `role="alert"` (assertive); info/success/warn use `role="status"` (4.1.3)
+- Icon spans `aria-hidden="true"`; close button has `aria-label="Dismiss notification"` (1.1.1)
+
+### Dashboard
+
+- Stat cards: `[attr.aria-label]` with spoken value; progress bars have `role="progressbar"` + `aria-valuenow/min/max` (4.1.2)
+- Section landmarks with `aria-labelledby` pointing at each `<h2>` (1.3.1)
+- Urgent task list uses `<ul role="list">` with per-item `Start` buttons labelled by task title (1.1.1)
+- Debug panel ViewChild status uses `<span class="sr-only">` text alongside the visual icon (1.1.1)
+
+### Tasks
+
+- Kanban cards: `role="button"` + `[attr.aria-label]` with title, priority and overdue state (4.1.2)
+- Progress bars: `role="progressbar"` + `aria-valuenow/min/max` + readable label (4.1.2)
+- Transition buttons: `[attr.aria-label]="'Move ' + task.title + ' to ' + next"` (1.1.1)
+- Table: `aria-label="Tasks list"` (1.3.1)
+- Modals: `role="dialog"`, `aria-modal="true"`, `aria-labelledby` pointing at modal title (4.1.2)
+- Priority colour strip marked `aria-hidden="true"` (1.4.1)
+
+### Users
+
+- User cards: `role="button"`, `[attr.aria-label]` with full name / role / dept / selected state, `[attr.aria-pressed]` (4.1.2)
+- Department tabs: `role="tablist"` + `role="tab"` + `[attr.aria-selected]` (4.1.2)
+- Search and filter inputs have associated `<label>` elements and `id` attributes (1.3.1)
+- Detail panel: `role="region"` with `[attr.aria-label]`; close button labelled with user's name (1.3.1)
+- Permissions rendered as `<dl>` with `<dd class="sr-only">Allowed/Denied</dd>` so colour isn't the only indicator (1.4.1)
+- Skill remove buttons: `[attr.aria-label]="'Remove skill: ' + skill"` (1.1.1)
+- Role-toggle buttons: `[attr.aria-pressed]` for current state (4.1.2)
 
 ---
 
@@ -273,8 +336,11 @@ Configured via `typedoc.json` using `tsconfig.docs.json` — a variant of the ro
 
 **Fonts:** Syne (headings, bold) + Space Mono (code, meta)  
 **Theme:** Dark industrial — near-black backgrounds, lime-green accent (`#c8f05a`)  
+**Icons:** [Google Material Icons](https://fonts.google.com/icons) loaded via CDN in `src/index.html`. All UI icons use `<span class="material-icons">icon_name</span>` — decorative instances carry `aria-hidden="true"`.  
 **Components:** Cards, badges, progress bars, kanban board, data table, modals  
-**Styles:** Each component has a dedicated `.scss` file with proper SCSS nesting. Shared global styles live in `src/styles.scss`.
+**Styles:** Each component has a dedicated `.scss` file with proper SCSS nesting. Shared global styles live in `src/styles.scss`.  
+**Contrast:** `--text-secondary` set to `#b5b9c5` (≥ 7:1 against the dark background, exceeding WCAG AA).  
+**Motion:** `@media (prefers-reduced-motion: reduce)` disables all transitions and animations globally.
 
 ---
 

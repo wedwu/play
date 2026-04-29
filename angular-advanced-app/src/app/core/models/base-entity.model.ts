@@ -90,7 +90,7 @@ export abstract class BaseEntity implements Auditable, Serializable<BaseEntity> 
   updatedAt: Date;
   /** Identifier of the actor who created this record. */
   createdBy: string;
-  private _metadata: Map<string, unknown> = new Map();
+  private _metadata = new Map<string, unknown>();
 
   /** @param createdBy - Actor creating this entity. Defaults to `'system'`. */
   constructor(createdBy = 'system') {

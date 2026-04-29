@@ -2,7 +2,7 @@
 // TASK SERVICE — ES6 Arrow Functions Throughout
 // ============================================================
 
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable, OnDestroy, inject } from '@angular/core';
 import { Observable, Subject, interval, map, takeUntil, tap, distinctUntilChanged } from 'rxjs';
 import { Task, TaskBuilder, TaskPriority, TaskStatus, Comment } from '../models/task.model';
 import { EntityStateService, FilterState, SortState } from './entity-state.service';
@@ -58,7 +58,9 @@ export class TaskService extends EntityStateService<Task> implements OnDestroy {
     distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b))
   );
 
-  constructor(private notifications: NotificationService) {
+  private readonly notifications = inject(NotificationService);
+
+  constructor() {
     super();
     this.seedData();
     this.startOverdueMonitor();

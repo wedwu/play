@@ -38,11 +38,14 @@
     "@angular/compiler-cli": "^17.0.0",
     "@types/jest": "^29.5.14",
     "@types/node": "^18.18.0",
+    "angular-eslint": "21.0.1",
+    "eslint": "^9.39.1",
     "jest": "^29.7.0",
     "jest-preset-angular": "^14.1.0",
     "ts-jest": "^29.1.0",
     "typedoc": "^0.28.19",
-    "typescript": "~5.2.0"
+    "typescript": "~5.2.0",
+    "typescript-eslint": "8.46.4"
   },
   "jest": {
     "preset": "jest-preset-angular",
@@ -53,9 +56,12 @@
       "<rootDir>/src/**/*.spec.ts"
     ],
     "transform": {
-      "^.+\\.(ts|mjs|js|html)$": ["jest-preset-angular", {
-        "tsconfig": "<rootDir>/tsconfig.spec.json"
-      }]
+      "^.+\\.(ts|mjs|js|html)$": [
+        "jest-preset-angular",
+        {
+          "tsconfig": "<rootDir>/tsconfig.spec.json"
+        }
+      ]
     },
     "moduleNameMapper": {
       "^@core/(.*)$": "<rootDir>/src/app/core/$1",
