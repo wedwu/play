@@ -1,0 +1,19 @@
+<div class="user-card" [ngClass]="{ selected }" (click)="userClick.emit(user)" appRipple>
+  <div class="avatar-wrap">
+    <div class="avatar" [style.background]="color">{{ user.initials }}</div>
+    <span class="status-dot" [ngClass]="user.status"></span>
+  </div>
+  <div class="user-details">
+    <div class="user-name">{{ user.fullName }}</div>
+    <div class="user-role">{{ user.role }}</div>
+    <div class="user-dept">{{ user.department }}</div>
+  </div>
+  <div class="user-skills">
+    @for (skill of user.skills.slice(0,3); track skill) {
+      <span class="skill-chip" [appTooltip]="skill">{{ skill }}</span>
+    }
+    @if (user.skills.length > 3) {
+      <span class="skill-more">+{{ user.skills.length - 3 }}</span>
+    }
+  </div>
+</div>

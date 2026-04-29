@@ -1,0 +1,25 @@
+<nav class="sidebar">
+  <div class="brand">
+    <span class="brand-icon">⚡</span>
+    <span class="brand-name">AngularPro</span>
+  </div>
+  <ul class="nav-list">
+    @for (item of navItems; track item.path) {
+      <li>
+        <a [routerLink]="item.path" routerLinkActive="active" class="nav-link">
+          <span class="nav-icon">{{ item.icon }}</span>
+          <span class="nav-label">{{ item.label }}</span>
+        </a>
+      </li>
+    }
+  </ul>
+  <div class="nav-footer">
+    <div class="user-badge">
+      <span class="avatar">AU</span>
+      <div class="user-info">
+        <span class="user-name">Admin User</span>
+        <span class="user-role">Administrator</span>
+      </div>
+    </div>
+  </div>
+</nav>

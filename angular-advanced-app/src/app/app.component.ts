@@ -18,20 +18,8 @@ import { NavComponent } from './shared/components/nav/nav.component';
   standalone: true,
   imports: [RouterOutlet, ToastComponent, NavComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `
-    <div class="app-shell">
-      <app-nav></app-nav>
-      <main class="app-main" #mainRef>
-        <router-outlet></router-outlet>
-      </main>
-      <app-toast></app-toast>
-    </div>
-  `,
-  styles: [`
-    .app-shell { display: flex; min-height: 100vh; background: var(--bg-primary); color: var(--text-primary); }
-    .app-main  { flex: 1; overflow-y: auto; padding: 2rem; margin-left: 260px; }
-    @media (max-width: 768px) { .app-main { margin-left: 0; padding: 1rem; } }
-  `]
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.scss'
 })
 export class AppComponent
   implements OnInit, OnChanges, DoCheck, AfterContentInit,

@@ -1,0 +1,12 @@
+<div class="toast-container">
+  @for (toast of toasts; track toast.id) {
+    <div class="toast" [@toastAnim] [ngClass]="'toast--' + toast.type" (click)="dismiss(toast.id)">
+      <div class="toast-icon">{{ icons[toast.type] }}</div>
+      <div class="toast-body">
+        <strong class="toast-title">{{ toast.title }}</strong>
+        @if (toast.message) { <p class="toast-msg">{{ toast.message }}</p> }
+      </div>
+      <button class="toast-close" (click)="dismiss(toast.id); $event.stopPropagation()">✕</button>
+    </div>
+  }
+</div>

@@ -1,0 +1,318 @@
+<div class="tasks-page">
+  <!-- Header -->
+  <header class="page-header">
+    <div>
+      <h1 class="page-title">Tasks</h1>
+      @if (stats$ | async; as s) {
+        <p class="page-subtitle">{{ s.total }} tasks · {{ s.done }} done · {{ s.avgProgress }}% avg progress</p>
+      }
+    </div>
+    <button class="btn btn-primary" appRipple (click)="openNewTaskModal()">+ New Task</button>
+  </header>
+
+  <!-- Toolbar -->
+  <div class="toolbar" [@slideIn]>
+    <input class="search-input" placeholder="🔍 Search tasks..."
+           [(ngModel)]="searchQuery"
+           (ngModelChange)="taskService.setQuery($event)"
+           [appAutoFocus]="true"/>
+
+    <select class="filter-select" [(ngModel)]="filterStatus"
+            (ngModelChange)="taskService.setFilter('status', $event || null)">
+      <option value="">All Statuses</option>
+      @for (s of allStatuses; track s) {
+        <option [value]="s">{{ s | titlecase }}</option>
+      }
+    </select>
+
+    <select class="filter-select" [(ngModel)]="filterPriority"
+            (ngModelChange)="taskService.setFilter('priority', $event || null)">
+      <option value="">All Priorities</option>
+      @for (p of allPriorities; track p.value) {
+        <option [value]="p.value">{{ p.label }}</option>
+      }
+    </select>
+
+    <div class="view-toggle">
+      <button [class.active]="view === 'kanban'" appRipple (click)="view = 'kanban'">⬜ Kanban</button>
+      <button [class.active]="view === 'list'"   appRipple (click)="view = 'list'">☰ List</button>
+    </div>
+  </div>
+
+  <!-- Kanban Board -->
+  @if (view === 'kanban') {
+    @if (tasksByStatus$ | async; as byStatus) {
+      <div class="kanban-board">
+        @for (col of columns; track col.status) {
+          <div class="kanban-col">
+            <div class="col-header" [style.border-top-color]="col.color">
+              <span class="col-icon">{{ col.icon }}</span>
+              <span class="col-title">{{ col.label }}</span>
+              <span class="col-count" [style.background]="col.color">
+                {{ (byStatus[col.status] || []).length }}
+              </span>
+            </div>
+
+            <div class="col-cards">
+              @for (task of byStatus[col.status] || []; track task.id) {
+                <div class="task-card" [@cardIn]
+                     [ngClass]="{ overdue: task.isOverdue, 'priority-urgent': task.priority === 4 }"
+                     (click)="selectTask(task)">
+
+                  <!-- Priority strip -->
+                  <div class="priority-strip" [style.background]="priorityColor(task.priority)"></div>
+
+                  <div class="card-body">
+                    <h3 class="card-title">{{ task.title | truncate:60 }}</h3>
+
+                    @if (task.tags.length) {
+                      <div class="tag-list">
+                        @for (tag of task.tags.slice(0, 3); track tag.label) {
+                          <span class="tag" [style.background]="tag.color + '33'" [style.color]="tag.color">
+                            {{ tag.label }}
+                          </span>
+                        }
+                      </div>
+                    }
+
+                    @if (task.subtasks.length) {
+                      <div class="progress-row">
+                        <div class="progress-bar">
+                          <div class="progress-fill" [style.width.%]="task.progress" [style.background]="col.color"></div>
+                        </div>
+                        <span class="progress-label">{{ task.completedSubtasks }}/{{ task.subtasks.length }}</span>
+                      </div>
+                    }
+
+                    <div class="card-footer">
+                      <span class="card-meta" [appTooltip]="'Created ' + task.createdAt">
+                        {{ task.createdAt | relativeTime }}
+                      </span>
+                      @if (task.dueDate) {
+                        <span class="due-date" [ngClass]="{ overdue: task.isOverdue }" [appTooltip]="'Due date'">
+                          📅 {{ task.daysUntilDue }}d
+                        </span>
+                      }
+                      @if (task.estimatedHours) {
+                        <span class="hours" [appTooltip]="'Estimated hours'">
+                          ⏱ {{ task.estimatedHours | hours }}
+                        </span>
+                      }
+                    </div>
+
+                    <!-- Transition buttons -->
+                    @if (task.getAllowedTransitions().length) {
+                      <div class="transition-btns">
+                        @for (next of task.getAllowedTransitions().slice(0, 2); track next) {
+                          <button class="btn-transition" appRipple
+                            (click)="transition(task, next); $event.stopPropagation()">
+                            → {{ next }}
+                          </button>
+                        }
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+
+              <!-- Add task to column -->
+              <button class="add-card-btn" (click)="openNewTaskModal(col.status)">
+                + Add task
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  }
+
+  <!-- List View -->
+  @if (view === 'list') {
+    @if (pagedTasks$ | async; as tasks) {
+      <div class="task-list">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th (click)="taskService.setSort('title')" class="sortable">Title</th>
+              <th (click)="taskService.setSort('priority')" class="sortable">Priority</th>
+              <th (click)="taskService.setSort('taskStatus')" class="sortable">Status</th>
+              <th (click)="taskService.setSort('dueDate')" class="sortable">Due</th>
+              <th>Progress</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (task of tasks; track task.id) {
+              <tr [@cardIn] [ngClass]="{ 'row--overdue': task.isOverdue }" (click)="selectTask(task)">
+                <td>
+                  <div class="cell-title">{{ task.title }}</div>
+                  @if (task.tags.length) {
+                    <div class="cell-tags">
+                      @for (tag of task.tags.slice(0,2); track tag.label) {
+                        <span class="tag-sm" [style.color]="tag.color">{{ tag.label }}</span>
+                      }
+                    </div>
+                  }
+                </td>
+                <td>
+                  <span class="priority-badge" [ngClass]="'p' + task.priority">
+                    {{ task.priority | priorityLabel }}
+                  </span>
+                </td>
+                <td><span class="status-badge" [ngClass]="'s-' + task.taskStatus">{{ task.taskStatus }}</span></td>
+                <td>
+                  @if (task.dueDate) {
+                    <span [ngClass]="{ 'text-danger': task.isOverdue }">{{ task.dueDate | relativeTime }}</span>
+                  } @else { <span class="text-muted">—</span> }
+                </td>
+                <td>
+                  <div class="mini-progress">
+                    <div class="mini-fill" [style.width.%]="task.progress"></div>
+                  </div>
+                  <span class="mini-label">{{ task.progress }}%</span>
+                </td>
+                <td class="actions-cell" (click)="$event.stopPropagation()">
+                  <button class="btn-icon" [appTooltip]="'Complete task'"
+                    (click)="transition(task, TaskStatus.DONE)">✓</button>
+                  <button class="btn-icon btn-icon--danger" [appTooltip]="'Delete task'"
+                    (click)="deleteTask(task.id)">✕</button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  }
+
+  <!-- Task Detail Modal -->
+  @if (selectedTask) {
+    <div class="modal-backdrop" (click)="selectedTask = null">
+      <div class="modal" [@cardIn] (click)="$event.stopPropagation()">
+        <header class="modal-header">
+          <div>
+            <h2 class="modal-title">{{ selectedTask.title }}</h2>
+            <div class="modal-meta">
+              <span class="priority-badge" [ngClass]="'p' + selectedTask.priority">
+                {{ selectedTask.priority | priorityLabel }}
+              </span>
+              <span class="status-badge" [ngClass]="'s-' + selectedTask.taskStatus">
+                {{ selectedTask.taskStatus }}
+              </span>
+            </div>
+          </div>
+          <button class="modal-close" (click)="selectedTask = null">✕</button>
+        </header>
+
+        <div class="modal-body">
+          <p class="modal-desc">{{ selectedTask.description || 'No description.' }}</p>
+
+          @if (selectedTask.subtasks.length) {
+            <div class="subtask-section">
+              <h3>Subtasks ({{ selectedTask.completedSubtasks }}/{{ selectedTask.subtasks.length }})</h3>
+              @for (sub of selectedTask.subtasks; track sub.id) {
+                <label class="subtask-item">
+                  <input type="checkbox" [checked]="sub.done"
+                    (change)="toggleSubtask(selectedTask.id, sub.id)"/>
+                  <span [ngClass]="{ done: sub.done }">{{ sub.title }}</span>
+                </label>
+              }
+            </div>
+          }
+
+          @if (selectedTask.comments.length) {
+            <div class="comments-section">
+              <h3>Comments</h3>
+              @for (c of selectedTask.comments; track c.id) {
+                <div class="comment">
+                  <strong>{{ c.authorId }}</strong>
+                  <p>{{ c.content }}</p>
+                  <small>{{ c.createdAt | relativeTime }}</small>
+                </div>
+              }
+            </div>
+          }
+
+          <div class="detail-grid">
+            @if (selectedTask.estimatedHours) {
+              <div class="detail-item">
+                <label>Estimated</label>
+                <span>{{ selectedTask.estimatedHours | hours }}</span>
+              </div>
+            }
+            <div class="detail-item">
+              <label>Logged</label>
+              <span>{{ selectedTask.loggedHours | hours }}</span>
+            </div>
+            <div class="detail-item">
+              <label>Created</label>
+              <span>{{ selectedTask.createdAt | relativeTime }}</span>
+            </div>
+            <div class="detail-item">
+              <label>Progress</label>
+              <span>{{ selectedTask.progress }}%</span>
+            </div>
+          </div>
+
+          <!-- Transitions -->
+          <div class="modal-actions">
+            @for (next of selectedTask.getAllowedTransitions(); track next) {
+              <button class="btn" appRipple (click)="transition(selectedTask, next)">→ {{ next }}</button>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- New Task Modal -->
+  @if (showNewTaskModal) {
+    <div class="modal-backdrop" (click)="showNewTaskModal = false">
+      <div class="modal modal--sm" [@cardIn] (click)="$event.stopPropagation()">
+        <header class="modal-header">
+          <h2 class="modal-title">New Task</h2>
+          <button class="modal-close" (click)="showNewTaskModal = false">✕</button>
+        </header>
+        <div class="modal-body">
+          <form [formGroup]="taskForm" (ngSubmit)="submitNewTask()">
+            <div class="form-group">
+              <label>Title *</label>
+              <input formControlName="title" placeholder="Task title..." [appAutoFocus]="true"/>
+              @if (taskForm.get('title')?.invalid && taskForm.get('title')?.touched) {
+                <span class="error">Title must be at least 3 characters</span>
+              }
+            </div>
+            <div class="form-group">
+              <label>Description</label>
+              <textarea formControlName="description" rows="3" placeholder="Optional description..."></textarea>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Priority</label>
+                <select formControlName="priority">
+                  @for (p of allPriorities; track p.value) {
+                    <option [value]="p.value">{{ p.label }}</option>
+                  }
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Due Date</label>
+                <input type="date" formControlName="dueDate"/>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Estimate (hours)</label>
+              <input type="number" formControlName="estimatedHours" min="0" step="0.5"/>
+            </div>
+            <div class="modal-actions">
+              <button type="button" class="btn btn-ghost" (click)="showNewTaskModal = false">Cancel</button>
+              <button type="submit" class="btn btn-primary" [disabled]="taskForm.invalid" appRipple>
+                Create Task
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  }
+</div>
