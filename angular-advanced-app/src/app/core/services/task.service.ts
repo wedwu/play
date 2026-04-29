@@ -3,7 +3,7 @@
 // ============================================================
 
 import { Injectable, OnDestroy } from '@angular/core';
-import { Observable, Subject, combineLatest, interval, map, takeUntil, tap, distinctUntilChanged } from 'rxjs';
+import { Observable, Subject, interval, map, takeUntil, tap, distinctUntilChanged } from 'rxjs';
 import { Task, TaskBuilder, TaskPriority, TaskStatus, Comment } from '../models/task.model';
 import { EntityStateService, FilterState, SortState } from './entity-state.service';
 import { NotificationService } from './notification.service';
@@ -104,7 +104,7 @@ export class TaskService extends EntityStateService<Task> implements OnDestroy {
     const result = task.transition(newStatus);
     if (result.success) {
       this.update(taskId, { taskStatus: newStatus } as Partial<Task>);
-      if (newStatus === TaskStatus.DONE) this.notifications.success('🎉 Task completed!', task.title);
+      if (newStatus === TaskStatus.DONE) this.notifications.success('Task completed', task.title);
     } else {
       this.notifications.error('Transition failed', result.error ?? '');
     }

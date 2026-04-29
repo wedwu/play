@@ -26,7 +26,7 @@ export interface ProjectStats {
 }
 
 const PROJECT_COLORS = ['#FF6B6B','#4ECDC4','#45B7D1','#96CEB4','#FFEAA7','#DDA0DD','#98D8C8'];
-const PROJECT_EMOJIS = ['🚀','💡','⚡','🔥','🎯','🌊','🌟','🛠️','🎨','📦'];
+const PROJECT_ICONS  = ['rocket_launch','lightbulb','electric_bolt','local_fire_department','track_changes','waves','star','build','palette','inventory_2'];
 
 const randomItem = <T>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)];
 
@@ -73,7 +73,7 @@ export class Project extends BaseEntity {
     this.category = category;
     this.startDate = new Date();
     this.color = randomItem(PROJECT_COLORS);
-    this.iconEmoji = randomItem(PROJECT_EMOJIS);
+    this.iconEmoji = randomItem(PROJECT_ICONS);
   }
 
   // ── ES6 Getters ───────────────────────────────
@@ -129,7 +129,7 @@ export class Project extends BaseEntity {
   // ── Abstract implementations → arrow properties ──
   validate = (): boolean => this.name.trim().length >= 2 && !!this.ownerId;
 
-  getDisplayName = (): string => `${this.iconEmoji} ${this.name}`;
+  getDisplayName = (): string => this.name;
 
   serialize = (): Record<string, unknown> => ({
     ...this.baseSerialize(),

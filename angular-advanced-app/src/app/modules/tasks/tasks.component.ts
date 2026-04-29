@@ -72,12 +72,12 @@ export class TasksComponent implements OnInit, AfterContentInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   readonly columns: KanbanCol[] = [
-    { status: TaskStatus.BACKLOG,     label: 'Backlog',      color: '#666',    icon: '📥' },
-    { status: TaskStatus.TODO,        label: 'To Do',        color: '#96CEB4', icon: '📋' },
-    { status: TaskStatus.IN_PROGRESS, label: 'In Progress',  color: '#45B7D1', icon: '🔄' },
-    { status: TaskStatus.REVIEW,      label: 'Review',       color: '#DDA0DD', icon: '👀' },
-    { status: TaskStatus.BLOCKED,     label: 'Blocked',      color: '#FF6B6B', icon: '🚫' },
-    { status: TaskStatus.DONE,        label: 'Done',         color: '#4ECDC4', icon: '✅' },
+    { status: TaskStatus.BACKLOG,     label: 'Backlog',      color: '#666',    icon: 'inbox'      },
+    { status: TaskStatus.TODO,        label: 'To Do',        color: '#96CEB4', icon: 'list_alt'   },
+    { status: TaskStatus.IN_PROGRESS, label: 'In Progress',  color: '#45B7D1', icon: 'autorenew'  },
+    { status: TaskStatus.REVIEW,      label: 'Review',       color: '#DDA0DD', icon: 'visibility' },
+    { status: TaskStatus.BLOCKED,     label: 'Blocked',      color: '#FF6B6B', icon: 'block'      },
+    { status: TaskStatus.DONE,        label: 'Done',         color: '#4ECDC4', icon: 'task_alt'   },
   ];
 
   readonly allStatuses = Object.values(TaskStatus);

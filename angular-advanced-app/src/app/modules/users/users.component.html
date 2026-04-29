@@ -23,7 +23,7 @@
   <div class="search-bar">
     <input class="search-input" [(ngModel)]="search"
            (ngModelChange)="userService.setQuery($event)"
-           placeholder="🔍 Search team members..."/>
+           placeholder="Search team members..."/>
     <select class="filter-select" [(ngModel)]="filterRole" (ngModelChange)="userService.setFilter('role', $event || null)">
       <option value="">All Roles</option>
       @for (r of roles; track r) { <option [value]="r">{{ r }}</option> }
@@ -60,7 +60,7 @@
             <span class="badge" [ngClass]="'badge--' + selectedUser.status">{{ selectedUser.status }}</span>
           </div>
         </div>
-        <button class="close-btn" (click)="selectedUser = null">✕</button>
+        <button class="close-btn" (click)="selectedUser = null"><span class="material-icons">close</span></button>
       </div>
 
       @if (selectedUser.bio) {
@@ -84,7 +84,7 @@
         <div class="permissions-grid">
           @for (entry of getPermissions(selectedUser); track entry.key) {
             <div class="perm-item" [ngClass]="{ allowed: entry.value }">
-              <span class="perm-icon">{{ entry.value ? '✓' : '✕' }}</span>
+              <span class="perm-icon material-icons">{{ entry.value ? 'check' : 'close' }}</span>
               <span class="perm-label">{{ entry.key }}</span>
             </div>
           }

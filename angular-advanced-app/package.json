@@ -52,10 +52,10 @@
     "testMatch": [
       "<rootDir>/src/**/*.spec.ts"
     ],
-    "globals": {
-      "ts-jest": {
+    "transform": {
+      "^.+\\.(ts|mjs|js|html)$": ["jest-preset-angular", {
         "tsconfig": "<rootDir>/tsconfig.spec.json"
-      }
+      }]
     },
     "moduleNameMapper": {
       "^@core/(.*)$": "<rootDir>/src/app/core/$1",

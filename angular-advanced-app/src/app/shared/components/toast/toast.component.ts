@@ -39,7 +39,7 @@ export class ToastComponent implements OnInit, OnDestroy {
   /** Currently visible toasts. New items are appended; dismissed items are filtered out. */
   toasts: Notification[] = [];
   /** Emoji icons keyed by notification type, used in the toast template. */
-  readonly icons = { success: '✅', error: '❌', warn: '⚠️', info: 'ℹ️' } as const;
+  readonly icons = { success: 'check_circle', error: 'error', warn: 'warning', info: 'info' } as const;
   private readonly destroy$ = new Subject<void>();
 
   constructor(private notificationService: NotificationService, private cdr: ChangeDetectorRef) {}

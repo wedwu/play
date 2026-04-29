@@ -12,7 +12,7 @@
 
   <!-- Toolbar -->
   <div class="toolbar" [@slideIn]>
-    <input class="search-input" placeholder="🔍 Search tasks..."
+    <input class="search-input" placeholder="Search tasks..."
            [(ngModel)]="searchQuery"
            (ngModelChange)="taskService.setQuery($event)"
            [appAutoFocus]="true"/>
@@ -34,8 +34,8 @@
     </select>
 
     <div class="view-toggle">
-      <button [class.active]="view === 'kanban'" appRipple (click)="view = 'kanban'">⬜ Kanban</button>
-      <button [class.active]="view === 'list'"   appRipple (click)="view = 'list'">☰ List</button>
+      <button [class.active]="view === 'kanban'" appRipple (click)="view = 'kanban'"><span class="material-icons">view_kanban</span> Kanban</button>
+      <button [class.active]="view === 'list'"   appRipple (click)="view = 'list'"><span class="material-icons">view_list</span> List</button>
     </div>
   </div>
 
@@ -46,7 +46,7 @@
         @for (col of columns; track col.status) {
           <div class="kanban-col">
             <div class="col-header" [style.border-top-color]="col.color">
-              <span class="col-icon">{{ col.icon }}</span>
+              <span class="col-icon material-icons">{{ col.icon }}</span>
               <span class="col-title">{{ col.label }}</span>
               <span class="col-count" [style.background]="col.color">
                 {{ (byStatus[col.status] || []).length }}
@@ -90,12 +90,12 @@
                       </span>
                       @if (task.dueDate) {
                         <span class="due-date" [ngClass]="{ overdue: task.isOverdue }" [appTooltip]="'Due date'">
-                          📅 {{ task.daysUntilDue }}d
+                          <span class="material-icons" style="font-size:0.7rem;vertical-align:middle">calendar_today</span> {{ task.daysUntilDue }}d
                         </span>
                       }
                       @if (task.estimatedHours) {
                         <span class="hours" [appTooltip]="'Estimated hours'">
-                          ⏱ {{ task.estimatedHours | hours }}
+                          <span class="material-icons" style="font-size:0.7rem;vertical-align:middle">timer</span> {{ task.estimatedHours | hours }}
                         </span>
                       }
                     </div>
@@ -173,9 +173,9 @@
                 </td>
                 <td class="actions-cell" (click)="$event.stopPropagation()">
                   <button class="btn-icon" [appTooltip]="'Complete task'"
-                    (click)="transition(task, TaskStatus.DONE)">✓</button>
+                    (click)="transition(task, TaskStatus.DONE)"><span class="material-icons">check</span></button>
                   <button class="btn-icon btn-icon--danger" [appTooltip]="'Delete task'"
-                    (click)="deleteTask(task.id)">✕</button>
+                    (click)="deleteTask(task.id)"><span class="material-icons">close</span></button>
                 </td>
               </tr>
             }
@@ -201,7 +201,7 @@
               </span>
             </div>
           </div>
-          <button class="modal-close" (click)="selectedTask = null">✕</button>
+          <button class="modal-close" (click)="selectedTask = null"><span class="material-icons">close</span></button>
         </header>
 
         <div class="modal-body">
@@ -271,7 +271,7 @@
       <div class="modal modal--sm" [@cardIn] (click)="$event.stopPropagation()">
         <header class="modal-header">
           <h2 class="modal-title">New Task</h2>
-          <button class="modal-close" (click)="showNewTaskModal = false">✕</button>
+          <button class="modal-close" (click)="showNewTaskModal = false"><span class="material-icons">close</span></button>
         </header>
         <div class="modal-body">
           <form [formGroup]="taskForm" (ngSubmit)="submitNewTask()">

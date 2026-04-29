@@ -35,12 +35,12 @@
   <div class="dashboard-grid">
     <section class="card" [@fadeInUp]>
       <header class="card-header">
-        <h2>🚨 Urgent</h2>
+        <h2><span class="material-icons" style="vertical-align:middle;font-size:1rem">warning</span> Urgent</h2>
         <a routerLink="/tasks" class="card-link">View all →</a>
       </header>
       @if (urgentTasks$ | async; as urgent) {
         @if (urgent.length === 0) {
-          <p class="empty-state">No urgent tasks 🎉</p>
+          <p class="empty-state">No urgent tasks</p>
         } @else {
           @for (task of urgent; track task.id) {
             <div class="task-row urgent">
@@ -59,7 +59,7 @@
     </section>
 
     <section class="card" [@fadeInUp]>
-      <header class="card-header"><h2>📋 Board Overview</h2></header>
+      <header class="card-header"><h2><span class="material-icons" style="vertical-align:middle;font-size:1rem">view_kanban</span> Board Overview</h2></header>
       @if (tasksByStatus$ | async; as byStatus) {
         <div class="kanban-mini">
           @for (col of statusCols; track col.status) {
@@ -83,7 +83,7 @@
 
     <section class="card" [@fadeInUp]>
       <header class="card-header">
-        <h2>👥 Team</h2>
+        <h2><span class="material-icons" style="vertical-align:middle;font-size:1rem">group</span> Team</h2>
         <a routerLink="/users" class="card-link">Manage →</a>
       </header>
       @if (users$ | async; as users) {
@@ -105,13 +105,13 @@
     </section>
 
     <section class="card card--debug" [@fadeInUp] #debugPanel>
-      <header class="card-header"><h2>⚙️ Lifecycle Debug</h2></header>
+      <header class="card-header"><h2><span class="material-icons" style="vertical-align:middle;font-size:1rem">settings</span> Lifecycle Debug</h2></header>
       <div class="debug-list">
         @for (hook of hookLog; track hook) {
           <div class="debug-entry">{{ hook }}</div>
         }
       </div>
-      <div class="debug-meta">Renders: {{ renderCount }} | ViewChild bound: {{ viewChildReady ? '✅' : '⏳' }}</div>
+      <div class="debug-meta">Renders: {{ renderCount }} | ViewChild bound: <span class="material-icons" style="font-size:0.75rem;vertical-align:middle">{{ viewChildReady ? 'check_circle' : 'hourglass_empty' }}</span></div>
     </section>
   </div>
 </div>

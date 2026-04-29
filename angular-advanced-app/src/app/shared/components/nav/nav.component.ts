@@ -18,9 +18,9 @@ interface NavItem { path: string; label: string; icon: string; }
 })
 export class NavComponent {
   readonly navItems: NavItem[] = [
-    { path: '/dashboard', label: 'Dashboard', icon: '📊' },
-    { path: '/tasks',     label: 'Tasks',     icon: '✅' },
-    { path: '/users',     label: 'Team',      icon: '👥' },
+    { path: '/dashboard', label: 'Dashboard', icon: 'dashboard' },
+    { path: '/tasks',     label: 'Tasks',     icon: 'task_alt'  },
+    { path: '/users',     label: 'Team',      icon: 'group'     },
   ];
 
   constructor(public notifications: NotificationService) {}

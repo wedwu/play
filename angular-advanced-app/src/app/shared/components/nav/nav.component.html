@@ -1,13 +1,13 @@
 <nav class="sidebar">
   <div class="brand">
-    <span class="brand-icon">⚡</span>
+    <span class="brand-icon material-icons">electric_bolt</span>
     <span class="brand-name">AngularPro</span>
   </div>
   <ul class="nav-list">
     @for (item of navItems; track item.path) {
       <li>
         <a [routerLink]="item.path" routerLinkActive="active" class="nav-link">
-          <span class="nav-icon">{{ item.icon }}</span>
+          <span class="nav-icon material-icons">{{ item.icon }}</span>
           <span class="nav-label">{{ item.label }}</span>
         </a>
       </li>
