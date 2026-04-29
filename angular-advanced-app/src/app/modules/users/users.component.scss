@@ -40,7 +40,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Syne', sans-serif;
+  font-family: "Syne", sans-serif;
   font-weight: 800;
   font-size: 1rem;
   color: #000;
@@ -55,25 +55,29 @@
   bottom: 0;
   left: 36px;
 
-  &.active   { background: #4ecdc4; }
-  &.inactive { background: #aaa; }
+  &.active {
+    background: #4ecdc4;
+  }
+  &.inactive {
+    background: #aaa;
+  }
 }
 
 .user-name {
-  font-family: 'Syne', sans-serif;
+  font-family: "Syne", sans-serif;
   font-weight: 700;
   font-size: 0.95rem;
 }
 
 .user-role {
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   font-size: 0.7rem;
   color: var(--accent);
   text-transform: uppercase;
 }
 
 .user-dept {
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   font-size: 0.7rem;
   color: var(--text-secondary);
 }
@@ -89,7 +93,7 @@
   border: 1px solid var(--border);
   border-radius: 4px;
   padding: 1px 6px;
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   font-size: 0.65rem;
   color: var(--text-secondary);
   max-width: 70px;
@@ -100,7 +104,7 @@
 }
 
 .skill-more {
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   font-size: 0.65rem;
   color: var(--accent);
   padding: 1px 4px;
@@ -126,14 +130,14 @@
 }
 
 .page-title {
-  font-family: 'Syne', sans-serif;
+  font-family: "Syne", sans-serif;
   font-weight: 800;
   font-size: 2rem;
   margin: 0;
 }
 
 .page-subtitle {
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   font-size: 0.75rem;
   color: var(--text-secondary);
   margin: 0.25rem 0 0;
@@ -153,7 +157,7 @@
   color: var(--text-secondary);
   border-radius: 8px;
   padding: 0.4rem 0.9rem;
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   font-size: 0.72rem;
   cursor: pointer;
   text-transform: capitalize;
@@ -182,14 +186,18 @@
   color: var(--text-primary);
   border-radius: 8px;
   padding: 0.6rem 1rem;
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   font-size: 0.8rem;
   outline: none;
 
-  &:focus { border-color: var(--accent); }
+  &:focus {
+    border-color: var(--accent);
+  }
 }
 
-.search-input { flex: 1; }
+.search-input {
+  flex: 1;
+}
 
 // ── User grid ─────────────────────────────────
 
@@ -204,7 +212,7 @@
   text-align: center;
   padding: 3rem;
   color: var(--text-secondary);
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
 }
 
 // ── Detail panel ──────────────────────────────
@@ -223,10 +231,12 @@
   align-items: flex-start;
   margin-bottom: 1rem;
 
-  > div { flex: 1; }
+  > div {
+    flex: 1;
+  }
 
   h2 {
-    font-family: 'Syne', sans-serif;
+    font-family: "Syne", sans-serif;
     font-weight: 800;
     font-size: 1.25rem;
     margin: 0 0 0.25rem;
@@ -236,11 +246,12 @@
 .panel-avatar {
   width: 64px;
   height: 64px;
+  max-width: 64px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Syne', sans-serif;
+  font-family: "Syne", sans-serif;
   font-weight: 800;
   font-size: 1.25rem;
   color: #000;
@@ -248,7 +259,7 @@
 }
 
 .panel-email {
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   font-size: 0.75rem;
   color: var(--text-secondary);
   margin: 0 0 0.5rem;
@@ -261,16 +272,25 @@
 }
 
 .badge {
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   font-size: 0.65rem;
   padding: 2px 8px;
   border-radius: 4px;
   text-transform: uppercase;
   font-weight: 700;
 
-  &--role   { background: var(--accent-dim); color: var(--accent); }
-  &--dept   { background: #45b7d122; color: #45b7d1; }
-  &--active { background: #4ecdc422; color: #4ecdc4; }
+  &--role {
+    background: var(--accent-dim);
+    color: var(--accent);
+  }
+  &--dept {
+    background: #45b7d122;
+    color: #45b7d1;
+  }
+  &--active {
+    background: #4ecdc422;
+    color: #4ecdc4;
+  }
 }
 
 .close-btn {
@@ -285,7 +305,7 @@
 }
 
 .panel-bio {
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   font-size: 0.8rem;
   color: var(--text-secondary);
   line-height: 1.6;
@@ -296,7 +316,7 @@
   margin-bottom: 1.25rem;
 
   h3 {
-    font-family: 'Syne', sans-serif;
+    font-family: "Syne", sans-serif;
     font-weight: 700;
     font-size: 0.7rem;
     margin: 0 0 0.75rem;
@@ -320,7 +340,7 @@
   color: var(--accent);
   border-radius: 6px;
   padding: 0.25rem 0.5rem;
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   font-size: 0.72rem;
   display: flex;
   align-items: center;
@@ -337,7 +357,9 @@
   line-height: 1;
   opacity: 0.6;
 
-  &:hover { opacity: 1; }
+  &:hover {
+    opacity: 1;
+  }
 }
 
 .add-skill-btn {
@@ -346,7 +368,7 @@
   color: var(--text-secondary);
   border-radius: 6px;
   padding: 0.25rem 0.75rem;
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   font-size: 0.72rem;
   cursor: pointer;
   position: relative;
@@ -370,16 +392,25 @@
   background: var(--bg-elevated);
   border: 1px solid var(--border);
 
-  &.allowed { border-color: #4ecdc444; }
+  &.allowed {
+    border-color: #4ecdc444;
+  }
 
-  .perm-icon { font-family: 'Space Mono', monospace; font-size: 0.75rem; }
+  .perm-icon {
+    font-family: "Space Mono", monospace;
+    font-size: 0.75rem;
+  }
 
-  &.allowed .perm-icon       { color: #4ecdc4; }
-  &:not(.allowed) .perm-icon { color: #ff6b6b; }
+  &.allowed .perm-icon {
+    color: #4ecdc4;
+  }
+  &:not(.allowed) .perm-icon {
+    color: #ff6b6b;
+  }
 }
 
 .perm-label {
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   font-size: 0.65rem;
   color: var(--text-secondary);
 }
@@ -398,7 +429,7 @@
   color: var(--text-primary);
   border-radius: 8px;
   padding: 0.5rem 1rem;
-  font-family: 'Syne', sans-serif;
+  font-family: "Syne", sans-serif;
   font-weight: 700;
   font-size: 0.8rem;
   cursor: pointer;
@@ -407,8 +438,21 @@
   transition: all 0.15s;
   text-transform: capitalize;
 
-  &:hover   { border-color: var(--accent); }
-  &.active  { background: var(--accent); color: var(--bg-primary); border-color: var(--accent); }
-  &-primary { background: var(--accent); color: var(--bg-primary); border-color: var(--accent); }
-  &-sm      { padding: 0.3rem 0.6rem; font-size: 0.72rem; }
+  &:hover {
+    border-color: var(--accent);
+  }
+  &.active {
+    background: var(--accent);
+    color: var(--bg-primary);
+    border-color: var(--accent);
+  }
+  &-primary {
+    background: var(--accent);
+    color: var(--bg-primary);
+    border-color: var(--accent);
+  }
+  &-sm {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.72rem;
+  }
 }

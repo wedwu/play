@@ -84,7 +84,7 @@
         <div class="permissions-grid">
           @for (entry of getPermissions(selectedUser); track entry.key) {
             <div class="perm-item" [ngClass]="{ allowed: entry.value }">
-              <span class="perm-icon material-icons">{{ entry.value ? 'check' : 'close' }}</span>
+              <span class="material-icons">{{ entry.value ? 'check' : 'close' }}</span>
               <span class="perm-label">{{ entry.key }}</span>
             </div>
           }
