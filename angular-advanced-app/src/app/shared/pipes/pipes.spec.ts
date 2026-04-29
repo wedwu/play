@@ -8,7 +8,7 @@ import {
   InitialsPipe,
   PluralizePipe,
 } from "./pipes";
-import { TaskPriority } from "../../../app/core/models/task.model";
+import { TaskPriority } from "../../core/models/task.model";
 
 // ── RelativeTimePipe ──────────────────────────
 
