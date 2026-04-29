@@ -1,0 +1,24 @@
+<div class="toast-container" aria-live="polite" aria-atomic="true" aria-label="Notifications">
+  @for (toast of toasts; track toast.id) {
+    <div class="toast" [@toastAnim] [ngClass]="'toast--' + toast.type"
+         tabindex="0"
+         [attr.role]="toast.type === 'error' ? 'alert' : 'status'"
+         [attr.aria-label]="toast.title + (toast.message ? ': ' + toast.message : '')"
+         (click)="dismiss(toast.id)"
+         (keydown.enter)="dismiss(toast.id)"
+         (keydown.space)="dismiss(toast.id); $event.preventDefault()">
+      <div class="toast-icon" aria-hidden="true">
+        <span class="material-icons">{{ icons[toast.type] }}</span>
+      </div>
+      <div class="toast-body">
+        <strong class="toast-title">{{ toast.title }}</strong>
+        @if (toast.message) { <p class="toast-msg">{{ toast.message }}</p> }
+      </div>
+      <button class="toast-close"
+              aria-label="Dismiss notification"
+              (click)="dismiss(toast.id); $event.stopPropagation()">
+        <span class="material-icons" aria-hidden="true">close</span>
+      </button>
+    </div>
+  }
+</div>
