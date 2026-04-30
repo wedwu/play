@@ -2,7 +2,7 @@
 // ENVIRONMENT — Dev (remote development server)
 // ============================================================
 
-import { Environment } from './environment';
+import type { Environment } from './environment.types';
 
 export const environment: Environment = {
   name: 'dev',
