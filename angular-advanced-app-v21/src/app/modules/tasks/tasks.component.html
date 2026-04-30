@@ -52,12 +52,12 @@
       <button type="button" [class.active]="view === 'kanban'" appRipple
               [attr.aria-pressed]="view === 'kanban'"
               (click)="view = 'kanban'">
-        <span class="material-icons" aria-hidden="true">view_kanban</span> Kanban
+        <span class="material-icons" aria-hidden="true">view_kanban</span> <span>Kanban</span>
       </button>
       <button type="button" [class.active]="view === 'list'" appRipple
               [attr.aria-pressed]="view === 'list'"
               (click)="view = 'list'">
-        <span class="material-icons" aria-hidden="true">view_list</span> List
+        <span class="material-icons" aria-hidden="true">view_list</span> <span>List</span>
       </button>
     </div>
   </div>

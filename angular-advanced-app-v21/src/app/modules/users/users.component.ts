@@ -22,10 +22,7 @@ import { UserService } from "../../core/services/user.service";
 import { NotificationService } from "../../core/services/notification.service";
 import { User, UserRole, Department } from "../../core/models/user.model";
 
-import {
-  RippleDirective,
-  TooltipDirective,
-} from "../../shared/directives/directives";
+import { RippleDirective } from "../../shared/directives/directives";
 
 import {
   trigger,
@@ -45,7 +42,7 @@ import {
 @Component({
   selector: "app-user-card",
   standalone: true,
-  imports: [NgClass, RippleDirective, TooltipDirective],
+  imports: [NgClass, RippleDirective],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: "./user-card.component.html",
   styleUrl: "./users.component.scss",

@@ -72,6 +72,9 @@
     cursor: pointer;
     position: relative;
     overflow: hidden;
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
 
     &.active {
       background: var(--accent);
