@@ -1,8 +1,18 @@
 <nav class="sidebar" aria-label="Main navigation">
-  <div class="brand" aria-hidden="true">
-    <span class="brand-icon material-icons">electric_bolt</span>
-    <span class="brand-name">AngularPro</span>
+  <div class="brand">
+    <span class="brand-icon material-icons" aria-hidden="true">electric_bolt</span>
+    @if (!collapsed) {
+      <span class="brand-name">AngularPro</span>
+    }
+    <button class="nav-toggle"
+            type="button"
+            (click)="toggle()"
+            [attr.aria-label]="collapsed ? 'Expand navigation' : 'Collapse navigation'"
+            [attr.aria-expanded]="!collapsed">
+      <span class="material-icons" aria-hidden="true">{{ collapsed ? 'chevron_right' : 'chevron_left' }}</span>
+    </button>
   </div>
+
   <ul class="nav-list" role="list">
     @for (item of navItems; track item.path) {
       <li>
@@ -10,20 +20,28 @@
            routerLinkActive="active"
            #rla="routerLinkActive"
            [attr.aria-current]="rla.isActive ? 'page' : null"
+           [appTooltip]="collapsed ? item.label : ''"
+           tooltipPlacement="right"
            class="nav-link">
           <span class="nav-icon material-icons" aria-hidden="true">{{ item.icon }}</span>
-          <span class="nav-label">{{ item.label }}</span>
+          @if (!collapsed) {
+            <span class="nav-label">{{ item.label }}</span>
+          }
         </a>
       </li>
     }
   </ul>
+
   <div class="nav-footer">
-    <div class="user-badge" aria-label="Signed in as Admin User, Administrator">
+    <div class="user-badge"
+         [attr.aria-label]="collapsed ? 'Admin User' : 'Signed in as Admin User, Administrator'">
       <span class="avatar" aria-hidden="true">AU</span>
-      <div class="user-info" aria-hidden="true">
-        <span class="user-name">Admin User</span>
-        <span class="user-role">Administrator</span>
-      </div>
+      @if (!collapsed) {
+        <div class="user-info" aria-hidden="true">
+          <span class="user-name">Admin User</span>
+          <span class="user-role">Administrator</span>
+        </div>
+      }
     </div>
   </div>
 </nav>

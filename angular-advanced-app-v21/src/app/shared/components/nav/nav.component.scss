@@ -3,13 +3,15 @@
   left: 0;
   top: 0;
   bottom: 0;
-  width: 260px;
+  width: var(--nav-width, 260px);
   background: var(--bg-secondary);
   border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   padding: 1.5rem 0;
   z-index: 100;
+  overflow: hidden;
+  transition: width 0.25s ease;
 
   @media (max-width: 768px) {
     display: none;
@@ -22,14 +24,48 @@
   gap: 0.75rem;
   padding: 0 1.5rem 1.5rem;
   border-bottom: 1px solid var(--border);
+  min-width: 0;
 
-  &-icon { font-size: 1.5rem; }
+  &-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+  }
 
   &-name {
-    font-family: 'Syne', sans-serif;
+    font-family: "Syne", sans-serif;
     font-weight: 800;
     font-size: 1.1rem;
     color: var(--accent);
+    white-space: nowrap;
+    overflow: hidden;
+    flex: 1;
+    min-width: 166px;
+  }
+}
+
+.nav-toggle {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 0.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  flex-shrink: 0;
+  margin-left: auto;
+  transition:
+    color 0.15s,
+    background 0.15s;
+
+  &:hover {
+    color: var(--text-primary);
+    background: var(--bg-hover);
+  }
+
+  .material-icons {
+    font-size: 1.1rem;
   }
 }
 
@@ -47,10 +83,13 @@
   padding: 0.75rem 1.5rem;
   color: var(--text-secondary);
   text-decoration: none;
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   font-size: 0.8rem;
-  transition: all 0.2s;
+  transition:
+    color 0.2s,
+    background 0.2s;
   border-left: 3px solid transparent;
+  white-space: nowrap;
 
   &:hover {
     color: var(--text-primary);
@@ -68,6 +107,7 @@
   font-size: 1.1rem;
   width: 1.5rem;
   text-align: center;
+  flex-shrink: 0;
 }
 
 .nav-footer {
@@ -90,25 +130,59 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Syne', sans-serif;
+  font-family: "Syne", sans-serif;
   font-weight: 700;
   font-size: 0.75rem;
+  flex-shrink: 0;
 }
 
 .user-info {
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .user-name {
-  font-family: 'Syne', sans-serif;
+  font-family: "Syne", sans-serif;
   font-weight: 600;
   font-size: 0.85rem;
   color: var(--text-primary);
+  white-space: nowrap;
 }
 
 .user-role {
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   font-size: 0.7rem;
   color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+/* ── Collapsed state ── */
+
+:host.collapsed {
+  .brand {
+    padding: 0 0 1.5rem;
+    justify-content: center;
+    gap: 0;
+
+    .nav-toggle {
+      margin-left: 0;
+    }
+  }
+
+  .nav-link {
+    padding: 0.75rem 0;
+    justify-content: center;
+    border-left-color: transparent;
+
+    &.active {
+      border-left-color: var(--accent);
+    }
+  }
+
+  .nav-footer {
+    padding: 1rem 0;
+    display: flex;
+    justify-content: center;
+  }
 }
