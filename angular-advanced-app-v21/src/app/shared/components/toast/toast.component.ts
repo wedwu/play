@@ -48,19 +48,19 @@ export class ToastComponent implements OnInit, OnDestroy {
   private readonly notificationService = inject(NotificationService);
   private readonly cdr = inject(ChangeDetectorRef);
 
-  ngOnInit = (): void => {
+  ngOnInit(): void {
     this.notificationService.notifications$
       .pipe(takeUntil(this.destroy$))
       .subscribe((notification) => {
         this.toasts = [...this.toasts, notification];
-        this.cdr.markForCheck();
+        this.cdr.detectChanges();
         if (notification.duration > 0)
           setTimeout(
             () => this.dismiss(notification.id),
             notification.duration,
           );
       });
-  };
+  }
 
   /**
    * Removes the toast with the given `id` from the visible list.
@@ -68,11 +68,11 @@ export class ToastComponent implements OnInit, OnDestroy {
    */
   dismiss = (id: string): void => {
     this.toasts = this.toasts.filter((t) => t.id !== id);
-    this.cdr.markForCheck();
+    this.cdr.detectChanges();
   };
 
-  ngOnDestroy = (): void => {
+  ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-  };
+  }
 }

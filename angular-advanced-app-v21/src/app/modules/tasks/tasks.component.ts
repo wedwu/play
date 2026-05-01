@@ -252,7 +252,7 @@ export class TasksComponent implements OnInit, AfterContentInit, OnDestroy {
 
   /** Deletes a task by ID */
   deleteTask(id: string): void {
-    this.taskService.remove(id);
+    this.taskService.deleteTask(id);
   }
 
   /** Toggles a subtask’s completed state */

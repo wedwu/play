@@ -128,6 +128,18 @@ export class TaskService extends EntityStateService<Task> implements OnDestroy {
   };
 
   /**
+   * Removes a task by ID and shows an info notification with the task title.
+   * No-ops silently when `taskId` does not match any stored task.
+   * @param taskId - ID of the task to delete.
+   */
+  deleteTask = (taskId: string): void => {
+    const task = this.getById(taskId);
+    if (!task) return;
+    this.remove(taskId);
+    this.notifications.info('Task deleted', task.title);
+  };
+
+  /**
    * Increments a task's logged hours counter and persists the change.
    * No-ops silently when `taskId` does not match any stored task.
    * @param taskId - ID of the target task.
