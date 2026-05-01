@@ -64,7 +64,7 @@ src/
     │   ├── directives/directives.ts    ← 6 custom directives
     │   └── components/
     │       ├── nav/
-    │       │   ├── nav.component.ts
+    │       │   ├── nav.component.ts    ← exports NavItem interface; collapsible sidebar
     │       │   ├── nav.component.html
     │       │   └── nav.component.scss
     │       └── toast/
@@ -212,12 +212,44 @@ private readonly fb   = inject(FormBuilder);
 
 - **`UserCardComponent`** — self-contained user card with avatar, role, department, and selected state. Exported from `users.component.ts` and consumed inside `UsersComponent`.
 - **`KanbanCol` interface** — exported type from `tasks.component.ts` describing a Kanban column (status, label, color, icon).
+- **`NavItem` interface** — exported type from `nav.component.ts` describing a sidebar route entry (path, label, icon).
+
+### Collapsible Navigation
+
+`NavComponent` supports a two-state sidebar driven by a single boolean:
+
+```typescript
+@HostBinding('class.collapsed') collapsed = false;
+
+toggle(): void {
+  this.collapsed = !this.collapsed;
+  document.documentElement.style.setProperty('--nav-width', this.collapsed ? '64px' : '260px');
+}
+```
+
+- `@HostBinding('class.collapsed')` adds/removes the CSS class on the `<app-nav>` host, driving all icon-only layout rules via `:host.collapsed` SCSS selectors
+- `--nav-width` CSS custom property on `:root` is the single source of truth for both sidebar width and `.app-main` margin-left, both with `transition: 0.25s ease`
+- In collapsed mode, route labels are hidden with `@if (!collapsed)` and replaced by right-side `[appTooltip]` tooltips on each icon
+
+### Toast Notifications
+
+All four notification types are fully wired to user actions via `NotificationService`:
+
+| Action | Type | Fired from |
+|---|---|---|
+| Create task | `success` | `TaskService.createTask()` |
+| Task reaches DONE | `success` | `TaskService.transitionTask()` |
+| Invalid status transition | `error` | `TaskService.transitionTask()` |
+| Delete task | `info` | `TaskService.deleteTask()` |
+| Overdue poll (60 s) | `warn` | `TaskService.startOverdueMonitor()` |
+
+`ToastComponent` uses `detectChanges()` (not `markForCheck()`) to force immediate re-render under `OnPush` when a notification arrives. Lifecycle hooks (`ngOnInit`, `ngOnDestroy`) are declared as **prototype methods**, not arrow-function class fields, so Angular's Ivy compiler correctly registers the `OnInit` flag and calls them.
 
 ### Performance
 
 - `ChangeDetectionStrategy.OnPush` on all components
-- `markForCheck()` for manual triggering
-- `detectChanges()` after ViewChild init
+- `detectChanges()` for immediate rendering in `ToastComponent` when notifications arrive
+- `markForCheck()` for manual scheduling in other components
 - Lazy-loaded routes for all feature modules
 
 ### CSS Animations (`@keyframes`)
@@ -257,6 +289,9 @@ The application targets **WCAG 2.1 Level AA** conformance. Changes applied acros
 - `<nav aria-label="Main navigation">` landmark (1.3.1)
 - `[attr.aria-current]="rla.isActive ? 'page' : null"` on active links (2.4.4)
 - Decorative icons marked `aria-hidden="true"`; navigation icon text is the visible label (1.1.1)
+- Toggle button has `aria-label="Collapse/Expand navigation"` and `aria-expanded` (4.1.2)
+- In collapsed mode, each nav icon gets `[appTooltip]` with the route label and `tooltipPlacement="right"` so keyboard/pointer users can still identify routes (1.1.1)
+- `user-badge` `aria-label` updates dynamically between full name+role and name-only in collapsed mode (1.3.1)
 
 ### Toast / Notifications
 
