@@ -138,9 +138,8 @@ export class TooltipDirective implements OnDestroy {
     this.renderer.appendChild(document.body, this.tooltip);
 
     const rect = this.el.nativeElement.getBoundingClientRect();
-    const top =
-      this.tooltipPlacement === "bottom" ? rect.bottom + 8 : rect.top - 36;
-    const left = rect.left + rect.width / 2 - 60;
+    const top = this.tooltipPlacement === "bottom" ? rect.bottom + 8 : rect.top; // - 36;
+    const left = rect.left + rect.width / 2 + 30; // - 60;
 
     this.renderer.setStyle(this.tooltip, "top", `${top + window.scrollY}px`);
     this.renderer.setStyle(this.tooltip, "left", `${left}px`);
