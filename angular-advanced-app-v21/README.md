@@ -2,7 +2,7 @@
 
 # <span class="material-icons" style="vertical-align:middle">electric_bolt</span> Angular Advanced App
 
-A production-grade Angular 17 application showcasing every advanced feature of Angular + TypeScript.
+A production-grade Angular 21 application showcasing every advanced feature of Angular + TypeScript.
 
 ## <span class="material-icons" style="vertical-align:middle">rocket_launch</span> Quick Start
 
@@ -77,11 +77,11 @@ src/
         │   ├── dashboard.component.html
         │   └── dashboard.component.scss
         ├── tasks/
-        │   ├── tasks.component.ts
+        │   ├── tasks.component.ts    ← exports KanbanCol interface
         │   ├── tasks.component.html
         │   └── tasks.component.scss
         └── users/
-            ├── users.component.ts
+            ├── users.component.ts    ← exports UserCardComponent + UsersComponent
             ├── user-card.component.html  ← UserCardComponent template
             ├── users.component.html      ← UsersComponent template
             └── users.component.scss      ← Shared styles for both components
@@ -208,6 +208,11 @@ private readonly cdr  = inject(ChangeDetectorRef);
 private readonly fb   = inject(FormBuilder);
 ```
 
+### Reusable Standalone Components
+
+- **`UserCardComponent`** — self-contained user card with avatar, role, department, and selected state. Exported from `users.component.ts` and consumed inside `UsersComponent`.
+- **`KanbanCol` interface** — exported type from `tasks.component.ts` describing a Kanban column (status, label, color, icon).
+
 ### Performance
 
 - `ChangeDetectionStrategy.OnPush` on all components
@@ -215,13 +220,23 @@ private readonly fb   = inject(FormBuilder);
 - `detectChanges()` after ViewChild init
 - Lazy-loaded routes for all feature modules
 
-### Angular Animations
+### CSS Animations (`@keyframes`)
 
-- `trigger('fadeInUp')` — entrance animation
-- `trigger('staggerCards')` — staggered list entrance
-- `trigger('cardIn')` — scale-in for task cards
-- `trigger('toastAnim')` — slide-in/out for toasts
-- `trigger('gridIn')` — staggered grid for users
+All animations use native CSS `@keyframes` defined in each component's `.scss` file, applied via `animate.enter` / `animate.leave` template attributes. No `@angular/animations` dependency.
+
+| Keyframe | File | Effect |
+|---|---|---|
+| `fade-in-up` | `dashboard.component.scss` | Stat cards fade in while translating up 20 px |
+| `stat-stagger-in` | `dashboard.component.scss` | Staggered entrance for stat card grid |
+| `card-in-enter` | `tasks.component.scss` | Task cards scale in from 0.95 + fade in |
+| `card-in-leave` | `tasks.component.scss` | Task cards scale out to 0.95 + fade out |
+| `slide-in-enter` | `tasks.component.scss` | Toolbar slides in from −12 px + fade in |
+| `grid-in-enter` | `users.component.scss` | User cards scale in from 0.9 + fade in |
+| `toast-enter` | `toast.component.scss` | Toast slides in from right + fade in |
+| `toast-leave` | `toast.component.scss` | Toast slides out to right + fade out |
+| `ripple` | `styles.scss` | Material-style ripple expands and fades |
+
+Reduced-motion users are protected globally via `@media (prefers-reduced-motion: reduce)`.
 
 ---
 
@@ -344,4 +359,4 @@ Configured via `typedoc.json` using `tsconfig.docs.json` — a variant of the ro
 
 ---
 
-_Built with Angular 17 standalone components, TypeScript strict mode, RxJS 7, Angular Animations, and Jest._
+_Built with Angular 21 standalone components, TypeScript strict mode, RxJS 7, and Jest._
