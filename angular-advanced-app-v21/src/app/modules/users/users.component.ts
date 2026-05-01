@@ -24,15 +24,6 @@ import { User, UserRole, Department } from "../../core/models/user.model";
 
 import { RippleDirective } from "../../shared/directives/directives";
 
-import {
-  trigger,
-  transition,
-  style,
-  animate,
-  stagger,
-  query,
-} from "@angular/animations";
-
 /**
  * Reusable user card component (used inside UsersComponent).
  *
@@ -96,25 +87,6 @@ export class UserCardComponent {
     RippleDirective,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [
-    trigger("gridIn", [
-      transition("* => *", [
-        query(
-          ":enter",
-          [
-            style({ opacity: 0, transform: "scale(0.9)" }),
-            stagger(60, [
-              animate(
-                "300ms ease-out",
-                style({ opacity: 1, transform: "scale(1)" }),
-              ),
-            ]),
-          ],
-          { optional: true },
-        ),
-      ]),
-    ]),
-  ],
   templateUrl: "./users.component.html",
   styleUrl: "./users.component.scss",
 })

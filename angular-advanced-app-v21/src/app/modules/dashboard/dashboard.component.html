@@ -1,5 +1,5 @@
 <div class="dashboard">
-  <header class="page-header" [@fadeInUp]>
+  <header class="page-header" animate.enter="fade-in-up">
     <div>
       <h1 class="page-title">Dashboard</h1>
       <p class="page-subtitle">Good {{ greeting }}, Admin</p>
@@ -10,15 +10,15 @@
   </header>
 
   @if (stats$ | async; as stats) {
-    <div class="stats-grid" [@staggerCards]="stats" role="list" aria-label="Task statistics">
-      <div class="stat-card" role="listitem" [attr.aria-label]="'Total tasks: ' + stats.total">
+    <div class="stats-grid" role="list" aria-label="Task statistics">
+      <div class="stat-card" animate.enter="stat-stagger-in" role="listitem" [attr.aria-label]="'Total tasks: ' + stats.total">
         <div class="stat-value" aria-hidden="true">{{ stats.total }}</div>
         <div class="stat-label">Total Tasks</div>
         <div class="stat-bar" aria-hidden="true">
           <div class="stat-fill" [style.width.%]="100" style="background:var(--accent)"></div>
         </div>
       </div>
-      <div class="stat-card" role="listitem" [attr.aria-label]="'Completed tasks: ' + stats.done">
+      <div class="stat-card" animate.enter="stat-stagger-in" role="listitem" [attr.aria-label]="'Completed tasks: ' + stats.done">
         <div class="stat-value" aria-hidden="true">{{ stats.done }}</div>
         <div class="stat-label">Completed</div>
         <div class="stat-bar"
@@ -29,7 +29,7 @@
           <div class="stat-fill" [style.width.%]="(stats.done / (stats.total || 1)) * 100" style="background:#4ECDC4" aria-hidden="true"></div>
         </div>
       </div>
-      <div class="stat-card" role="listitem" [attr.aria-label]="'In-progress tasks: ' + stats.inProgress">
+      <div class="stat-card" animate.enter="stat-stagger-in" role="listitem" [attr.aria-label]="'In-progress tasks: ' + stats.inProgress">
         <div class="stat-value" aria-hidden="true">{{ stats.inProgress }}</div>
         <div class="stat-label">In Progress</div>
         <div class="stat-bar"
@@ -40,7 +40,7 @@
           <div class="stat-fill" [style.width.%]="(stats.inProgress / (stats.total || 1)) * 100" style="background:#45B7D1" aria-hidden="true"></div>
         </div>
       </div>
-      <div class="stat-card" role="listitem" [attr.aria-label]="'Overdue tasks: ' + stats.overdue">
+      <div class="stat-card" animate.enter="stat-stagger-in" role="listitem" [attr.aria-label]="'Overdue tasks: ' + stats.overdue">
         <div class="stat-value" aria-hidden="true">{{ stats.overdue }}</div>
         <div class="stat-label">Overdue</div>
         <div class="stat-bar"
@@ -55,7 +55,7 @@
   }
 
   <div class="dashboard-grid">
-    <section class="card" [@fadeInUp] aria-labelledby="urgent-heading">
+    <section class="card" animate.enter="fade-in-up" aria-labelledby="urgent-heading">
       <header class="card-header">
         <h2 id="urgent-heading">
           <span class="material-icons" style="vertical-align:middle;font-size:1rem" aria-hidden="true">warning</span>
@@ -86,7 +86,7 @@
       }
     </section>
 
-    <section class="card" [@fadeInUp] aria-labelledby="board-heading">
+    <section class="card" animate.enter="fade-in-up" aria-labelledby="board-heading">
       <header class="card-header">
         <h2 id="board-heading">
           <span class="material-icons" style="vertical-align:middle;font-size:1rem" aria-hidden="true">view_kanban</span>
@@ -119,7 +119,7 @@
       }
     </section>
 
-    <section class="card" [@fadeInUp] aria-labelledby="team-heading">
+    <section class="card" animate.enter="fade-in-up" aria-labelledby="team-heading">
       <header class="card-header">
         <h2 id="team-heading">
           <span class="material-icons" style="vertical-align:middle;font-size:1rem" aria-hidden="true">group</span>
@@ -149,7 +149,7 @@
       }
     </section>
 
-    <section class="card card--debug" [@fadeInUp] #debugPanel aria-labelledby="debug-heading">
+    <section class="card card--debug" animate.enter="fade-in-up" #debugPanel aria-labelledby="debug-heading">
       <header class="card-header">
         <h2 id="debug-heading">
           <span class="material-icons" style="vertical-align:middle;font-size:1rem" aria-hidden="true">settings</span>

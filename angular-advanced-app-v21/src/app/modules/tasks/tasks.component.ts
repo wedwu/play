@@ -43,15 +43,13 @@ import {
   AutoFocusDirective,
 } from "../../shared/directives/directives";
 
-import { trigger, transition, style, animate } from "@angular/animations";
-
 /** Shape of a single kanban board column definition. */
 export interface KanbanCol {
   status: TaskStatus;
   label: string;
   color: string;
   icon: string;
-};
+}
 
 /**
  * Tasks management component.
@@ -80,29 +78,6 @@ export interface KanbanCol {
     AutoFocusDirective,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [
-    trigger("cardIn", [
-      transition(":enter", [
-        style({ opacity: 0, transform: "scale(0.95)" }),
-        animate("250ms ease-out", style({ opacity: 1, transform: "scale(1)" })),
-      ]),
-      transition(":leave", [
-        animate(
-          "200ms ease-in",
-          style({ opacity: 0, transform: "scale(0.95)" }),
-        ),
-      ]),
-    ]),
-    trigger("slideIn", [
-      transition(":enter", [
-        style({ opacity: 0, transform: "translateY(-12px)" }),
-        animate(
-          "300ms ease-out",
-          style({ opacity: 1, transform: "translateY(0)" }),
-        ),
-      ]),
-    ]),
-  ],
   templateUrl: "./tasks.component.html",
   styleUrl: "./tasks.component.scss",
 })

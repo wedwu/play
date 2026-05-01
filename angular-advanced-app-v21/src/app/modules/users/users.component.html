@@ -53,11 +53,12 @@
   <!-- User grid -->
   @if (users$ | async; as users) {
     <div class="users-grid"
-         [@gridIn]="users.length"
          role="list"
          aria-label="Team members">
       @for (user of users; track user.id) {
-        <div role="listitem">
+        <div role="listitem"
+             animate.enter="grid-in-enter"
+             [style.--index]="$index">
           <app-user-card
             [user]="user"
             [selected]="selectedUser?.id === user.id"

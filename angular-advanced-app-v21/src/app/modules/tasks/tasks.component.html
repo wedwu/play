@@ -13,7 +13,7 @@
   </header>
 
   <!-- Toolbar -->
-  <div class="toolbar" [@slideIn]>
+  <div class="toolbar" animate.enter="slide-in-enter">
     <label for="task-search" class="sr-only">Search tasks</label>
     <input id="task-search"
            class="search-input"
@@ -81,7 +81,8 @@
               @for (task of byStatus[col.status] || []; track task.id) {
                 <div
                   class="task-card"
-                  [@cardIn]
+                  animate.enter="card-in-enter"
+                  animate.leave="card-in-leave"
                   [ngClass]="{ overdue: task.isOverdue, 'priority-urgent': task.priority === 4 }"
                   tabindex="0"
                   role="button"
@@ -209,7 +210,8 @@
           </thead>
           <tbody>
             @for (task of tasks; track task.id) {
-              <tr [@cardIn]
+              <tr animate.enter="card-in-enter"
+                  animate.leave="card-in-leave"
                   tabindex="0"
                   [ngClass]="{ 'row--overdue': task.isOverdue }"
                   [attr.aria-label]="task.title + (task.isOverdue ? ' — overdue' : '')"
@@ -275,11 +277,13 @@
   <!-- Task Detail Modal -->
   @if (selectedTask) {
     <div class="modal-backdrop"
+         animate.enter="card-in-enter"
+         animate.leave="card-in-leave"
          tabindex="-1"
          role="presentation"
          (click)="selectedTask = null"
          (keydown.escape)="selectedTask = null">
-      <div class="modal" [@cardIn]
+      <div class="modal"
            tabindex="-1"
            role="dialog"
            aria-modal="true"
@@ -373,11 +377,13 @@
   <!-- New Task Modal -->
   @if (showNewTaskModal) {
     <div class="modal-backdrop"
+         animate.enter="card-in-enter"
+         animate.leave="card-in-leave"
          tabindex="-1"
          role="presentation"
          (click)="showNewTaskModal = false"
          (keydown.escape)="showNewTaskModal = false">
-      <div class="modal modal--sm" [@cardIn]
+      <div class="modal modal--sm"
            tabindex="-1"
            role="dialog"
            aria-modal="true"

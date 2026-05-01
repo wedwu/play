@@ -456,3 +456,28 @@
     font-size: 0.72rem;
   }
 }
+
+// ============================================================
+// Grid stagger entrance animation
+// (replaces deprecated @gridIn @angular/animations trigger)
+//
+// Append this block to users.component.scss
+// ============================================================
+
+@keyframes grid-in-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.grid-in-enter {
+  // `backwards` keeps the element in its starting (invisible) state
+  // during the delay, so items don't flash visible before their turn.
+  animation: grid-in-enter 300ms ease-out backwards;
+  animation-delay: calc(60ms * var(--index, 0));
+}

@@ -1,6 +1,9 @@
 <div class="toast-container" aria-live="polite" aria-atomic="true" aria-label="Notifications">
   @for (toast of toasts; track toast.id) {
-    <div class="toast" [@toastAnim] [ngClass]="'toast--' + toast.type"
+    <div class="toast"
+         animate.enter="toast-enter"
+         animate.leave="toast-leave"
+         [ngClass]="'toast--' + toast.type"
          tabindex="0"
          [attr.role]="toast.type === 'error' ? 'alert' : 'status'"
          [attr.aria-label]="toast.title + (toast.message ? ': ' + toast.message : '')"

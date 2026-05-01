@@ -20,10 +20,18 @@
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
   cursor: pointer;
 
-  &--success { border-left: 4px solid #4ecdc4; }
-  &--error   { border-left: 4px solid #ff6b6b; }
-  &--warn    { border-left: 4px solid #ffeaa7; }
-  &--info    { border-left: 4px solid #45b7d1; }
+  &--success {
+    border-left: 4px solid #4ecdc4;
+  }
+  &--error {
+    border-left: 4px solid #ff6b6b;
+  }
+  &--warn {
+    border-left: 4px solid #ffeaa7;
+  }
+  &--info {
+    border-left: 4px solid #45b7d1;
+  }
 }
 
 .toast-icon {
@@ -37,14 +45,14 @@
 }
 
 .toast-title {
-  font-family: 'Syne', sans-serif;
+  font-family: "Syne", sans-serif;
   font-size: 0.9rem;
   color: var(--text-primary);
   display: block;
 }
 
 .toast-msg {
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   font-size: 0.75rem;
   color: var(--text-secondary);
   margin: 0.25rem 0 0;
@@ -57,4 +65,41 @@
   cursor: pointer;
   font-size: 0.75rem;
   padding: 0;
+}
+
+// ============================================================
+// Toast slide-in / slide-out animations
+// (replaces deprecated @toastAnim @angular/animations trigger)
+//
+// Append this block to toast.component.scss
+// ============================================================
+
+@keyframes toast-enter {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes toast-leave {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+.toast-enter {
+  animation: toast-enter 300ms ease-out;
+}
+
+.toast-leave {
+  animation: toast-leave 250ms ease-in;
 }
