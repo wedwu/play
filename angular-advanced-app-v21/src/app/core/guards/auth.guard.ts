@@ -1,12 +1,15 @@
 // ============================================================
 // ROUTE GUARDS — ES6 Arrow Functions (functional API)
+
+// Angular guards are classes that implement route lifecycle hooks to control navigation — allowing or blocking access to routes based on conditions like authentication, authorization, or unsaved changes.
+
 // ============================================================
 
-import { CanActivateFn, Router } from '@angular/router';
-import { inject } from '@angular/core';
-import { UserService } from '../services/user.service';
-import { map, take } from 'rxjs/operators';
-import { UserRole } from '../models/user.model';
+import { CanActivateFn, Router } from "@angular/router";
+import { inject } from "@angular/core";
+import { UserService } from "../services/user.service";
+import { map, take } from "rxjs/operators";
+import { UserRole } from "../models/user.model";
 
 /**
  * Functional route guard that verifies a valid `auth_token` exists in
@@ -14,8 +17,8 @@ import { UserRole } from '../models/user.model';
  */
 export const authGuard: CanActivateFn = () => {
   const router = inject(Router);
-  const hasToken = !!localStorage.getItem('auth_token');
-  if (!hasToken) router.navigate(['/login']);
+  const hasToken = !!localStorage.getItem("auth_token");
+  if (!hasToken) router.navigate(["/login"]);
   return hasToken;
 };
 
@@ -27,15 +30,17 @@ export const authGuard: CanActivateFn = () => {
  * @example
  * { path: 'settings', canActivate: [roleGuard('admin', 'manager')] }
  */
-export const roleGuard = (...roles: UserRole[]): CanActivateFn => () => {
-  const userService = inject(UserService);
-  const router      = inject(Router);
-  return userService.selected$.pipe(
-    take(1),
-    map(user => {
-      if (user && roles.includes(user.role)) return true;
-      router.navigate(['/unauthorized']);
-      return false;
-    })
-  );
-};
+export const roleGuard =
+  (...roles: UserRole[]): CanActivateFn =>
+  () => {
+    const userService = inject(UserService);
+    const router = inject(Router);
+    return userService.selected$.pipe(
+      take(1),
+      map((user) => {
+        if (user && roles.includes(user.role)) return true;
+        router.navigate(["/unauthorized"]);
+        return false;
+      }),
+    );
+  };

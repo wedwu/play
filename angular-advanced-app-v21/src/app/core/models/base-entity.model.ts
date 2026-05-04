@@ -1,9 +1,13 @@
 // ============================================================
 // BASE ENTITY CLASS — ES6 Arrow Functions Throughout
+
+// Models are TypeScript interfaces or classes that define the shape and type contract of data flowing through the application.
+// They often include domain logic, validation, and utility methods related to the data they represent.
+
 // ============================================================
 
 /** Lifecycle states an entity can occupy throughout its existence. */
-export type EntityStatus = 'active' | 'inactive' | 'archived' | 'deleted';
+export type EntityStatus = "active" | "inactive" | "archived" | "deleted";
 
 /** Audit trail fields required on every persisted entity. */
 export interface Auditable {
@@ -39,12 +43,15 @@ export type Validator<T> = (value: T) => boolean;
  * \@Entity('projects')
  * class Project extends BaseEntity { ... }
  */
-export const Entity = (tableName: string) =>
+export const Entity =
+  (tableName: string) =>
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   <T extends new (...args: any[]) => object>(constructor: T): T => {
     const decorated = class extends constructor {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      constructor(...args: any[]) { super(...args); }
+      constructor(...args: any[]) {
+        super(...args);
+      }
       static readonly tableName = tableName;
       static readonly createdAt = new Date();
     };
@@ -60,12 +67,18 @@ export const Entity = (tableName: string) =>
  */
 export const Required = (target: object, propertyKey: string): void => {
   const validators: Map<string, Validator<unknown>[]> =
-    (target as Record<string, unknown>)['__validators__'] instanceof Map
-      ? (target as Record<string, unknown>)['__validators__'] as Map<string, Validator<unknown>[]>
+    (target as Record<string, unknown>)["__validators__"] instanceof Map
+      ? ((target as Record<string, unknown>)["__validators__"] as Map<
+          string,
+          Validator<unknown>[]
+        >)
       : new Map();
   const existing = validators.get(propertyKey) ?? [];
-  validators.set(propertyKey, [...existing, v => v !== null && v !== undefined && v !== '']);
-  (target as Record<string, unknown>)['__validators__'] = validators;
+  validators.set(propertyKey, [
+    ...existing,
+    (v) => v !== null && v !== undefined && v !== "",
+  ]);
+  (target as Record<string, unknown>)["__validators__"] = validators;
 };
 
 // ─────────────────────────────────────────────
@@ -81,11 +94,13 @@ export const Required = (target: object, propertyKey: string): void => {
  * Subclasses must implement {@link validate}, {@link getDisplayName},
  * {@link serialize}, and {@link clone}.
  */
-export abstract class BaseEntity implements Auditable, Serializable<BaseEntity> {
+export abstract class BaseEntity
+  implements Auditable, Serializable<BaseEntity>
+{
   /** Unique, time-ordered identifier generated at construction. */
   readonly id: string;
   /** Current lifecycle state of the entity. Defaults to `'active'`. */
-  status: EntityStatus = 'active';
+  status: EntityStatus = "active";
   createdAt: Date;
   updatedAt: Date;
   /** Identifier of the actor who created this record. */
@@ -93,7 +108,7 @@ export abstract class BaseEntity implements Auditable, Serializable<BaseEntity> 
   private _metadata = new Map<string, unknown>();
 
   /** @param createdBy - Actor creating this entity. Defaults to `'system'`. */
-  constructor(createdBy = 'system') {
+  constructor(createdBy = "system") {
     this.id = BaseEntity.generateId();
     this.createdAt = new Date();
     this.updatedAt = new Date();
@@ -123,24 +138,24 @@ export abstract class BaseEntity implements Auditable, Serializable<BaseEntity> 
 
   /** Moves the entity to `'archived'` and records the timestamp. */
   archive = (): void => {
-    this.status = 'archived';
+    this.status = "archived";
     this.touch();
   };
 
   /** Moves the entity back to `'active'` and records the timestamp. */
   restore = (): void => {
-    this.status = 'active';
+    this.status = "active";
     this.touch();
   };
 
   /** Marks the entity as `'deleted'` without removing it from storage. */
   softDelete = (): void => {
-    this.status = 'deleted';
+    this.status = "deleted";
     this.touch();
   };
 
   /** Returns `true` when `status === 'active'`. */
-  isActive = (): boolean => this.status === 'active';
+  isActive = (): boolean => this.status === "active";
 
   /**
    * Stores an arbitrary value under `key` in the entity's private metadata map.
@@ -155,8 +170,7 @@ export abstract class BaseEntity implements Auditable, Serializable<BaseEntity> 
    * Retrieves a typed value from the metadata map.
    * Returns `undefined` if the key does not exist.
    */
-  getMeta = <T>(key: string): T | undefined =>
-    this._metadata.get(key) as T;
+  getMeta = <T>(key: string): T | undefined => this._metadata.get(key) as T;
 
   /** Returns the entire metadata map as a plain object. */
   getAllMeta = (): Record<string, unknown> =>

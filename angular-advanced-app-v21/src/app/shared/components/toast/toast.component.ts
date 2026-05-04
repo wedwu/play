@@ -1,5 +1,8 @@
 // ============================================================
 // TOAST COMPONENT — ES6 Arrow Functions
+
+// Angular components are the fundamental UI building blocks that combine a TypeScript class, HTML template, and CSS styles to render a self-contained, reusable piece of the user interface.
+
 // ============================================================
 
 import {

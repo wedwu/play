@@ -1,39 +1,62 @@
 // ============================================================
 // GENERIC STATE SERVICE — ES6 Arrow Functions Throughout
+
+// Angular services are singleton classes that encapsulate shared business logic, data access, or state and are injected into components or other services via Angular's dependency injection system.
+
 // ============================================================
 
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, combineLatest, map, distinctUntilChanged, debounceTime } from 'rxjs';
-import { BaseEntity } from '../models/base-entity.model';
+import { Injectable } from "@angular/core";
+import {
+  BehaviorSubject,
+  Observable,
+  combineLatest,
+  map,
+  distinctUntilChanged,
+  debounceTime,
+} from "rxjs";
+import { BaseEntity } from "../models/base-entity.model";
 
 /** Cursor-based pagination state for a list view. */
-export interface PaginationState { page: number; pageSize: number; total: number; }
+export interface PaginationState {
+  page: number;
+  pageSize: number;
+  total: number;
+}
 
 /** Active sort field and direction for a typed entity list. */
-export interface SortState<T>    { field: keyof T | null; direction: 'asc' | 'desc'; }
+export interface SortState<T> {
+  field: keyof T | null;
+  direction: "asc" | "desc";
+}
 
 /** Text search query plus any additional key/value filter criteria. */
-export interface FilterState     { query: string; [key: string]: unknown; }
+export interface FilterState {
+  query: string;
+  [key: string]: unknown;
+}
 
 /**
  * Complete observable state slice for a collection of entities of type `T`.
  * Emitted as an immutable snapshot via {@link EntityStateService.state$}.
  */
 export interface EntityState<T extends BaseEntity> {
-  items:      T[];
-  selected:   T | null;
-  loading:    boolean;
-  error:      string | null;
+  items: T[];
+  selected: T | null;
+  loading: boolean;
+  error: string | null;
   pagination: PaginationState;
-  sort:       SortState<T>;
-  filter:     FilterState;
+  sort: SortState<T>;
+  filter: FilterState;
 }
 
 const initialState = <T extends BaseEntity>(): EntityState<T> => ({
-  items: [], selected: null, loading: false, error: null,
+  items: [],
+  selected: null,
+  loading: false,
+  error: null,
   pagination: { page: 1, pageSize: 10, total: 0 },
-  sort: { field: null, direction: 'asc' },
-  filter: { query: '' },
+  sort: { field: null, direction: "asc" },
+  filter: { query: "" },
 });
 
 /**
@@ -48,20 +71,37 @@ const initialState = <T extends BaseEntity>(): EntityState<T> => ({
  */
 @Injectable()
 export abstract class EntityStateService<T extends BaseEntity> {
-  protected readonly _state$ = new BehaviorSubject<EntityState<T>>(initialState<T>());
+  protected readonly _state$ = new BehaviorSubject<EntityState<T>>(
+    initialState<T>(),
+  );
 
   /** Full state snapshot stream. Emits on every change. */
-  readonly state$      = this._state$.asObservable();
+  readonly state$ = this._state$.asObservable();
   /** All items in the collection. Emits only when the array reference changes. */
-  readonly items$      = this._state$.pipe(map(s => s.items),      distinctUntilChanged());
+  readonly items$ = this._state$.pipe(
+    map((s) => s.items),
+    distinctUntilChanged(),
+  );
   /** Currently selected item, or `null` when nothing is selected. */
-  readonly selected$   = this._state$.pipe(map(s => s.selected),   distinctUntilChanged());
+  readonly selected$ = this._state$.pipe(
+    map((s) => s.selected),
+    distinctUntilChanged(),
+  );
   /** `true` while an async operation is in-flight. */
-  readonly loading$    = this._state$.pipe(map(s => s.loading),     distinctUntilChanged());
+  readonly loading$ = this._state$.pipe(
+    map((s) => s.loading),
+    distinctUntilChanged(),
+  );
   /** Last error message, or `null` when no error is present. */
-  readonly error$      = this._state$.pipe(map(s => s.error),       distinctUntilChanged());
+  readonly error$ = this._state$.pipe(
+    map((s) => s.error),
+    distinctUntilChanged(),
+  );
   /** Current pagination state (page, pageSize, total). */
-  readonly pagination$ = this._state$.pipe(map(s => s.pagination),  distinctUntilChanged());
+  readonly pagination$ = this._state$.pipe(
+    map((s) => s.pagination),
+    distinctUntilChanged(),
+  );
 
   /**
    * Items after the current filter and sort are applied.
@@ -69,10 +109,15 @@ export abstract class EntityStateService<T extends BaseEntity> {
    */
   readonly filteredItems$: Observable<T[]> = combineLatest([
     this.items$,
-    this._state$.pipe(map(s => s.filter), debounceTime(150)),
-    this._state$.pipe(map(s => s.sort)),
+    this._state$.pipe(
+      map((s) => s.filter),
+      debounceTime(150),
+    ),
+    this._state$.pipe(map((s) => s.sort)),
   ]).pipe(
-    map(([items, filter, sort]) => this.applyFilterAndSort(items, filter, sort))
+    map(([items, filter, sort]) =>
+      this.applyFilterAndSort(items, filter, sort),
+    ),
   );
 
   /** The current page slice of {@link filteredItems$} according to {@link pagination$}. */
@@ -80,13 +125,14 @@ export abstract class EntityStateService<T extends BaseEntity> {
     this.filteredItems$,
     this.pagination$,
   ]).pipe(
-    map(([items, page]) => items.slice(
-      (page.page - 1) * page.pageSize,
-      page.page * page.pageSize
-    ))
+    map(([items, page]) =>
+      items.slice((page.page - 1) * page.pageSize, page.page * page.pageSize),
+    ),
   );
 
-  protected get state(): EntityState<T> { return this._state$.getValue(); }
+  protected get state(): EntityState<T> {
+    return this._state$.getValue();
+  }
 
   /**
    * Merges `patch` into the current state and emits the updated snapshot.
@@ -114,10 +160,10 @@ export abstract class EntityStateService<T extends BaseEntity> {
    */
   update = (id: string, patch: Partial<T>): void =>
     this.setState({
-      items: this.state.items.map(i =>
+      items: this.state.items.map((i) =>
         i.id === id
           ? Object.assign(Object.create(Object.getPrototypeOf(i)), i, patch)
-          : i
+          : i,
       ),
     });
 
@@ -126,7 +172,7 @@ export abstract class EntityStateService<T extends BaseEntity> {
    * @param id - ID of the item to remove.
    */
   remove = (id: string): void =>
-    this.setState({ items: this.state.items.filter(i => i.id !== id) });
+    this.setState({ items: this.state.items.filter((i) => i.id !== id) });
 
   /** Sets the currently selected item. Pass `null` to clear the selection. */
   select = (item: T | null): void => this.setState({ selected: item });
@@ -136,7 +182,7 @@ export abstract class EntityStateService<T extends BaseEntity> {
    * Clears the selection if no match is found.
    */
   selectById = (id: string): void =>
-    this.select(this.state.items.find(i => i.id === id) ?? null);
+    this.select(this.state.items.find((i) => i.id === id) ?? null);
 
   // ── Pagination ────────────────────────────────
 
@@ -152,7 +198,9 @@ export abstract class EntityStateService<T extends BaseEntity> {
    * @param pageSize - New page size.
    */
   setPageSize = (pageSize: number): void =>
-    this.setState({ pagination: { ...this.state.pagination, pageSize, page: 1 } });
+    this.setState({
+      pagination: { ...this.state.pagination, pageSize, page: 1 },
+    });
 
   // ── Sorting ───────────────────────────────────
 
@@ -162,9 +210,11 @@ export abstract class EntityStateService<T extends BaseEntity> {
    * @param field - The entity property to sort by.
    * @param direction - Force `'asc'` or `'desc'`; auto-toggles when omitted.
    */
-  setSort = (field: keyof T, direction?: 'asc' | 'desc'): void => {
+  setSort = (field: keyof T, direction?: "asc" | "desc"): void => {
     const current = this.state.sort;
-    const dir = direction ?? (current.field === field && current.direction === 'asc' ? 'desc' : 'asc');
+    const dir =
+      direction ??
+      (current.field === field && current.direction === "asc" ? "desc" : "asc");
     this.setState({ sort: { field, direction: dir } });
   };
 
@@ -175,7 +225,10 @@ export abstract class EntityStateService<T extends BaseEntity> {
    * @param query - Search string matched against entity fields.
    */
   setQuery = (query: string): void =>
-    this.setState({ filter: { ...this.state.filter, query }, pagination: { ...this.state.pagination, page: 1 } });
+    this.setState({
+      filter: { ...this.state.filter, query },
+      pagination: { ...this.state.pagination, page: 1 },
+    });
 
   /**
    * Sets a named filter key to a value and resets to page 1.
@@ -183,10 +236,13 @@ export abstract class EntityStateService<T extends BaseEntity> {
    * @param value - Value to filter by.
    */
   setFilter = (key: string, value: unknown): void =>
-    this.setState({ filter: { ...this.state.filter, [key]: value }, pagination: { ...this.state.pagination, page: 1 } });
+    this.setState({
+      filter: { ...this.state.filter, [key]: value },
+      pagination: { ...this.state.pagination, page: 1 },
+    });
 
   /** Resets all filters to their initial state. Sort and pagination are preserved. */
-  clearFilters = (): void => this.setState({ filter: { query: '' } });
+  clearFilters = (): void => this.setState({ filter: { query: "" } });
 
   // ── Loading / Error ───────────────────────────
 
@@ -197,7 +253,8 @@ export abstract class EntityStateService<T extends BaseEntity> {
    * Records an error message and clears the loading flag.
    * Pass `null` to clear a previous error.
    */
-  setError   = (error: string | null): void => this.setState({ error, loading: false });
+  setError = (error: string | null): void =>
+    this.setState({ error, loading: false });
 
   // ── Queries ───────────────────────────────────
 
@@ -206,10 +263,12 @@ export abstract class EntityStateService<T extends BaseEntity> {
    * Returns `undefined` if no match is found.
    */
   getById = (id: string): T | undefined =>
-    this.state.items.find(i => i.id === id);
+    this.state.items.find((i) => i.id === id);
 
   /** Total number of items currently held in the collection. */
-  get count(): number { return this.state.items.length; }
+  get count(): number {
+    return this.state.items.length;
+  }
 
   // ── Abstract ──────────────────────────────────
 
@@ -222,5 +281,9 @@ export abstract class EntityStateService<T extends BaseEntity> {
    * @param sort - Current sort state.
    * @returns Filtered and sorted items ready for pagination.
    */
-  protected abstract applyFilterAndSort(items: T[], filter: FilterState, sort: SortState<T>): T[];
+  protected abstract applyFilterAndSort(
+    items: T[],
+    filter: FilterState,
+    sort: SortState<T>,
+  ): T[];
 }

@@ -1,5 +1,8 @@
 // ============================================================
 // CUSTOM DIRECTIVES
+
+// Angular directives are classes that add behavior or transform the DOM — attribute directives modify element appearance/behavior, structural directives reshape the DOM by adding/removing elements, and components are directives with a template.
+
 // ============================================================
 
 import {

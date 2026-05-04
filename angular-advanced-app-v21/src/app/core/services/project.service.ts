@@ -1,5 +1,8 @@
 // ============================================================
 // PROJECT SERVICE — ES6 Arrow Functions
+
+// Angular services are singleton classes that encapsulate shared business logic, data access, or state and are injected into components or other services via Angular's dependency injection system.
+
 // ============================================================
 
 import { Injectable } from "@angular/core";

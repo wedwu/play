@@ -1,53 +1,84 @@
 // ============================================================
 // TASK MODEL — ES6 Arrow Functions Throughout
+
+// Models are TypeScript interfaces or classes that define the shape and type contract of data flowing through the application.
+// They often include domain logic, validation, and utility methods related to the data they represent.
+
 // ============================================================
 
-import { BaseEntity, Entity } from './base-entity.model';
+import { BaseEntity, Entity } from "./base-entity.model";
 
 /** Numeric priority levels — higher value means higher urgency. */
 export enum TaskPriority {
-  LOW    = 1,
+  LOW = 1,
   MEDIUM = 2,
-  HIGH   = 3,
+  HIGH = 3,
   URGENT = 4,
 }
 
 /** Possible states a task can occupy within the kanban workflow. */
 export enum TaskStatus {
-  BACKLOG     = 'backlog',
-  TODO        = 'todo',
-  IN_PROGRESS = 'in_progress',
-  REVIEW      = 'review',
-  DONE        = 'done',
-  BLOCKED     = 'blocked',
+  BACKLOG = "backlog",
+  TODO = "todo",
+  IN_PROGRESS = "in_progress",
+  REVIEW = "review",
+  DONE = "done",
+  BLOCKED = "blocked",
 }
 
 /** A coloured label attached to a task for categorisation. */
-export interface Tag        { label: string; color: string; }
+export interface Tag {
+  label: string;
+  color: string;
+}
 /** A file attached to a task. */
-export interface Attachment { id: string; name: string; url: string; size: number; uploadedAt: Date; }
+export interface Attachment {
+  id: string;
+  name: string;
+  url: string;
+  size: number;
+  uploadedAt: Date;
+}
 /** A threaded comment left by a team member on a task. */
-export interface Comment    { id: string; authorId: string; content: string; createdAt: Date; edited: boolean; }
+export interface Comment {
+  id: string;
+  authorId: string;
+  content: string;
+  createdAt: Date;
+  edited: boolean;
+}
 /** A checklist item nested inside a parent task. */
-export interface SubTask    { id: string; title: string; done: boolean; }
+export interface SubTask {
+  id: string;
+  title: string;
+  done: boolean;
+}
 
 /**
  * Generic result wrapper for operations that may fail with a message.
  * @template T The payload type on success.
  */
-export interface Result<T>  { success: boolean; data?: T; error?: string; }
+export interface Result<T> {
+  success: boolean;
+  data?: T;
+  error?: string;
+}
 
 /**
  * Defines which statuses a task may legally move to from each current status.
  * Used by {@link Task.transition} to enforce workflow rules.
  */
 export const STATUS_TRANSITIONS: Record<TaskStatus, TaskStatus[]> = {
-  [TaskStatus.BACKLOG]:     [TaskStatus.TODO],
-  [TaskStatus.TODO]:        [TaskStatus.IN_PROGRESS, TaskStatus.BLOCKED],
-  [TaskStatus.IN_PROGRESS]: [TaskStatus.REVIEW, TaskStatus.BLOCKED, TaskStatus.TODO],
-  [TaskStatus.REVIEW]:      [TaskStatus.DONE, TaskStatus.IN_PROGRESS],
-  [TaskStatus.DONE]:        [TaskStatus.TODO],
-  [TaskStatus.BLOCKED]:     [TaskStatus.TODO, TaskStatus.IN_PROGRESS],
+  [TaskStatus.BACKLOG]: [TaskStatus.TODO],
+  [TaskStatus.TODO]: [TaskStatus.IN_PROGRESS, TaskStatus.BLOCKED],
+  [TaskStatus.IN_PROGRESS]: [
+    TaskStatus.REVIEW,
+    TaskStatus.BLOCKED,
+    TaskStatus.TODO,
+  ],
+  [TaskStatus.REVIEW]: [TaskStatus.DONE, TaskStatus.IN_PROGRESS],
+  [TaskStatus.DONE]: [TaskStatus.TODO],
+  [TaskStatus.BLOCKED]: [TaskStatus.TODO, TaskStatus.IN_PROGRESS],
 };
 
 /**
@@ -56,7 +87,7 @@ export const STATUS_TRANSITIONS: Record<TaskStatus, TaskStatus[]> = {
  * Tracks priority, status workflow, subtasks, comments, time logging,
  * file attachments, and tags.
  */
-@Entity('tasks')
+@Entity("tasks")
 export class Task extends BaseEntity {
   /** Short summary of the work to be done (3–200 characters). */
   title: string;
@@ -82,9 +113,9 @@ export class Task extends BaseEntity {
 
   constructor(
     title: string,
-    description = '',
+    description = "",
     priority: TaskPriority = TaskPriority.MEDIUM,
-    createdBy = 'system'
+    createdBy = "system",
   ) {
     super(createdBy);
     this.title = title;
@@ -101,8 +132,9 @@ export class Task extends BaseEntity {
    */
   get progress(): number {
     if (this._progressOverride !== undefined) return this._progressOverride;
-    if (!this.subtasks.length) return this.taskStatus === TaskStatus.DONE ? 100 : 0;
-    const done = this.subtasks.filter(s => s.done).length;
+    if (!this.subtasks.length)
+      return this.taskStatus === TaskStatus.DONE ? 100 : 0;
+    const done = this.subtasks.filter((s) => s.done).length;
     return Math.round((done / this.subtasks.length) * 100);
   }
 
@@ -112,7 +144,11 @@ export class Task extends BaseEntity {
 
   /** `true` when `dueDate` is in the past and the task is not yet done. */
   get isOverdue(): boolean {
-    return !!this.dueDate && new Date() > this.dueDate && this.taskStatus !== TaskStatus.DONE;
+    return (
+      !!this.dueDate &&
+      new Date() > this.dueDate &&
+      this.taskStatus !== TaskStatus.DONE
+    );
   }
 
   /**
@@ -124,8 +160,12 @@ export class Task extends BaseEntity {
     return Math.ceil((this.dueDate.getTime() - Date.now()) / 86_400_000);
   }
 
-  get completedSubtasks(): number { return this.subtasks.filter(s => s.done).length; }
-  get priorityLabel(): string     { return TaskPriority[this.priority]; }
+  get completedSubtasks(): number {
+    return this.subtasks.filter((s) => s.done).length;
+  }
+  get priorityLabel(): string {
+    return TaskPriority[this.priority];
+  }
 
   // ── Abstract implementations → arrow properties ──
   validate = (): boolean =>
@@ -150,7 +190,12 @@ export class Task extends BaseEntity {
   });
 
   clone = (): Task => {
-    const copy = new Task(this.title, this.description, this.priority, this.createdBy);
+    const copy = new Task(
+      this.title,
+      this.description,
+      this.priority,
+      this.createdBy,
+    );
     copy.assigneeId = this.assigneeId;
     copy.projectId = this.projectId;
     copy.dueDate = this.dueDate ? new Date(this.dueDate) : undefined;
@@ -167,7 +212,7 @@ export class Task extends BaseEntity {
    * @returns A {@link Result} indicating success or a validation error.
    */
   assign = (userId: string): Result<Task> => {
-    if (!userId) return { success: false, error: 'Invalid user ID' };
+    if (!userId) return { success: false, error: "Invalid user ID" };
     this.assigneeId = userId;
     this.touch();
     return { success: true, data: this };
@@ -181,7 +226,10 @@ export class Task extends BaseEntity {
   transition = (newStatus: TaskStatus): Result<Task> => {
     const allowed = this.getAllowedTransitions();
     if (!allowed.includes(newStatus)) {
-      return { success: false, error: `Cannot transition from ${this.taskStatus} to ${newStatus}` };
+      return {
+        success: false,
+        error: `Cannot transition from ${this.taskStatus} to ${newStatus}`,
+      };
     }
     this.taskStatus = newStatus;
     this.touch();
@@ -208,7 +256,9 @@ export class Task extends BaseEntity {
    * @param id - The subtask's unique ID.
    */
   toggleSubtask = (id: string): void => {
-    this.subtasks = this.subtasks.map(s => s.id === id ? { ...s, done: !s.done } : s);
+    this.subtasks = this.subtasks.map((s) =>
+      s.id === id ? { ...s, done: !s.done } : s,
+    );
     this.touch();
   };
 
@@ -219,8 +269,11 @@ export class Task extends BaseEntity {
    */
   addComment = (authorId: string, content: string): Comment => {
     const comment: Comment = {
-      id: BaseEntity.generateId(), authorId, content,
-      createdAt: new Date(), edited: false,
+      id: BaseEntity.generateId(),
+      authorId,
+      content,
+      createdAt: new Date(),
+      edited: false,
     };
     this.comments = [...this.comments, comment];
     this.touch();
@@ -233,7 +286,7 @@ export class Task extends BaseEntity {
    * @param color - CSS-compatible colour string.
    */
   addTag = (label: string, color: string): void => {
-    if (!this.tags.find(t => t.label === label)) {
+    if (!this.tags.find((t) => t.label === label)) {
       this.tags = [...this.tags, { label, color }];
       this.touch();
     }
@@ -267,16 +320,34 @@ export class Task extends BaseEntity {
 export class TaskBuilder {
   private task: Task;
 
-  constructor(title: string, createdBy = 'system') {
-    this.task = new Task(title, '', TaskPriority.MEDIUM, createdBy);
+  constructor(title: string, createdBy = "system") {
+    this.task = new Task(title, "", TaskPriority.MEDIUM, createdBy);
   }
 
-  withDescription = (desc: string): this => { this.task.description = desc; return this; };
-  withPriority    = (p: TaskPriority): this => { this.task.priority = p; return this; };
-  withAssignee    = (id: string): this => { this.task.assigneeId = id; return this; };
-  withProject     = (id: string): this => { this.task.projectId = id; return this; };
-  withDueDate     = (date: Date): this => { this.task.dueDate = date; return this; };
-  withEstimate    = (hours: number): this => { this.task.estimatedHours = hours; return this; };
+  withDescription = (desc: string): this => {
+    this.task.description = desc;
+    return this;
+  };
+  withPriority = (p: TaskPriority): this => {
+    this.task.priority = p;
+    return this;
+  };
+  withAssignee = (id: string): this => {
+    this.task.assigneeId = id;
+    return this;
+  };
+  withProject = (id: string): this => {
+    this.task.projectId = id;
+    return this;
+  };
+  withDueDate = (date: Date): this => {
+    this.task.dueDate = date;
+    return this;
+  };
+  withEstimate = (hours: number): this => {
+    this.task.estimatedHours = hours;
+    return this;
+  };
 
   withTag = (label: string, color: string): this => {
     this.task.addTag(label, color);
@@ -288,7 +359,8 @@ export class TaskBuilder {
    * @throws {Error} when {@link Task.validate} returns `false`.
    */
   build = (): Task => {
-    if (!this.task.validate()) throw new Error(`Invalid task: ${this.task.title}`);
+    if (!this.task.validate())
+      throw new Error(`Invalid task: ${this.task.title}`);
     return this.task;
   };
 }

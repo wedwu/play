@@ -1,5 +1,8 @@
 // ============================================================
 // HELPERS — All pure arrow functions (ES6)
+
+// Helpers are stateless utility functions that perform reusable, generic operations (string formatting, date math, array manipulation) that don't belong to any specific feature or service.
+
 // ============================================================
 
 // ── Generic Array Helpers ─────────────────────────────────

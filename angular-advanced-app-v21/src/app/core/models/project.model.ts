@@ -1,37 +1,90 @@
 // ============================================================
 // PROJECT MODEL — ES6 Arrow Functions Throughout
+
+// Models are TypeScript interfaces or classes that define the shape and type contract of data flowing through the application.
+// They often include domain logic, validation, and utility methods related to the data they represent.
+
 // ============================================================
 
-import { BaseEntity, Entity } from './base-entity.model';
-import { Task, TaskStatus } from './task.model';
+import { BaseEntity, Entity } from "./base-entity.model";
+import { Task, TaskStatus } from "./task.model";
 
 /** Stages of a project's lifecycle from inception to completion. */
-export type ProjectPhase    = 'planning' | 'active' | 'on_hold' | 'completed' | 'cancelled';
+export type ProjectPhase =
+  | "planning"
+  | "active"
+  | "on_hold"
+  | "completed"
+  | "cancelled";
 /** Broad classification of the kind of work the project represents. */
-export type ProjectCategory = 'product' | 'infrastructure' | 'research' | 'maintenance' | 'other';
+export type ProjectCategory =
+  | "product"
+  | "infrastructure"
+  | "research"
+  | "maintenance"
+  | "other";
 
 /** A named checkpoint with a due date and associated task IDs. */
 export interface Milestone {
-  id: string; name: string; dueDate: Date; completed: boolean; taskIds: string[];
+  id: string;
+  name: string;
+  dueDate: Date;
+  completed: boolean;
+  taskIds: string[];
 }
 /** A time-boxed iteration containing a subset of project tasks. */
 export interface Sprint {
-  id: string; name: string; startDate: Date; endDate: Date; taskIds: string[]; velocity: number;
+  id: string;
+  name: string;
+  startDate: Date;
+  endDate: Date;
+  taskIds: string[];
+  velocity: number;
 }
 /** Aggregated task counts and time metrics for a project at a point in time. */
 export interface ProjectStats {
-  totalTasks: number; completedTasks: number; inProgressTasks: number;
-  blockedTasks: number; overdueTasks: number; completionRate: number;
-  totalEstimatedHours: number; totalLoggedHours: number;
+  totalTasks: number;
+  completedTasks: number;
+  inProgressTasks: number;
+  blockedTasks: number;
+  overdueTasks: number;
+  completionRate: number;
+  totalEstimatedHours: number;
+  totalLoggedHours: number;
 }
 
-const PROJECT_COLORS = ['#FF6B6B','#4ECDC4','#45B7D1','#96CEB4','#FFEAA7','#DDA0DD','#98D8C8'];
-const PROJECT_ICONS  = ['rocket_launch','lightbulb','electric_bolt','local_fire_department','track_changes','waves','star','build','palette','inventory_2'];
+const PROJECT_COLORS = [
+  "#FF6B6B",
+  "#4ECDC4",
+  "#45B7D1",
+  "#96CEB4",
+  "#FFEAA7",
+  "#DDA0DD",
+  "#98D8C8",
+];
+const PROJECT_ICONS = [
+  "rocket_launch",
+  "lightbulb",
+  "electric_bolt",
+  "local_fire_department",
+  "track_changes",
+  "waves",
+  "star",
+  "build",
+  "palette",
+  "inventory_2",
+];
 
-const randomItem = <T>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)];
+const randomItem = <T>(arr: T[]): T =>
+  arr[Math.floor(Math.random() * arr.length)];
 
 /** Ordered phases used by {@link Project.advance} to move the project forward. */
-const PHASE_PROGRESSION: ProjectPhase[] = ['planning', 'active', 'on_hold', 'completed'];
+const PHASE_PROGRESSION: ProjectPhase[] = [
+  "planning",
+  "active",
+  "on_hold",
+  "completed",
+];
 
 /**
  * Domain entity representing a collection of tasks united by a shared goal.
@@ -39,11 +92,11 @@ const PHASE_PROGRESSION: ProjectPhase[] = ['planning', 'active', 'on_hold', 'com
  * Manages team membership, milestones, sprint planning, and phase progression.
  * Each project gets a randomly assigned colour and emoji icon at construction.
  */
-@Entity('projects')
+@Entity("projects")
 export class Project extends BaseEntity {
   name: string;
   description: string;
-  phase: ProjectPhase = 'planning';
+  phase: ProjectPhase = "planning";
   category: ProjectCategory;
   /** ID of the user who owns and is accountable for this project. */
   ownerId: string;
@@ -63,8 +116,8 @@ export class Project extends BaseEntity {
     name: string,
     description: string,
     ownerId: string,
-    category: ProjectCategory = 'product',
-    createdBy = 'system'
+    category: ProjectCategory = "product",
+    createdBy = "system",
   ) {
     super(createdBy);
     this.name = name;
@@ -79,37 +132,46 @@ export class Project extends BaseEntity {
   // ── ES6 Getters ───────────────────────────────
 
   /** Immutable snapshot of all tasks. Mutate via {@link addTask} / {@link removeTask}. */
-  get tasks(): Task[] { return [...this._tasks]; }
+  get tasks(): Task[] {
+    return [...this._tasks];
+  }
 
   /** Live roll-up of task counts, hours, and completion rate. Recomputed on every access. */
   get stats(): ProjectStats {
     const tasks = this._tasks;
-    const completed  = tasks.filter(t => t.taskStatus === TaskStatus.DONE);
-    const inProgress = tasks.filter(t => t.taskStatus === TaskStatus.IN_PROGRESS);
-    const blocked    = tasks.filter(t => t.taskStatus === TaskStatus.BLOCKED);
-    const overdue    = tasks.filter(t => t.isOverdue);
+    const completed = tasks.filter((t) => t.taskStatus === TaskStatus.DONE);
+    const inProgress = tasks.filter(
+      (t) => t.taskStatus === TaskStatus.IN_PROGRESS,
+    );
+    const blocked = tasks.filter((t) => t.taskStatus === TaskStatus.BLOCKED);
+    const overdue = tasks.filter((t) => t.isOverdue);
     return {
-      totalTasks:          tasks.length,
-      completedTasks:      completed.length,
-      inProgressTasks:     inProgress.length,
-      blockedTasks:        blocked.length,
-      overdueTasks:        overdue.length,
-      completionRate:      tasks.length ? Math.round((completed.length / tasks.length) * 100) : 0,
-      totalEstimatedHours: tasks.reduce((s, t) => s + (t.estimatedHours ?? 0), 0),
-      totalLoggedHours:    tasks.reduce((s, t) => s + t.loggedHours, 0),
+      totalTasks: tasks.length,
+      completedTasks: completed.length,
+      inProgressTasks: inProgress.length,
+      blockedTasks: blocked.length,
+      overdueTasks: overdue.length,
+      completionRate: tasks.length
+        ? Math.round((completed.length / tasks.length) * 100)
+        : 0,
+      totalEstimatedHours: tasks.reduce(
+        (s, t) => s + (t.estimatedHours ?? 0),
+        0,
+      ),
+      totalLoggedHours: tasks.reduce((s, t) => s + t.loggedHours, 0),
     };
   }
 
   /** The sprint whose date range encompasses today, or `undefined` if none is active. */
   get activeSprint(): Sprint | undefined {
     const now = new Date();
-    return this.sprints.find(s => s.startDate <= now && s.endDate >= now);
+    return this.sprints.find((s) => s.startDate <= now && s.endDate >= now);
   }
 
   /** The nearest incomplete milestone with a future due date, or `undefined`. */
   get nextMilestone(): Milestone | undefined {
     return this.milestones
-      .filter(m => !m.completed && m.dueDate > new Date())
+      .filter((m) => !m.completed && m.dueDate > new Date())
       .sort((a, b) => a.dueDate.getTime() - b.dueDate.getTime())[0];
   }
 
@@ -119,11 +181,12 @@ export class Project extends BaseEntity {
    * - `'green'`  — completion rate ≥ 80%
    * - `'yellow'` — everything else
    */
-  get health(): 'green' | 'yellow' | 'red' {
-    const { overdueTasks, blockedTasks, totalTasks, completionRate } = this.stats;
-    if (overdueTasks > 0 || blockedTasks > totalTasks * 0.2) return 'red';
-    if (completionRate >= 80) return 'green';
-    return 'yellow';
+  get health(): "green" | "yellow" | "red" {
+    const { overdueTasks, blockedTasks, totalTasks, completionRate } =
+      this.stats;
+    if (overdueTasks > 0 || blockedTasks > totalTasks * 0.2) return "red";
+    if (completionRate >= 80) return "green";
+    return "yellow";
   }
 
   // ── Abstract implementations → arrow properties ──
@@ -147,7 +210,13 @@ export class Project extends BaseEntity {
   });
 
   clone = (): Project => {
-    const copy = new Project(this.name, this.description, this.ownerId, this.category, this.createdBy);
+    const copy = new Project(
+      this.name,
+      this.description,
+      this.ownerId,
+      this.category,
+      this.createdBy,
+    );
     copy.phase = this.phase;
     copy.memberIds = [...this.memberIds];
     copy.color = this.color;
@@ -171,7 +240,7 @@ export class Project extends BaseEntity {
    * @param taskId - ID of the task to remove.
    */
   removeTask = (taskId: string): void => {
-    this._tasks = this._tasks.filter(t => t.id !== taskId);
+    this._tasks = this._tasks.filter((t) => t.id !== taskId);
     this.touch();
   };
 
@@ -191,7 +260,7 @@ export class Project extends BaseEntity {
    * @param userId - ID of the user to remove.
    */
   removeMember = (userId: string): void => {
-    this.memberIds = this.memberIds.filter(id => id !== userId);
+    this.memberIds = this.memberIds.filter((id) => id !== userId);
     this.touch();
   };
 
@@ -201,7 +270,13 @@ export class Project extends BaseEntity {
    * @param dueDate - Target completion date.
    */
   addMilestone = (name: string, dueDate: Date): Milestone => {
-    const m: Milestone = { id: BaseEntity.generateId(), name, dueDate, completed: false, taskIds: [] };
+    const m: Milestone = {
+      id: BaseEntity.generateId(),
+      name,
+      dueDate,
+      completed: false,
+      taskIds: [],
+    };
     this.milestones = [...this.milestones, m];
     this.touch();
     return m;
@@ -212,7 +287,9 @@ export class Project extends BaseEntity {
    * @param id - ID of the milestone to complete.
    */
   completeMilestone = (id: string): void => {
-    this.milestones = this.milestones.map(m => m.id === id ? { ...m, completed: true } : m);
+    this.milestones = this.milestones.map((m) =>
+      m.id === id ? { ...m, completed: true } : m,
+    );
     this.touch();
   };
 
@@ -223,8 +300,20 @@ export class Project extends BaseEntity {
    * @param endDate - Sprint end date.
    * @param taskIds - IDs of tasks included in this sprint.
    */
-  startSprint = (name: string, startDate: Date, endDate: Date, taskIds: string[] = []): Sprint => {
-    const sprint: Sprint = { id: BaseEntity.generateId(), name, startDate, endDate, taskIds, velocity: 0 };
+  startSprint = (
+    name: string,
+    startDate: Date,
+    endDate: Date,
+    taskIds: string[] = [],
+  ): Sprint => {
+    const sprint: Sprint = {
+      id: BaseEntity.generateId(),
+      name,
+      startDate,
+      endDate,
+      taskIds,
+      velocity: 0,
+    };
     this.sprints = [...this.sprints, sprint];
     this.touch();
     return sprint;

@@ -1,14 +1,26 @@
 // ============================================================
 // NAV COMPONENT
+
+// Angular components are the fundamental UI building blocks that combine a TypeScript class, HTML template, and CSS styles to render a self-contained, reusable piece of the user interface.
+
 // ============================================================
 
-import { Component, ChangeDetectionStrategy, HostBinding, inject } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
-import { NotificationService } from '../../../core/services/notification.service';
-import { TooltipDirective } from '../../directives/directives';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  HostBinding,
+  inject,
+} from "@angular/core";
+import { RouterLink, RouterLinkActive } from "@angular/router";
+import { NotificationService } from "../../../core/services/notification.service";
+import { TooltipDirective } from "../../directives/directives";
 
 /** Shape of a single navigation item. */
-export interface NavItem { path: string; label: string; icon: string; }
+export interface NavItem {
+  path: string;
+  label: string;
+  icon: string;
+}
 
 /**
  * Fixed sidebar navigation component.
@@ -22,22 +34,22 @@ export interface NavItem { path: string; label: string; icon: string; }
  * single boolean field, avoiding imperative DOM manipulation beyond the CSS variable.
  */
 @Component({
-  selector: 'app-nav',
+  selector: "app-nav",
   standalone: true,
   imports: [RouterLink, RouterLinkActive, TooltipDirective],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './nav.component.html',
-  styleUrl: './nav.component.scss'
+  templateUrl: "./nav.component.html",
+  styleUrl: "./nav.component.scss",
 })
 export class NavComponent {
   /** When `true`, adds the `collapsed` class to the host and triggers icon-only layout. */
-  @HostBinding('class.collapsed') collapsed = false;
+  @HostBinding("class.collapsed") collapsed = false;
 
   /** Top-level route definitions rendered in the sidebar. */
   readonly navItems: NavItem[] = [
-    { path: '/dashboard', label: 'Dashboard', icon: 'dashboard' },
-    { path: '/tasks',     label: 'Tasks',     icon: 'task_alt'  },
-    { path: '/users',     label: 'Team',      icon: 'group'     },
+    { path: "/dashboard", label: "Dashboard", icon: "dashboard" },
+    { path: "/tasks", label: "Tasks", icon: "task_alt" },
+    { path: "/users", label: "Team", icon: "group" },
   ];
 
   readonly notifications = inject(NotificationService);
@@ -49,8 +61,8 @@ export class NavComponent {
   toggle(): void {
     this.collapsed = !this.collapsed;
     document.documentElement.style.setProperty(
-      '--nav-width',
-      this.collapsed ? '64px' : '260px'
+      "--nav-width",
+      this.collapsed ? "64px" : "260px",
     );
   }
 }

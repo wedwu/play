@@ -100,16 +100,50 @@ export class TasksComponent implements OnInit, AfterContentInit, OnDestroy {
 
   // ── Public Readonly Observables ──
 
-  /** Enum reference for use in the template */
+  /** Enum reference for use in the template
+   *
+   * In Angular/TypeScript, an enum defines a set of named constants for type-safe values that can be referenced directly in templates after exposing it from the component class.
+   * By declaring `readonly TaskStatus = TaskStatus;` in the component, we create a public property that references the `TaskStatus` enum. This allows us to use `TaskStatus` values directly in the component's template for comparisons, bindings, and display logic without needing to import the enum separately in the template context.
+   * For example, in the template we can write:
+   * ```html
+   * <div *ngFor="let task of pagedTasks$ | async">
+   *   <span [ngClass]="{'urgent': task.taskStatus === TaskStatus.URGENT}">
+   */
   readonly TaskStatus = TaskStatus;
 
   /** Tasks grouped by status (used by Kanban view) */
   readonly tasksByStatus$ = this.taskService.tasksByStatus$;
 
-  /** Paged tasks for list view */
+  /** Paged tasks for list view
+   *
+   * In Angular/TypeScript, pagedTasks$ is a readonly observable property (using the $ suffix convention) that aliases a service’s paged data stream for efficient, reactive list-view rendering with pagination support.
+   *
+   * By defining `readonly pagedTasks$ = this.taskService.pagedItems$;` in the component, we create a public observable that emits only the current page of tasks after filtering and sorting. This allows us to subscribe to `pagedTasks$` in the template using the async pipe, ensuring that the list view only renders the relevant subset of tasks for the current pagination state, improving performance and user experience.
+   * For example, in the template we can write:
+   * ```html
+   * <div *ngFor="let task of pagedTasks$ | async">
+   *   {{ task.title }}
+   * </div>
+   */
   readonly pagedTasks$ = this.taskService.pagedItems$;
 
-  /** Aggregate statistics */
+  /** Aggregate statistics
+   *
+   * In Angular/TypeScript, aggregate statistics compute summary values (sum, average, count, min/max, etc.) from an array of data objects, typically using native array methods like reduce in the component or a custom pipe for template reuse.
+   *
+   * By defining `readonly stats$ = this.taskService.totalStats$;` in the component, we create a public observable that emits computed aggregate statistics about the tasks, such as total count, counts by status, average progress, etc. This allows us to subscribe to `stats$` in the template using the async pipe and display these summary values without needing to manually compute them in the template or subscribe to the raw task list.
+   * For example, in the template we can write:
+   * ```html
+   * <div>Total Tasks: {{ (stats$ | async)?.total }}</div>
+   * <div>Done: {{ (stats$ | async)?.done }}</div>
+   * <div>In Progress: {{ (stats$ | async)?.inProgress }}</div>
+   * <div>Blocked: {{ (stats$ | async)?.blocked }}</div>
+   * <div>Overdue: {{ (stats$ | async)?.overdue }}</div>
+   * <div>Average Progress: {{ (stats$ | async)?.avgProgress }}%</div>
+   * ```
+   * This approach keeps the template clean and focused on presentation, while the component handles the logic of computing the aggregate statistics from the underlying task data.
+   *
+   */
   readonly stats$ = this.taskService.totalStats$;
 
   // ── Component State ──
@@ -210,6 +244,12 @@ export class TasksComponent implements OnInit, AfterContentInit, OnDestroy {
       estimatedHours: [null, [Validators.min(0)]],
     });
 
+    /** Subscribe to task updates and trigger change detection
+     * In Angular/TypeScript, this line subscribes to an observable stream (items$) from a service, automatically triggers manual change detection via ChangeDetectorRef.markForCheck() on every emission (useful for OnPush strategy), and safely unsubscribes using takeUntil with a destroy subject to prevent memory leaks.
+     *
+     * By subscribing to `this.taskService.items$` and using `takeUntil(this.destroy$)`, we ensure that the subscription is automatically cleaned up when the component is destroyed, preventing potential memory leaks. The `this.cdr.markForCheck()` call inside the subscription callback forces Angular to check for changes and update the view whenever a new value is emitted from `items$`, which is essential when using OnPush change detection strategy to ensure the UI stays in sync with the latest data.
+     */
+
     this.taskService.items$.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.cdr.markForCheck();
     });
@@ -236,7 +276,12 @@ export class TasksComponent implements OnInit, AfterContentInit, OnDestroy {
       : (structuredClone(task) as Task);
   }
 
-  /** Transitions a task to a new status and keeps the selected task in sync */
+  /** Transitions a task to a new status and keeps the selected task in sync
+   * In TypeScript, void is a return type used on functions (or methods) to explicitly declare that they perform side effects or actions but return no value (implicitly returning undefined).
+   *
+   * By declaring `transition(task: Task, newStatus: TaskStatus): void`, we indicate that this method will perform an action (transitioning the task to a new status) without returning any data. This is a common pattern for event handlers or methods that modify state without needing to provide feedback through a return value. The method updates the task's status via the service and also ensures that if the transitioned task is currently selected, the selectedTask reference is updated to reflect the new status, keeping the UI in sync with the underlying data changes.
+   *
+   */
   transition(task: Task, newStatus: TaskStatus): void {
     this.taskService.transitionTask(task.id, newStatus);
 

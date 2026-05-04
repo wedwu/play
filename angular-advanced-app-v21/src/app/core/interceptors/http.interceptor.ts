@@ -1,19 +1,22 @@
 // ============================================================
 // HTTP INTERCEPTORS — ES6 Arrow Functions (functional API)
+
+// Angular interceptors are middleware classes that sit in the HTTP pipeline to inspect, transform, or handle requests and responses globally — used for auth headers, logging, error handling, and caching.
+
 // ============================================================
 
-import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
-import { inject } from '@angular/core';
-import { throwError } from 'rxjs';
-import { catchError, tap, finalize } from 'rxjs/operators';
-import { NotificationService } from '../services/notification.service';
+import { HttpInterceptorFn, HttpErrorResponse } from "@angular/common/http";
+import { inject } from "@angular/core";
+import { throwError } from "rxjs";
+import { catchError, tap, finalize } from "rxjs/operators";
+import { NotificationService } from "../services/notification.service";
 
 /** Human-readable messages for common HTTP error status codes. */
 export const HTTP_ERROR_MESSAGES: Record<number, string> = {
-  0:   'Network error — check your connection',
-  401: 'Unauthorized — please log in again',
-  403: 'Forbidden — insufficient permissions',
-  404: 'Resource not found',
+  0: "Network error — check your connection",
+  401: "Unauthorized — please log in again",
+  403: "Forbidden — insufficient permissions",
+  404: "Resource not found",
 };
 
 /**
@@ -21,8 +24,12 @@ export const HTTP_ERROR_MESSAGES: Record<number, string> = {
  * in `localStorage`. Passes the original request unchanged when no token is present.
  */
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  const token = localStorage.getItem('auth_token');
-  return next(token ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } }) : req);
+  const token = localStorage.getItem("auth_token");
+  return next(
+    token
+      ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } })
+      : req,
+  );
 };
 
 /**
@@ -35,11 +42,14 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const notifications = inject(NotificationService);
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
-      const message = HTTP_ERROR_MESSAGES[error.status]
-        ?? (error.status >= 500 ? 'Server error — please try again' : 'An unexpected error occurred');
+      const message =
+        HTTP_ERROR_MESSAGES[error.status] ??
+        (error.status >= 500
+          ? "Server error — please try again"
+          : "An unexpected error occurred");
       notifications.error(`HTTP ${error.status}`, message);
       return throwError(() => error);
-    })
+    }),
   );
 };
 
@@ -50,7 +60,12 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
 export const loggingInterceptor: HttpInterceptorFn = (req, next) => {
   const start = Date.now();
   return next(req).pipe(
-    tap({ error: err => console.error(`[HTTP ERROR] ${req.method} ${req.url}`, err) }),
-    finalize(() => console.log(`[HTTP] ${req.method} ${req.url} — ${Date.now() - start}ms`))
+    tap({
+      error: (err) =>
+        console.error(`[HTTP ERROR] ${req.method} ${req.url}`, err),
+    }),
+    finalize(() =>
+      console.log(`[HTTP] ${req.method} ${req.url} — ${Date.now() - start}ms`),
+    ),
   );
 };

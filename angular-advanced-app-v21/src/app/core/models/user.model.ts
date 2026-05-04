@@ -1,14 +1,23 @@
 // ============================================================
 // USER MODEL — ES6 Arrow Functions Throughout
+
+// Models are TypeScript interfaces or classes that define the shape and type contract of data flowing through the application.
+// They often include domain logic, validation, and utility methods related to the data they represent.
+
 // ============================================================
 
-import { BaseEntity, Entity, Required } from './base-entity.model';
+import { BaseEntity, Entity, Required } from "./base-entity.model";
 
 /** Access levels ordered by privilege: admin > manager > developer > viewer. */
-export type UserRole = 'admin' | 'manager' | 'developer' | 'viewer';
+export type UserRole = "admin" | "manager" | "developer" | "viewer";
 
 /** Organisational unit a user belongs to. */
-export type Department = 'engineering' | 'design' | 'product' | 'marketing' | 'ops';
+export type Department =
+  | "engineering"
+  | "design"
+  | "product"
+  | "marketing"
+  | "ops";
 
 /** Set of CRUD and administrative capabilities granted to a role. */
 export interface UserPermissions {
@@ -24,10 +33,34 @@ export interface UserPermissions {
  * Access is read-only; role changes must go through {@link User.promote}.
  */
 const ROLE_PERMISSIONS: Record<UserRole, UserPermissions> = {
-  admin:     { canCreate: true,  canRead: true,  canUpdate: true,  canDelete: true,  canManageUsers: true  },
-  manager:   { canCreate: true,  canRead: true,  canUpdate: true,  canDelete: false, canManageUsers: false },
-  developer: { canCreate: true,  canRead: true,  canUpdate: true,  canDelete: false, canManageUsers: false },
-  viewer:    { canCreate: false, canRead: true,  canUpdate: false, canDelete: false, canManageUsers: false },
+  admin: {
+    canCreate: true,
+    canRead: true,
+    canUpdate: true,
+    canDelete: true,
+    canManageUsers: true,
+  },
+  manager: {
+    canCreate: true,
+    canRead: true,
+    canUpdate: true,
+    canDelete: false,
+    canManageUsers: false,
+  },
+  developer: {
+    canCreate: true,
+    canRead: true,
+    canUpdate: true,
+    canDelete: false,
+    canManageUsers: false,
+  },
+  viewer: {
+    canCreate: false,
+    canRead: true,
+    canUpdate: false,
+    canDelete: false,
+    canManageUsers: false,
+  },
 };
 
 /**
@@ -36,7 +69,7 @@ const ROLE_PERMISSIONS: Record<UserRole, UserPermissions> = {
  * Tracks identity, role-based permissions, skills, and login history.
  * `firstName`, `lastName`, and `email` are required fields (see {@link Required}).
  */
-@Entity('users')
+@Entity("users")
 export class User extends BaseEntity {
   @Required firstName!: string;
   @Required lastName!: string;
@@ -55,9 +88,9 @@ export class User extends BaseEntity {
     firstName: string,
     lastName: string,
     email: string,
-    role: UserRole = 'developer',
-    department: Department = 'engineering',
-    createdBy = 'system'
+    role: UserRole = "developer",
+    department: Department = "engineering",
+    createdBy = "system",
   ) {
     super(createdBy);
     this.firstName = firstName;
@@ -70,20 +103,28 @@ export class User extends BaseEntity {
   // ── Getters (ES6 get syntax) ──────────────────
 
   /** Concatenated first and last name for display. */
-  get fullName(): string { return `${this.firstName} ${this.lastName}`; }
+  get fullName(): string {
+    return `${this.firstName} ${this.lastName}`;
+  }
   /** Two-character uppercase initials derived from first and last name. */
-  get initials(): string { return `${this.firstName[0]}${this.lastName[0]}`.toUpperCase(); }
+  get initials(): string {
+    return `${this.firstName[0]}${this.lastName[0]}`.toUpperCase();
+  }
   /** Permission set for the user's current role. Recalculated on every access. */
-  get permissions(): UserPermissions { return ROLE_PERMISSIONS[this.role]; }
+  get permissions(): UserPermissions {
+    return ROLE_PERMISSIONS[this.role];
+  }
   /** Number of recorded logins. Incremented by {@link recordLogin}. */
-  get loginCount(): number { return this._loginCount; }
+  get loginCount(): number {
+    return this._loginCount;
+  }
 
   /**
    * Stores a salted hash derived from the provided raw password.
    * The raw value is never retained on the instance.
    */
   set password(raw: string) {
-    this._passwordHash = btoa(raw + '_salt_' + this.id);
+    this._passwordHash = btoa(raw + "_salt_" + this.id);
     this.touch();
   }
 
@@ -115,7 +156,14 @@ export class User extends BaseEntity {
   }
 
   clone(): User {
-    const copy = new User(this.firstName, this.lastName, this.email, this.role, this.department, this.createdBy);
+    const copy = new User(
+      this.firstName,
+      this.lastName,
+      this.email,
+      this.role,
+      this.department,
+      this.createdBy,
+    );
     copy.bio = this.bio;
     copy.skills = [...this.skills];
     return copy;
@@ -153,7 +201,7 @@ export class User extends BaseEntity {
    * @param skill - Skill label to remove.
    */
   removeSkill = (skill: string): void => {
-    this.skills = this.skills.filter(s => s !== skill);
+    this.skills = this.skills.filter((s) => s !== skill);
     this.touch();
   };
 
@@ -181,13 +229,18 @@ export class AdminUser extends User {
   managedDepartments: Department[] = [];
   auditLog: string[] = [];
 
-  constructor(firstName: string, lastName: string, email: string, superAdmin = false) {
-    super(firstName, lastName, email, 'admin', 'ops', 'system');
+  constructor(
+    firstName: string,
+    lastName: string,
+    email: string,
+    superAdmin = false,
+  ) {
+    super(firstName, lastName, email, "admin", "ops", "system");
     this.superAdmin = superAdmin;
   }
 
   // Override arrow properties
-  override validate = (): boolean => super.validate() && this.role === 'admin';
+  override validate = (): boolean => super.validate() && this.role === "admin";
 
   override getDisplayName = (): string => `[ADMIN] ${this.fullName}`;
 
