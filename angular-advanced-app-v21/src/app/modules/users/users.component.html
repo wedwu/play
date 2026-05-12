@@ -6,7 +6,7 @@
         <p class="page-subtitle" role="status">{{ users.length }} members across all departments</p>
       }
     </div>
-    <button type="button" class="btn btn-primary" appRipple (click)="addRandomUser()">
+    <button type="button" class="btn btn-primary" appRipple (click)="openNewMemberModal()">
       + Add Member
     </button>
   </header>
@@ -151,3 +151,83 @@
     </section>
   }
 </div>
+
+@if (showNewMemberModal) {
+  <div class="modal-backdrop"
+       role="dialog"
+       aria-modal="true"
+       aria-labelledby="new-member-title"
+       tabindex="0"
+       (click)="showNewMemberModal = false"
+       (keydown.escape)="showNewMemberModal = false">
+    <div class="modal modal--sm" (click)="$event.stopPropagation()">
+      <header class="modal-header">
+        <h2 id="new-member-title" class="modal-title">Add Member</h2>
+        <button type="button" class="modal-close" aria-label="Close"
+                (click)="showNewMemberModal = false">
+          <span class="material-icons" aria-hidden="true">close</span>
+        </button>
+      </header>
+
+      <div class="modal-body">
+        <form [formGroup]="memberForm" (ngSubmit)="submitNewMember()">
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="m-firstName">First Name</label>
+              <input id="m-firstName" formControlName="firstName"
+                     type="text" placeholder="Alice" autocomplete="given-name"/>
+              @if (memberForm.get('firstName')?.invalid && memberForm.get('firstName')?.touched) {
+                <span class="error">Min 2 characters</span>
+              }
+            </div>
+            <div class="form-group">
+              <label for="m-lastName">Last Name</label>
+              <input id="m-lastName" formControlName="lastName"
+                     type="text" placeholder="Zhang" autocomplete="family-name"/>
+              @if (memberForm.get('lastName')?.invalid && memberForm.get('lastName')?.touched) {
+                <span class="error">Min 2 characters</span>
+              }
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="m-email">Email</label>
+            <input id="m-email" formControlName="email"
+                   type="email" placeholder="alice@acme.com" autocomplete="email"/>
+            @if (memberForm.get('email')?.invalid && memberForm.get('email')?.touched) {
+              <span class="error">Valid email required</span>
+            }
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="m-role">Role</label>
+              <select id="m-role" formControlName="role">
+                @for (r of roles; track r) {
+                  <option [value]="r">{{ r }}</option>
+                }
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="m-dept">Department</label>
+              <select id="m-dept" formControlName="department">
+                @for (d of departments; track d) {
+                  <option [value]="d">{{ d }}</option>
+                }
+              </select>
+            </div>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn" appRipple
+                    (click)="showNewMemberModal = false">Cancel</button>
+            <button type="submit" class="btn btn-primary" appRipple
+                    [disabled]="memberForm.invalid">Add Member</button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+}

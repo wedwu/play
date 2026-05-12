@@ -16,7 +16,6 @@
     "importHelpers": true,
     "target": "ES2022",
     "module": "ES2022",
-    "types": ["jest"],
     "useDefineForClassFields": false,
     "lib": ["ES2022", "dom"],
     "paths": {
@@ -31,5 +30,5 @@
     "strictInputAccessModifiers": true,
     "strictTemplates": true
   },
-  "exclude": ["setup-jest.ts", "src/**/*.spec.ts"]
+  "exclude": ["setup-jest.ts", "src/**/*.spec.ts", "server"]
 }

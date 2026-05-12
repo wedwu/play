@@ -5,7 +5,8 @@
 
 // ============================================================
 
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
 import { Observable, map } from "rxjs";
 import { User, AdminUser, UserRole, Department } from "../models/user.model";
 import {
@@ -14,6 +15,19 @@ import {
   SortState,
 } from "./entity-state.service";
 import { sortBy } from "../helpers/utils.helper";
+
+interface UserDTO {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: string;
+  department: string;
+  skills: string[];
+  superAdmin?: boolean;
+  managedDepartments?: string[];
+  createdBy: string;
+}
 
 /**
  * State service for {@link User} entities.
@@ -52,9 +66,11 @@ export class UserService extends EntityStateService<User> {
       }),
     );
 
+  private readonly http = inject(HttpClient);
+
   constructor() {
     super();
-    this.seedUsers();
+    this.loadUsers();
   }
 
   /**
@@ -73,7 +89,17 @@ export class UserService extends EntityStateService<User> {
     dept: Department = "engineering",
   ): User => {
     const user = new User(firstName, lastName, email, role, dept, "admin");
+    const payload: UserDTO = {
+      id: user.id,
+      firstName, lastName, email,
+      role, department: dept,
+      skills: [],
+      createdBy: "admin",
+    };
     this.add(user);
+    this.http.post<UserDTO>("/api/users", payload).subscribe({
+      error: () => this.remove(user.id),
+    });
     return user;
   };
 
@@ -85,10 +111,13 @@ export class UserService extends EntityStateService<User> {
    */
   updateRole = (userId: string, role: UserRole): void => {
     const user = this.getById(userId);
-    if (user) {
-      user.promote(role);
-      this.update(userId, user as Partial<User>);
-    }
+    if (!user) return;
+    this.http.put<UserDTO>(`/api/users/${userId}`, { role }).subscribe({
+      next: () => {
+        user.promote(role);
+        this.update(userId, user as Partial<User>);
+      },
+    });
   };
 
   /**
@@ -126,6 +155,27 @@ export class UserService extends EntityStateService<User> {
           sort.direction,
         )
       : sortBy(result, (u) => u.fullName);
+  };
+
+  private loadUsers = (): void => {
+    this.http.get<UserDTO[]>('/api/users').subscribe({
+      next: (dtos) => this.addMany(dtos.map(this.hydrateUser)),
+      error: () => this.seedUsers(),
+    });
+  };
+
+  private hydrateUser = (dto: UserDTO): User => {
+    let user: User;
+    if (dto.superAdmin !== undefined) {
+      const admin = new AdminUser(dto.firstName, dto.lastName, dto.email, dto.superAdmin);
+      admin.managedDepartments = (dto.managedDepartments ?? []) as Department[];
+      user = admin;
+    } else {
+      user = new User(dto.firstName, dto.lastName, dto.email, dto.role as UserRole, dto.department as Department, dto.createdBy);
+    }
+    Object.assign(user, { id: dto.id });
+    (dto.skills ?? []).forEach((s) => user.addSkill(s));
+    return user;
   };
 
   private seedUsers = (): void => {

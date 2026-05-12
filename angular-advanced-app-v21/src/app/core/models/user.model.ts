@@ -164,6 +164,7 @@ export class User extends BaseEntity {
       this.department,
       this.createdBy,
     );
+    Object.assign(copy, { id: this.id });
     copy.bio = this.bio;
     copy.skills = [...this.skills];
     return copy;

@@ -6,6 +6,7 @@
 // ============================================================
 
 import { Injectable, OnDestroy, inject } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
 import {
   Observable,
   Subject,
@@ -29,6 +30,23 @@ import {
 } from "./entity-state.service";
 import { NotificationService } from "./notification.service";
 import { sortBy } from "../helpers/utils.helper";
+
+interface TaskDTO {
+  id: string;
+  title: string;
+  description: string;
+  priority: number;
+  taskStatus: string;
+  assigneeId?: string;
+  projectId?: string;
+  dueDate?: string;
+  estimatedHours?: number;
+  loggedHours: number;
+  tags: { label: string; color: string }[];
+  subtasks: { id: string; title: string; done: boolean }[];
+  comments?: { id: string; authorId: string; content: string; createdAt: string; edited: boolean }[];
+  createdBy: string;
+}
 
 /**
  * State service for {@link Task} entities.
@@ -94,10 +112,11 @@ export class TaskService extends EntityStateService<Task> implements OnDestroy {
   );
 
   private readonly notifications = inject(NotificationService);
+  private readonly http = inject(HttpClient);
 
   constructor() {
     super();
-    this.seedData();
+    this.loadTasks();
     this.startOverdueMonitor();
   }
 
@@ -124,6 +143,24 @@ export class TaskService extends EntityStateService<Task> implements OnDestroy {
       .build();
     this.add(task);
     this.notifications.success("Task created", `"${title}" added to board`);
+    this.http.post<TaskDTO>("/api/tasks", {
+      id: task.id,
+      title: task.title,
+      description: task.description,
+      priority: task.priority,
+      taskStatus: task.taskStatus,
+      assigneeId: task.assigneeId,
+      projectId: task.projectId,
+      dueDate: task.dueDate?.toISOString(),
+      estimatedHours: task.estimatedHours,
+      loggedHours: task.loggedHours,
+      tags: task.tags,
+      subtasks: task.subtasks,
+      comments: [],
+      createdBy: task.createdBy,
+    }).subscribe({
+      error: () => this.remove(task.id),
+    });
     return task;
   };
 
@@ -248,6 +285,28 @@ export class TaskService extends EntityStateService<Task> implements OnDestroy {
           sort.direction,
         )
       : sortBy(result, (t) => t.priority, "desc");
+  };
+
+  private loadTasks = (): void => {
+    this.http.get<TaskDTO[]>('/api/tasks').subscribe({
+      next: (dtos) => this.addMany(dtos.map(this.hydrateTask)),
+      error: () => this.seedData(),
+    });
+  };
+
+  private hydrateTask = (dto: TaskDTO): Task => {
+    const task = new Task(dto.title, dto.description ?? '', dto.priority as TaskPriority, dto.createdBy ?? 'system');
+    Object.assign(task, { id: dto.id });
+    task.taskStatus = dto.taskStatus as TaskStatus;
+    task.loggedHours = dto.loggedHours ?? 0;
+    if (dto.dueDate) task.dueDate = new Date(dto.dueDate);
+    if (dto.estimatedHours !== undefined) task.estimatedHours = dto.estimatedHours;
+    if (dto.assigneeId) task.assigneeId = dto.assigneeId;
+    if (dto.projectId) task.projectId = dto.projectId;
+    task.tags = dto.tags ?? [];
+    task.subtasks = dto.subtasks ?? [];
+    task.comments = (dto.comments ?? []).map(c => ({ ...c, createdAt: new Date(c.createdAt) }));
+    return task;
   };
 
   /** Polls every 60 seconds and warns when any tasks are overdue. */

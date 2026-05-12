@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "ng": "ng",
+    "server": "ts-node -P ./server/server.tsconfig.json ./server/server.ts",
     "start": "ng serve --configuration local",
     "start:dev": "ng serve --configuration development",
     "start:stg": "ng serve --configuration staging",
@@ -36,6 +37,7 @@
     "@angular-devkit/build-angular": "^21.2.9",
     "@angular/cli": "^21.2.9",
     "@angular/compiler-cli": "^21.2.10",
+    "@types/cors": "^2.8.19",
     "@types/jest": "^30.0.0",
     "@types/node": "^22.0.0",
     "angular-eslint": "21.3.1",
@@ -43,6 +45,7 @@
     "jest": "^30.3.0",
     "jest-environment-jsdom": "^30.3.0",
     "jest-preset-angular": "^16.1.4",
+    "ts-node": "~3.2.0",
     "typedoc": "^0.28.19",
     "typescript": "~5.9.2",
     "typescript-eslint": "8.59.1"

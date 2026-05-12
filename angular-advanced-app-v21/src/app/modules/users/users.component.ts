@@ -15,7 +15,13 @@ import {
 } from "@angular/core";
 
 import { AsyncPipe, CommonModule, NgClass } from "@angular/common";
-import { FormsModule } from "@angular/forms";
+import {
+  FormsModule,
+  ReactiveFormsModule,
+  FormBuilder,
+  FormGroup,
+  Validators,
+} from "@angular/forms";
 import { Subject, takeUntil } from "rxjs";
 
 import { UserService } from "../../core/services/user.service";
@@ -83,6 +89,7 @@ export class UserCardComponent {
     CommonModule,
     NgClass,
     FormsModule,
+    ReactiveFormsModule,
     UserCardComponent,
     RippleDirective,
   ],
@@ -98,6 +105,7 @@ export class UsersComponent implements OnInit, OnDestroy {
 
   private readonly notifications = inject(NotificationService);
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly fb = inject(FormBuilder);
 
   // ── Public Readonly Observables ──
 
@@ -117,6 +125,12 @@ export class UsersComponent implements OnInit, OnDestroy {
 
   /** Department filter */
   filterDept: Department | null = null;
+
+  /** Controls visibility of the Add Member modal */
+  showNewMemberModal = false;
+
+  /** Reactive form for creating a new member */
+  memberForm!: FormGroup;
 
   /** Subject for automatic unsubscription */
   private readonly destroy$ = new Subject<void>();
@@ -146,6 +160,14 @@ export class UsersComponent implements OnInit, OnDestroy {
   // ── Lifecycle Hooks ──
 
   ngOnInit(): void {
+    this.memberForm = this.fb.group({
+      firstName: ["", [Validators.required, Validators.minLength(2)]],
+      lastName:  ["", [Validators.required, Validators.minLength(2)]],
+      email:     ["", [Validators.required, Validators.email]],
+      role:      ["developer"],
+      department:["engineering"],
+    });
+
     this.userService.items$.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.cdr.markForCheck();
     });
@@ -216,25 +238,19 @@ export class UsersComponent implements OnInit, OnDestroy {
     this.cdr.markForCheck();
   }
 
-  /** Creates and adds a random new user */
-  addRandomUser(): void {
-    const names = [
-      ["Jordan", "Lee"],
-      ["Sam", "Patel"],
-      ["Alex", "Kim"],
-      ["Morgan", "Brown"],
-    ];
-    const [first, last] = names[Math.floor(Math.random() * names.length)];
+  /** Opens the Add Member modal */
+  openNewMemberModal(): void {
+    this.memberForm.reset({ role: "developer", department: "engineering" });
+    this.showNewMemberModal = true;
+  }
 
-    const user = this.userService.createUser(
-      first,
-      last,
-      `${first.toLowerCase()}.${last.toLowerCase()}@acme.com`,
-      "developer",
-      "engineering",
-    );
-
+  /** Submits the Add Member form */
+  submitNewMember(): void {
+    if (this.memberForm.invalid) return;
+    const { firstName, lastName, email, role, department } = this.memberForm.value;
+    const user = this.userService.createUser(firstName, lastName, email, role, department);
     this.notifications.success("Member added", user.fullName);
+    this.showNewMemberModal = false;
   }
 
   /** Converts user permissions object into array for template display */
