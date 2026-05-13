@@ -1,0 +1,546 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: >
+  React Vite app — CodePipeline CI/CD with dev / stage / prod environments.
+  Pipeline: Source → Deploy-Dev → [Approve] → Deploy-Stage → [Approve] → Deploy-Prod.
+  Each stage builds from source with environment-specific Vite mode and deploys to S3 + CloudFront.
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label: { default: Application }
+        Parameters: [AppName]
+      - Label: { default: GitHub Source }
+        Parameters: [GitHubOwner, GitHubRepo, GitHubBranch, CodeStarConnectionArn]
+      - Label: { default: Notifications }
+        Parameters: [ApprovalEmail]
+    ParameterLabels:
+      AppName: { default: Application name }
+      GitHubOwner: { default: GitHub owner / org }
+      GitHubRepo: { default: Repository name }
+      GitHubBranch: { default: Branch }
+      CodeStarConnectionArn: { default: CodeStar Connection ARN }
+      ApprovalEmail: { default: Approval notification email }
+
+Parameters:
+  AppName:
+    Type: String
+    Default: react-app
+    Description: Used as a prefix for all AWS resource names.
+
+  GitHubOwner:
+    Type: String
+    Description: GitHub username or organisation that owns the repository.
+
+  GitHubRepo:
+    Type: String
+    Description: GitHub repository name (without the owner prefix).
+
+  GitHubBranch:
+    Type: String
+    Default: main
+    Description: Branch that triggers the pipeline on every push.
+
+  CodeStarConnectionArn:
+    Type: String
+    Description: >
+      ARN of an existing CodeStar Connection to GitHub.
+      Create one first: AWS Console → Developer Tools → Settings → Connections.
+      The connection must be in "Available" status before deploying this stack.
+
+  ApprovalEmail:
+    Type: String
+    Description: Email address that receives stage and prod approval requests via SNS.
+
+Resources:
+
+  # ── Static Hosting: S3 Buckets ───────────────────────────────────────────
+
+  DevBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub '${AppName}-dev-${AWS::AccountId}-${AWS::Region}'
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+
+  StageBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub '${AppName}-stage-${AWS::AccountId}-${AWS::Region}'
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+
+  ProdBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub '${AppName}-prod-${AWS::AccountId}-${AWS::Region}'
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+
+  # ── CloudFront Origin Access Control ─────────────────────────────────────
+
+  OriginAccessControl:
+    Type: AWS::CloudFront::OriginAccessControl
+    Properties:
+      OriginAccessControlConfig:
+        Name: !Sub '${AppName}-oac'
+        OriginAccessControlOriginType: s3
+        SigningBehavior: always
+        SigningProtocol: sigv4
+
+  # ── CloudFront Distributions ─────────────────────────────────────────────
+
+  DevDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Comment: !Sub '${AppName} — dev'
+        Enabled: true
+        DefaultRootObject: index.html
+        HttpVersion: http2and3
+        Origins:
+          - Id: DevS3
+            DomainName: !GetAtt DevBucket.RegionalDomainName
+            S3OriginConfig:
+              OriginAccessIdentity: ''
+            OriginAccessControlId: !GetAtt OriginAccessControl.Id
+        DefaultCacheBehavior:
+          TargetOriginId: DevS3
+          ViewerProtocolPolicy: redirect-to-https
+          CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6  # CachingOptimized (AWS managed)
+          Compress: true
+        CustomErrorResponses:
+          - ErrorCode: 403
+            ResponseCode: 200
+            ResponsePagePath: /index.html
+            ErrorCachingMinTTL: 0
+          - ErrorCode: 404
+            ResponseCode: 200
+            ResponsePagePath: /index.html
+            ErrorCachingMinTTL: 0
+
+  StageDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Comment: !Sub '${AppName} — stage'
+        Enabled: true
+        DefaultRootObject: index.html
+        HttpVersion: http2and3
+        Origins:
+          - Id: StageS3
+            DomainName: !GetAtt StageBucket.RegionalDomainName
+            S3OriginConfig:
+              OriginAccessIdentity: ''
+            OriginAccessControlId: !GetAtt OriginAccessControl.Id
+        DefaultCacheBehavior:
+          TargetOriginId: StageS3
+          ViewerProtocolPolicy: redirect-to-https
+          CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6
+          Compress: true
+        CustomErrorResponses:
+          - ErrorCode: 403
+            ResponseCode: 200
+            ResponsePagePath: /index.html
+            ErrorCachingMinTTL: 0
+          - ErrorCode: 404
+            ResponseCode: 200
+            ResponsePagePath: /index.html
+            ErrorCachingMinTTL: 0
+
+  ProdDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Comment: !Sub '${AppName} — prod'
+        Enabled: true
+        DefaultRootObject: index.html
+        HttpVersion: http2and3
+        Origins:
+          - Id: ProdS3
+            DomainName: !GetAtt ProdBucket.RegionalDomainName
+            S3OriginConfig:
+              OriginAccessIdentity: ''
+            OriginAccessControlId: !GetAtt OriginAccessControl.Id
+        DefaultCacheBehavior:
+          TargetOriginId: ProdS3
+          ViewerProtocolPolicy: redirect-to-https
+          CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6
+          Compress: true
+        CustomErrorResponses:
+          - ErrorCode: 403
+            ResponseCode: 200
+            ResponsePagePath: /index.html
+            ErrorCachingMinTTL: 0
+          - ErrorCode: 404
+            ResponseCode: 200
+            ResponsePagePath: /index.html
+            ErrorCachingMinTTL: 0
+
+  # ── S3 Bucket Policies (allow CloudFront OAC reads) ───────────────────────
+
+  DevBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref DevBucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: AllowCloudFront
+            Effect: Allow
+            Principal:
+              Service: cloudfront.amazonaws.com
+            Action: s3:GetObject
+            Resource: !Sub '${DevBucket.Arn}/*'
+            Condition:
+              StringEquals:
+                AWS:SourceArn: !Sub 'arn:aws:cloudfront::${AWS::AccountId}:distribution/${DevDistribution}'
+
+  StageBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref StageBucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: AllowCloudFront
+            Effect: Allow
+            Principal:
+              Service: cloudfront.amazonaws.com
+            Action: s3:GetObject
+            Resource: !Sub '${StageBucket.Arn}/*'
+            Condition:
+              StringEquals:
+                AWS:SourceArn: !Sub 'arn:aws:cloudfront::${AWS::AccountId}:distribution/${StageDistribution}'
+
+  ProdBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref ProdBucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: AllowCloudFront
+            Effect: Allow
+            Principal:
+              Service: cloudfront.amazonaws.com
+            Action: s3:GetObject
+            Resource: !Sub '${ProdBucket.Arn}/*'
+            Condition:
+              StringEquals:
+                AWS:SourceArn: !Sub 'arn:aws:cloudfront::${AWS::AccountId}:distribution/${ProdDistribution}'
+
+  # ── Pipeline Artifact Store ───────────────────────────────────────────────
+
+  ArtifactBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub '${AppName}-artifacts-${AWS::AccountId}-${AWS::Region}'
+      VersioningConfiguration:
+        Status: Enabled
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      LifecycleConfiguration:
+        Rules:
+          - Id: ExpireArtifacts
+            Status: Enabled
+            ExpirationInDays: 30
+            NoncurrentVersionExpirationInDays: 7
+
+  # ── IAM: CodeBuild Role ───────────────────────────────────────────────────
+
+  CodeBuildRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub '${AppName}-codebuild-role'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: codebuild.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: CodeBuildPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Sid: Logs
+                Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/${AppName}*:*'
+
+              - Sid: ArtifactStore
+                Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:GetObjectVersion
+                  - s3:PutObject
+                  - s3:GetBucketAcl
+                  - s3:GetBucketLocation
+                Resource:
+                  - !GetAtt ArtifactBucket.Arn
+                  - !Sub '${ArtifactBucket.Arn}/*'
+
+              - Sid: DeployBuckets
+                Effect: Allow
+                Action:
+                  - s3:PutObject
+                  - s3:GetObject
+                  - s3:DeleteObject
+                  - s3:ListBucket
+                Resource:
+                  - !GetAtt DevBucket.Arn
+                  - !Sub '${DevBucket.Arn}/*'
+                  - !GetAtt StageBucket.Arn
+                  - !Sub '${StageBucket.Arn}/*'
+                  - !GetAtt ProdBucket.Arn
+                  - !Sub '${ProdBucket.Arn}/*'
+
+              - Sid: CloudFrontInvalidation
+                Effect: Allow
+                Action: cloudfront:CreateInvalidation
+                Resource:
+                  - !Sub 'arn:aws:cloudfront::${AWS::AccountId}:distribution/${DevDistribution}'
+                  - !Sub 'arn:aws:cloudfront::${AWS::AccountId}:distribution/${StageDistribution}'
+                  - !Sub 'arn:aws:cloudfront::${AWS::AccountId}:distribution/${ProdDistribution}'
+
+              - Sid: SSMSecrets
+                Effect: Allow
+                Action:
+                  - ssm:GetParameter
+                  - ssm:GetParameters
+                  - ssm:GetParametersByPath
+                Resource: !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/${AppName}/*'
+
+  # ── IAM: CodePipeline Role ────────────────────────────────────────────────
+
+  CodePipelineRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub '${AppName}-codepipeline-role'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: codepipeline.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: CodePipelinePolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Sid: ArtifactStore
+                Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:GetObjectVersion
+                  - s3:PutObject
+                  - s3:GetBucketVersioning
+                Resource:
+                  - !GetAtt ArtifactBucket.Arn
+                  - !Sub '${ArtifactBucket.Arn}/*'
+
+              - Sid: CodeBuild
+                Effect: Allow
+                Action:
+                  - codebuild:StartBuild
+                  - codebuild:BatchGetBuilds
+                Resource: !Sub 'arn:aws:codebuild:${AWS::Region}:${AWS::AccountId}:project/${AppName}-*'
+
+              - Sid: CodeStarConnection
+                Effect: Allow
+                Action: codestar-connections:UseConnection
+                Resource: !Ref CodeStarConnectionArn
+
+              - Sid: Notifications
+                Effect: Allow
+                Action: sns:Publish
+                Resource: !Ref ApprovalTopic
+
+  # ── CodeBuild Project ─────────────────────────────────────────────────────
+
+  BuildDeployProject:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: !Sub '${AppName}-build-deploy'
+      Description: Build React/Vite app and sync to S3 + invalidate CloudFront.
+      ServiceRole: !GetAtt CodeBuildRole.Arn
+      Environment:
+        Type: LINUX_CONTAINER
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/standard:7.0
+        EnvironmentVariables:
+          - Name: ENVIRONMENT
+            Value: development
+          - Name: S3_BUCKET
+            Value: !Ref DevBucket
+          - Name: CF_DISTRIBUTION_ID
+            Value: !Ref DevDistribution
+      Source:
+        Type: CODEPIPELINE
+        BuildSpec: buildspec.yml
+      Artifacts:
+        Type: CODEPIPELINE
+      LogsConfig:
+        CloudWatchLogs:
+          Status: ENABLED
+          GroupName: !Sub '/aws/codebuild/${AppName}'
+
+  # ── SNS: Approval Notifications ───────────────────────────────────────────
+
+  ApprovalTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: !Sub '${AppName}-pipeline-approvals'
+
+  ApprovalSubscription:
+    Type: AWS::SNS::Subscription
+    Properties:
+      TopicArn: !Ref ApprovalTopic
+      Protocol: email
+      Endpoint: !Ref ApprovalEmail
+
+  # ── CodePipeline ──────────────────────────────────────────────────────────
+
+  Pipeline:
+    Type: AWS::CodePipeline::Pipeline
+    DependsOn: [CodePipelineRole, BuildDeployProject]
+    Properties:
+      Name: !Sub '${AppName}-pipeline'
+      RoleArn: !GetAtt CodePipelineRole.Arn
+      ArtifactStore:
+        Type: S3
+        Location: !Ref ArtifactBucket
+      Stages:
+
+        - Name: Source
+          Actions:
+            - Name: GitHub
+              ActionTypeId:
+                Category: Source
+                Owner: AWS
+                Provider: CodeStarSourceConnection
+                Version: '1'
+              Configuration:
+                ConnectionArn: !Ref CodeStarConnectionArn
+                FullRepositoryId: !Sub '${GitHubOwner}/${GitHubRepo}'
+                BranchName: !Ref GitHubBranch
+                OutputArtifactFormat: CODE_ZIP
+                DetectChanges: 'true'
+              OutputArtifacts:
+                - Name: SourceCode
+              RunOrder: 1
+
+        - Name: Deploy-Dev
+          Actions:
+            - Name: Build-and-Deploy-Dev
+              ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: '1'
+              Configuration:
+                ProjectName: !Ref BuildDeployProject
+                EnvironmentVariables: !Sub >-
+                  [{"name":"ENVIRONMENT","value":"development","type":"PLAINTEXT"},
+                  {"name":"S3_BUCKET","value":"${DevBucket}","type":"PLAINTEXT"},
+                  {"name":"CF_DISTRIBUTION_ID","value":"${DevDistribution}","type":"PLAINTEXT"}]
+              InputArtifacts:
+                - Name: SourceCode
+              RunOrder: 1
+
+        - Name: Approve-Stage
+          Actions:
+            - Name: Approve-Deploy-to-Stage
+              ActionTypeId:
+                Category: Approval
+                Owner: AWS
+                Provider: Manual
+                Version: '1'
+              Configuration:
+                NotificationArn: !Ref ApprovalTopic
+                CustomData: 'Review dev, then approve to promote to Stage.'
+                ExternalEntityLink: !Sub 'https://${DevDistribution.DomainName}'
+              RunOrder: 1
+
+        - Name: Deploy-Stage
+          Actions:
+            - Name: Build-and-Deploy-Stage
+              ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: '1'
+              Configuration:
+                ProjectName: !Ref BuildDeployProject
+                EnvironmentVariables: !Sub >-
+                  [{"name":"ENVIRONMENT","value":"staging","type":"PLAINTEXT"},
+                  {"name":"S3_BUCKET","value":"${StageBucket}","type":"PLAINTEXT"},
+                  {"name":"CF_DISTRIBUTION_ID","value":"${StageDistribution}","type":"PLAINTEXT"}]
+              InputArtifacts:
+                - Name: SourceCode
+              RunOrder: 1
+
+        - Name: Approve-Prod
+          Actions:
+            - Name: Approve-Deploy-to-Prod
+              ActionTypeId:
+                Category: Approval
+                Owner: AWS
+                Provider: Manual
+                Version: '1'
+              Configuration:
+                NotificationArn: !Ref ApprovalTopic
+                CustomData: 'Review stage, then approve to promote to PRODUCTION.'
+                ExternalEntityLink: !Sub 'https://${StageDistribution.DomainName}'
+              RunOrder: 1
+
+        - Name: Deploy-Prod
+          Actions:
+            - Name: Build-and-Deploy-Prod
+              ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: '1'
+              Configuration:
+                ProjectName: !Ref BuildDeployProject
+                EnvironmentVariables: !Sub >-
+                  [{"name":"ENVIRONMENT","value":"production","type":"PLAINTEXT"},
+                  {"name":"S3_BUCKET","value":"${ProdBucket}","type":"PLAINTEXT"},
+                  {"name":"CF_DISTRIBUTION_ID","value":"${ProdDistribution}","type":"PLAINTEXT"}]
+              InputArtifacts:
+                - Name: SourceCode
+              RunOrder: 1
+
+Outputs:
+  DevUrl:
+    Description: Dev environment CloudFront URL
+    Value: !Sub 'https://${DevDistribution.DomainName}'
+
+  StageUrl:
+    Description: Stage environment CloudFront URL
+    Value: !Sub 'https://${StageDistribution.DomainName}'
+
+  ProdUrl:
+    Description: Production CloudFront URL
+    Value: !Sub 'https://${ProdDistribution.DomainName}'
+
+  PipelineConsoleUrl:
+    Description: CodePipeline console link
+    Value: !Sub 'https://${AWS::Region}.console.aws.amazon.com/codesuite/codepipeline/pipelines/${AppName}-pipeline/view'
