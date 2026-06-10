@@ -2,16 +2,19 @@ import "./Cheatsheet.css";
 
 interface Section {
   title: string;
+  summary: string;
   items: { label: string; code: string }[];
 }
 
 const sections: Section[] = [
   {
     title: "Type Annotations",
+    summary:
+      "Attach explicit types to variables, arrays, and tuples. Prefer unknown over any when a type is uncertain, since unknown forces a check before use.",
     items: [
       {
         label: "Primitives & arrays",
-        code: `let name: string = 'Alice';
+        code: `let name: string = 'Alice';let name: string = 'Alice';let name: string = 'Alice';let name: string = 'Alice';
 let age: number = 30;
 let active: boolean = true;
 let nothing: null = null;
@@ -40,6 +43,8 @@ type StringThenNumbers = [string, ...number[]];`,
   },
   {
     title: "Interfaces",
+    summary:
+      "Describe the shape of objects. Interfaces can extend others, merge declarations, and include call signatures and index signatures.",
     items: [
       {
         label: "Defining & extending",
@@ -78,6 +83,8 @@ interface Api {
   },
   {
     title: "Type Aliases",
+    summary:
+      "Give a name to any type — object shapes, unions, intersections, primitives. Use type for unions/intersections; reach for interface when modeling extensible object APIs.",
     items: [
       {
         label: "Types vs interfaces",
@@ -111,6 +118,8 @@ type Shape =
   },
   {
     title: "Generics",
+    summary:
+      "Parameterize functions, interfaces, and classes over types so they stay reusable and type-safe, with constraints (extends) and default type parameters.",
     items: [
       {
         label: "Functions & constraints",
@@ -149,6 +158,8 @@ stack.push(1);`,
   },
   {
     title: "Utility Types",
+    summary:
+      "Built-in transforms that derive new types from existing ones — Partial/Required/Readonly, Pick/Omit/Record, and ReturnType/Parameters/Awaited.",
     items: [
       {
         label: "Partial, Required, Readonly",
@@ -213,6 +224,8 @@ type Instance = InstanceType<typeof MyClass>;`,
   },
   {
     title: "Type Narrowing",
+    summary:
+      "Refine a broad type to a more specific one within a branch using typeof/instanceof/in checks, discriminated unions, and user-defined type predicates (val is T).",
     items: [
       {
         label: "typeof, instanceof, in",
@@ -257,6 +270,8 @@ function isUser(val: unknown): val is User {
   },
   {
     title: "keyof & typeof",
+    summary:
+      "keyof produces the union of an object type's property keys; typeof (in type position) lifts a runtime value into its inferred type. Together they enable type-safe key access.",
     items: [
       {
         label: "keyof operator",
@@ -299,6 +314,8 @@ type CreatedUser = ReturnType<typeof createUser>;`,
   },
   {
     title: "Mapped Types",
+    summary:
+      "Generate new types by iterating over the keys of another ([K in keyof T]), adding or stripping ?/readonly modifiers and remapping keys with an 'as' clause.",
     items: [
       {
         label: "Building mapped types",
@@ -333,6 +350,8 @@ type OnlyStrings<T> = {
   },
   {
     title: "Template Literal Types",
+    summary:
+      "Build string literal types from other types using ${} in type position, and parse them apart with infer — great for typed event names, CSS props, and route params.",
     items: [
       {
         label: "Type-level string operations",
@@ -353,6 +372,8 @@ type UserId = ExtractParam<'/users/123'>; // '123'`,
   },
   {
     title: "Conditional Types",
+    summary:
+      "Type-level if/else (T extends U ? X : Y), with infer to pull a type out from inside another. They distribute over unions, applying member-by-member.",
     items: [
       {
         label: "Conditional & infer",
@@ -374,6 +395,8 @@ type Clean = NonNullable<string | null | undefined>;
   },
   {
     title: "Enums",
+    summary:
+      "Named sets of constants — numeric (auto-incrementing) or string (more readable). const enums inline at compile time; many teams prefer an 'as const' object instead.",
     items: [
       {
         label: "Numeric & string enums",
@@ -414,6 +437,8 @@ type Status = typeof STATUS[keyof typeof STATUS];
   },
   {
     title: "Classes",
+    summary:
+      "TypeScript layers types onto JS classes: access modifiers (public/private/protected), readonly, constructor parameter properties, abstract classes, and implements.",
     items: [
       {
         label: "Access modifiers & readonly",
@@ -468,6 +493,8 @@ class ApiClient implements Repository<User> {
   },
   {
     title: "Type Assertions & Declarations",
+    summary:
+      "Override or tighten inferred types with as, satisfies, and the non-null ! operator, and extend existing types through declaration merging and module augmentation.",
     items: [
       {
         label: "as, satisfies, !",
@@ -512,15 +539,30 @@ declare module '*.svg' {
   },
 ];
 
+const slug = (title: string) =>
+  title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+
 const CheatsheetTS = () => (
   <div className="cheatsheet">
-    <h1>TypeScript Cheatsheet</h1>
+    <h1 id="top">TypeScript Cheatsheet</h1>
     <p className="subtitle">Types, generics, utility types, and type-level programming patterns.</p>
+
+    <nav className="cs-toc">
+      {sections.map((section) => (
+        <a key={section.title} href={`#${slug(section.title)}`}>
+          {section.title}
+        </a>
+      ))}
+    </nav>
 
     <div className="cs-grid">
       {sections.map((section) => (
-        <div key={section.title} className="cs-card">
+        <div key={section.title} id={slug(section.title)} className="cs-card">
           <h2>{section.title}</h2>
+          <p className="cs-summary">{section.summary}</p>
           {section.items.map((item) => (
             <div key={item.label} className="cs-item">
               <p className="cs-label">{item.label}</p>
@@ -529,6 +571,9 @@ const CheatsheetTS = () => (
               </pre>
             </div>
           ))}
+          <a className="cs-top" href="#top" title="Return to top" aria-label="Return to top">
+            <span className="material-icons">arrow_upward</span>
+          </a>
         </div>
       ))}
     </div>

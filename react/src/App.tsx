@@ -6,8 +6,10 @@ import Playground from "@/pages/Playground";
 import Cheatsheet from "@/pages/Cheatsheet";
 import CheatsheetES6 from "@/pages/CheatsheetES6";
 import CheatsheetTS from "@/pages/CheatsheetTS";
+import CheatsheetTanStack from "@/pages/CheatsheetTanStack";
 import RadialChartBuilder from "@/pages/RadialChartBuilder";
 import TypescriptInterviewWidget from "@/pages/TypescriptInterviewWidget";
+import InterviewChallenges from "@/pages/InterviewChallenges";
 
 import { useTheme } from "@/hooks/useTheme";
 import "@/App.css";
@@ -32,8 +34,10 @@ const App = () => {
           <Route path="/cheatsheet" element={<Cheatsheet />} />
           <Route path="/cheatsheet-es6" element={<CheatsheetES6 />} />
           <Route path="/cheatsheet-ts" element={<CheatsheetTS />} />
+          <Route path="/cheatsheet-tanstack" element={<CheatsheetTanStack />} />
           <Route path="/RadialChartBuilder" element={<RadialChartBuilder />} />
           <Route path="/TypescriptInterviewWidget" element={<TypescriptInterviewWidget />} />
+          <Route path="/interview-challenges" element={<InterviewChallenges />} />
         </Routes>
         <Footer />
       </div>

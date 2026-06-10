@@ -2,16 +2,19 @@ import "./Cheatsheet.css";
 
 interface Section {
   title: string;
+  summary: string;
   items: { label: string; code: string }[];
 }
 
 const sections: Section[] = [
   {
     title: "Variables",
+    summary:
+      "Block-scoped declarations: const for bindings that won't be reassigned (preferred), let for those that will; var is function-scoped and avoided in modern code.",
     items: [
       {
         label: "let / const",
-        code: `// const — immutable binding (preferred)
+        code: `// const — immutable binding (preferred) const — immutable binding (preferred) const — immutable binding (preferred) 
 const name = 'Alice';
 const PI = 3.14159;
 
@@ -26,6 +29,8 @@ count += 1;
   },
   {
     title: "Arrow Functions",
+    summary:
+      "Concise function syntax with implicit returns for single expressions. They have no own 'this' — they inherit it from the enclosing scope, which fixes many callback bugs.",
     items: [
       {
         label: "Syntax forms",
@@ -62,6 +67,8 @@ const makeUser = (name: string) => ({ name, active: true });`,
   },
   {
     title: "Template Literals",
+    summary:
+      "Backtick strings with ${} interpolation and built-in multiline support, plus tagged templates that let a function process the string parts and values.",
     items: [
       {
         label: "Interpolation & multiline",
@@ -88,6 +95,8 @@ const result = highlight\`Hello \${'Alice'}, you have \${3} messages.\`;
   },
   {
     title: "Destructuring",
+    summary:
+      "Unpack values from objects and arrays into variables — with renaming, default values, nesting, and directly in function parameters.",
     items: [
       {
         label: "Object destructuring",
@@ -131,6 +140,8 @@ const sum = ([a, b, c]: number[]) => a + b + c;`,
   },
   {
     title: "Spread & Rest",
+    summary:
+      "The same ... operator, two directions: spread expands an array/object into another (clone, merge, pass args); rest collects remaining items into an array or object.",
     items: [
       {
         label: "Spread operator",
@@ -163,6 +174,8 @@ const { a, b, ...remaining } = { a: 1, b: 2, c: 3, d: 4 };
   },
   {
     title: "Default Parameters",
+    summary:
+      "Give parameters fallback values used when the argument is undefined; a later default can reference an earlier parameter.",
     items: [
       {
         label: "Syntax",
@@ -180,6 +193,8 @@ const range = (start = 0, end = start + 10) => [start, end];`,
   },
   {
     title: "Classes",
+    summary:
+      "Syntactic sugar over prototypes: fields, constructors, private #fields, static members, and inheritance via extends/super.",
     items: [
       {
         label: "Class syntax",
@@ -217,6 +232,8 @@ dog.speak(); // "Rex says woof"`,
   },
   {
     title: "Modules",
+    summary:
+      "Share code across files with import/export — named exports, a single default export, and re-exports for barrel (index) files.",
     items: [
       {
         label: "Named exports",
@@ -255,6 +272,8 @@ export * from './utils';`,
   },
   {
     title: "Promises",
+    summary:
+      "Objects representing an eventual async result. Chain with then/catch/finally, and coordinate several with all, race, allSettled, and any.",
     items: [
       {
         label: "Creating & chaining",
@@ -292,6 +311,8 @@ const first = await Promise.any([fetchA(), fetchB()]);`,
   },
   {
     title: "Async / Await",
+    summary:
+      "Write asynchronous code that reads like synchronous code: await pauses until a promise settles, try/catch handles errors, and Promise.all runs work in parallel.",
     items: [
       {
         label: "Basic pattern",
@@ -328,6 +349,8 @@ const loadAll = async () => {
   },
   {
     title: "Optional Chaining & Nullish",
+    summary:
+      "?. safely reads possibly-missing properties/methods without throwing; ?? supplies a fallback only for null/undefined (unlike ||, which also triggers on 0 and '').",
     items: [
       {
         label: "Optional chaining (?.)",
@@ -362,6 +385,8 @@ user.name ??= 'Anonymous';   // only assigns if null/undefined`,
   },
   {
     title: "Array Methods",
+    summary:
+      "Higher-order helpers to transform (map/filter/reduce/flatMap), search (find/some/every), and slice or sort collections — most without mutating the original.",
     items: [
       {
         label: "Transforming",
@@ -397,6 +422,8 @@ arr.flat(2);         // flattens nested arrays 2 levels`,
   },
   {
     title: "Object Methods",
+    summary:
+      "Shorthand properties, shorthand methods, and computed keys for building objects, plus Object.keys/values/entries/fromEntries/assign for inspecting and reshaping them.",
     items: [
       {
         label: "Shorthand & computed keys",
@@ -435,6 +462,8 @@ Object.assign({}, obj, { d: 4 }); // shallow merge`,
   },
   {
     title: "Map & Set",
+    summary:
+      "Keyed collections: Map stores key→value pairs with keys of any type and remembers insertion order; Set stores unique values, making deduplication trivial.",
     items: [
       {
         label: "Map",
@@ -476,6 +505,8 @@ const intersection = new Set([...a].filter(x => b.has(x)));`,
   },
   {
     title: "Iterators & for...of",
+    summary:
+      "Loop over any iterable (arrays, strings, Maps, Sets) with for...of, and produce lazy or even infinite sequences with generator functions that yield values on demand.",
     items: [
       {
         label: "for...of",
@@ -514,15 +545,30 @@ gen.next().value; // 2`,
   },
 ];
 
+const slug = (title: string) =>
+  title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+
 const CheatsheetES6 = () => (
   <div className="cheatsheet">
-    <h1>ES6+ Cheatsheet</h1>
+    <h1 id="top">ES6+ Cheatsheet</h1>
     <p className="subtitle">Modern JavaScript syntax and features from ES2015 onwards.</p>
+
+    <nav className="cs-toc">
+      {sections.map((section) => (
+        <a key={section.title} href={`#${slug(section.title)}`}>
+          {section.title}
+        </a>
+      ))}
+    </nav>
 
     <div className="cs-grid">
       {sections.map((section) => (
-        <div key={section.title} className="cs-card">
+        <div key={section.title} id={slug(section.title)} className="cs-card">
           <h2>{section.title}</h2>
+          <p className="cs-summary">{section.summary}</p>
           {section.items.map((item) => (
             <div key={item.label} className="cs-item">
               <p className="cs-label">{item.label}</p>
@@ -531,6 +577,9 @@ const CheatsheetES6 = () => (
               </pre>
             </div>
           ))}
+          <a className="cs-top" href="#top" title="Return to top" aria-label="Return to top">
+            <span className="material-icons">arrow_upward</span>
+          </a>
         </div>
       ))}
     </div>

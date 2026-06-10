@@ -7,8 +7,10 @@ const navItems = [
   { label: "Cheatsheet", href: "/cheatsheet" },
   { label: "ES6", href: "/cheatsheet-es6" },
   { label: "TypeScript", href: "/cheatsheet-ts" },
+  { label: "TanStack", href: "/cheatsheet-tanstack" },
   { label: "Playoffs", href: "/RadialChartBuilder" },
   { label: "TS Interview Widget", href: "/TypescriptInterviewWidget" },
+  { label: "Challenges", href: "/interview-challenges" },
 ];
 
 interface NavbarProps {

@@ -21,6 +21,34 @@
   font-size: 0.95rem;
 }
 
+.cs-toc {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 36px;
+}
+
+.cs-toc a {
+  font-size: 0.78rem;
+  line-height: 1;
+  padding: 7px 13px;
+  border-radius: 999px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  color: var(--card-text);
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.cs-toc a:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
 .cs-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
@@ -37,6 +65,8 @@
   border: 1px solid var(--card-border);
   border-radius: 12px;
   padding: 20px;
+  scroll-margin-top: 80px;
+  position: relative;
 
   h2 {
     font-size: 0.75rem;
@@ -46,8 +76,37 @@
     color: var(--accent);
     margin: 0 0 16px;
     padding-bottom: 10px;
+    padding-right: 28px;
     border-bottom: 1px solid var(--card-border);
   }
+}
+
+.cs-summary {
+  font-size: 0.82rem;
+  line-height: 1.55;
+  color: var(--card-text);
+  margin: -6px 0 16px !important;
+  opacity: 0.85;
+}
+
+.cs-top {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  opacity: 0.6;
+  transition: opacity 0.15s ease;
+}
+
+.cs-top:hover {
+  opacity: 1;
+}
+
+.cs-top .material-icons {
+  font-size: 20px;
 }
 
 .cs-item {

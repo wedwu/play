@@ -2,12 +2,15 @@ import "./Cheatsheet.css";
 
 interface Section {
   title: string;
+  summary: string;
   items: { label: string; code: string }[];
 }
 
 const sections: Section[] = [
   {
     title: "Component",
+    summary:
+      "The building block of a React UI — a function that returns JSX. Data flows in through props, which can declare defaults and optional fields.",
     items: [
       {
         label: "Function component",
@@ -32,6 +35,8 @@ const User = ({ name, age = 18 }: Props) => (
   },
   {
     title: "Hooks — State",
+    summary:
+      "Give a component local, reactive state. useState holds a single value; useReducer manages more complex state through dispatched actions.",
     items: [
       {
         label: "useState",
@@ -60,6 +65,8 @@ dispatch({ type: 'inc' });`,
   },
   {
     title: "Hooks — Side Effects",
+    summary:
+      "Run code outside of rendering — fetching, subscriptions, DOM sync — with useEffect (and its cleanup), and cache expensive values or stable callbacks with useMemo/useCallback.",
     items: [
       {
         label: "useEffect",
@@ -81,7 +88,11 @@ useEffect(() => {
       },
       {
         label: "useMemo / useCallback",
-        code: `// Memoize expensive value
+        code: `// Memoize expensive value: useMemo is a 
+        // React hook that caches the result of an 
+        // expensive calculation between re-renders 
+        // to optimize performance. It only recomputes 
+        // the value when its dependencies change, preventing unnecessary recalculations on every render.
 const sorted = useMemo(
   () => [...items].sort(),
   [items]
@@ -96,6 +107,8 @@ const handleClick = useCallback(() => {
   },
   {
     title: "Hooks — Refs & Context",
+    summary:
+      "useRef holds a mutable value or DOM handle that persists across renders without triggering them; useContext reads shared data from a Provider without prop-drilling.",
     items: [
       {
         label: "useRef",
@@ -124,6 +137,8 @@ const theme = useContext(ThemeContext);`,
   },
   {
     title: "Custom Hooks",
+    summary:
+      "Extract reusable stateful logic into a function whose name starts with 'use', composing the built-in hooks so multiple components can share behavior.",
     items: [
       {
         label: "Pattern",
@@ -147,6 +162,8 @@ const [theme, setTheme] = useLocalStorage('theme', 'light');`,
   },
   {
     title: "JSX",
+    summary:
+      "The HTML-like syntax for describing UI. Render conditionally, map lists (always with a stable key), group siblings with fragments, and forward props via spread.",
     items: [
       {
         label: "Conditionals",
@@ -179,6 +196,8 @@ const [theme, setTheme] = useLocalStorage('theme', 'light');`,
   },
   {
     title: "Events",
+    summary:
+      "Respond to user interaction with camelCase handlers (onClick, onChange, onSubmit…) that receive typed React synthetic events.",
     items: [
       {
         label: "Common event handlers",
@@ -198,6 +217,8 @@ const [theme, setTheme] = useLocalStorage('theme', 'light');`,
   },
   {
     title: "Routing (react-router-dom v7)",
+    summary:
+      "Client-side navigation without full page reloads: declare routes, link between them, navigate programmatically, and read URL params.",
     items: [
       {
         label: "Setup",
@@ -227,6 +248,8 @@ const { id } = useParams();`,
   },
   {
     title: "Performance",
+    summary:
+      "Avoid unnecessary work: memo skips re-renders when props are unchanged, useMemo/useCallback cache values and functions, and lazy + Suspense code-split the bundle.",
     items: [
       {
         label: "React.memo",
@@ -253,6 +276,8 @@ const Dashboard = lazy(() => import('./Dashboard'));
   },
   {
     title: "TypeScript Patterns",
+    summary:
+      "Common React typings — accepting children, forwarding refs, and writing generic components that stay type-safe across the props they receive.",
     items: [
       {
         label: "Component with children",
@@ -291,16 +316,31 @@ const List = <T,>({ items, renderItem }: ListProps<T>) => (
   },
 ];
 
+const slug = (title: string) =>
+  title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+
 const Cheatsheet = () => {
   return (
     <div className="cheatsheet">
-      <h1>React Cheatsheet</h1>
+      <h1 id="top">React Cheatsheet</h1>
       <p className="subtitle">Quick reference for React concepts and patterns.</p>
+
+      <nav className="cs-toc">
+        {sections.map((section) => (
+          <a key={section.title} href={`#${slug(section.title)}`}>
+            {section.title}
+          </a>
+        ))}
+      </nav>
 
       <div className="cs-grid">
         {sections.map((section) => (
-          <div key={section.title} className="cs-card">
+          <div key={section.title} id={slug(section.title)} className="cs-card">
             <h2>{section.title}</h2>
+            <p className="cs-summary">{section.summary}</p>
             {section.items.map((item) => (
               <div key={item.label} className="cs-item">
                 <p className="cs-label">{item.label}</p>
@@ -309,6 +349,9 @@ const Cheatsheet = () => {
                 </pre>
               </div>
             ))}
+            <a className="cs-top" href="#top" title="Return to top" aria-label="Return to top">
+              <span className="material-icons">arrow_upward</span>
+            </a>
           </div>
         ))}
       </div>

@@ -90,6 +90,9 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "proxyConfig": "proxy.json"
+          },
           "configurations": {
             "local": {
               "buildTarget": "angular-advanced-app:build:local"
