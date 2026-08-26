@@ -1,0 +1,48 @@
+{
+  "manifestVersion": 1,
+  "id": "planning-poker-formgroup",
+  "publisher": "watsonink",
+  "version": "1.0.0",
+  "name": "Planning Poker (Work Item Panel)",
+  "description": "Real-time planning poker estimation embedded directly in work item forms.",
+  "public": false,
+  "categories": ["Azure Boards"],
+  "tags": ["planning poker", "estimation", "agile", "scrum", "story points"],
+  "icons": {
+    "default": "img/icon.png"
+  },
+  "targets": [
+    {
+      "id": "Microsoft.VisualStudio.Services"
+    }
+  ],
+  "scopes": [
+    "vso.work",
+    "vso.work_write"
+  ],
+  "contributions": [
+    {
+      "id": "planning-poker-panel",
+      "type": "ms.vss-work-web.work-item-form-group",
+      "description": "Planning Poker estimation panel for work items",
+      "targets": [
+        "ms.vss-work-web.work-item-form"
+      ],
+      "properties": {
+        "name": "Planning Poker",
+        "uri": "dist/poker-panel.html",
+        "height": 480
+      }
+    }
+  ],
+  "files": [
+    {
+      "path": "dist",
+      "addressable": true
+    },
+    {
+      "path": "img",
+      "addressable": true
+    }
+  ]
+}

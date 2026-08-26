@@ -1,0 +1,17 @@
+{
+  "name": "planning-poker-functions",
+  "version": "1.0.0",
+  "private": true,
+  "main": "src/index.js",
+  "scripts": {
+    "start": "func start",
+    "deploy": "func azure functionapp publish YOUR-FUNCTION-APP-NAME"
+  },
+  "dependencies": {
+    "@azure/functions": "^4.5.0",
+    "@azure/data-tables": "^13.2.2"
+  },
+  "devDependencies": {
+    "azure-functions-core-tools": "^4.0.0"
+  }
+}
