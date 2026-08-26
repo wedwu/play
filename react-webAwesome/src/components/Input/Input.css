@@ -1,0 +1,21 @@
+/* Input.css */
+
+wa-input::part(label) {
+  font-weight: 600;
+  font-size: 0.875rem;
+  /* WA text token — adapts to light/dark automatically. */
+  color: var(--wa-color-text-normal, #4c4c4c);
+  margin-block-end: 0.25rem;
+}
+
+wa-input {
+  --wa-form-control-label-color: var(--wa-color-text-normal, #1f2933);
+  display: block;
+  margin-block-end: 1rem;
+}
+
+p {
+  font-size: 0.875rem;
+  color: var(--wa-color-text-normal, #4c4c4c);
+  margin-block-start: 0.25rem;
+}

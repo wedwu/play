@@ -1,0 +1,116 @@
+/* UsersTable.css */
+
+.users-card {
+  display: block;
+  margin-block-start: 1.5rem;
+}
+
+.users-table-scroll {
+  overflow-x: auto;
+  --shadow-bg: var(--wa-color-surface-raised, #fff);
+  background:
+    linear-gradient(to right, var(--shadow-bg) 30%, transparent) 0 0,
+    linear-gradient(to left, var(--shadow-bg) 30%, transparent) 100% 0,
+    radial-gradient(farthest-side at 0 50%, rgba(0, 0, 0, 0.18), transparent) 0 0,
+    radial-gradient(farthest-side at 100% 50%, rgba(0, 0, 0, 0.18), transparent) 100% 0;
+  background-repeat: no-repeat;
+  background-size:
+    40px 100%,
+    40px 100%,
+    14px 100%,
+    14px 100%;
+  background-attachment: local, local, scroll, scroll;
+}
+
+.users-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.users-card__center {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.users-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.users-table th,
+.users-table td {
+  text-align: start;
+  padding: 0.625rem 0.75rem;
+  border-bottom: 1px solid var(--wa-color-surface-border, #e5e7eb);
+  line-height: 1.2;
+}
+
+.users-table th {
+  font-weight: 600;
+  color: var(--wa-color-text-quiet, #6b7280);
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+}
+
+.users-table tbody tr:hover {
+  background: var(--wa-color-surface-lowered, #f9fafb);
+}
+
+.users-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+@media (max-width: 640px) {
+  .users-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .users-table,
+  .users-table tbody,
+  .users-table tr,
+  .users-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .users-table tr {
+    border: 1px solid var(--wa-color-surface-border, #e5e7eb);
+    border-radius: var(--wa-border-radius-m, 0.5rem);
+    padding: 0.5rem 0.75rem;
+    margin-block-end: 0.75rem;
+  }
+
+  .users-table tr:last-child {
+    margin-block-end: 0;
+  }
+
+  .users-table td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.4rem 0;
+    border-bottom: none;
+    text-align: end;
+  }
+
+  .users-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: var(--wa-color-text-quiet, #6b7280);
+    text-transform: uppercase;
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    text-align: start;
+  }
+}

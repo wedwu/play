@@ -1,0 +1,13 @@
+/* Footer.css */
+
+.page-footer {
+  padding: 1rem;
+  text-align: center;
+  border-top: 1px solid var(--wa-color-surface-border, #e5e7eb);
+  color: var(--wa-color-text-quiet, #6b7280);
+}
+
+.wa-dark .page-footer {
+  border-top-color: var(--wa-color-surface-border, #eaedf2) !important;
+  color: var(--wa-color-text-quiet, #9ca3af);
+}

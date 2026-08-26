@@ -8,6 +8,7 @@ const navItems = [
   { label: "ES6", href: "/cheatsheet-es6" },
   { label: "TypeScript", href: "/cheatsheet-ts" },
   { label: "TanStack", href: "/cheatsheet-tanstack" },
+  { label: "Query", href: "/tanstack-query-demo" },
   { label: "Playoffs", href: "/RadialChartBuilder" },
   { label: "TS Interview Widget", href: "/TypescriptInterviewWidget" },
   { label: "Challenges", href: "/interview-challenges" },

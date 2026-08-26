@@ -1,0 +1,73 @@
+/* DoughnutChart.css */
+
+.doughnut {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.doughnut__figure {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.doughnut__ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  -webkit-mask: radial-gradient(circle closest-side, transparent 58%, #000 59%);
+  mask: radial-gradient(circle closest-side, transparent 58%, #000 59%);
+}
+
+.doughnut__hole {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.doughnut__total {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--wa-color-text-default, #1f2933);
+}
+
+.doughnut__unit {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--wa-color-text-quiet, #6b7280);
+}
+
+.doughnut__legend {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-size: 0.875rem;
+  min-width: 160px;
+}
+
+.doughnut__legend li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.doughnut__swatch {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.doughnut__value {
+  margin-inline-start: auto;
+  font-variant-numeric: tabular-nums;
+  color: var(--wa-color-text-quiet, #6b7280);
+}

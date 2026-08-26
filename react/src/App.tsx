@@ -7,6 +7,7 @@ import Cheatsheet from "@/pages/Cheatsheet";
 import CheatsheetES6 from "@/pages/CheatsheetES6";
 import CheatsheetTS from "@/pages/CheatsheetTS";
 import CheatsheetTanStack from "@/pages/CheatsheetTanStack";
+import TanStackQueryDemo from "@/pages/TanStackQueryDemo";
 import RadialChartBuilder from "@/pages/RadialChartBuilder";
 import TypescriptInterviewWidget from "@/pages/TypescriptInterviewWidget";
 import InterviewChallenges from "@/pages/InterviewChallenges";
@@ -35,6 +36,7 @@ const App = () => {
           <Route path="/cheatsheet-es6" element={<CheatsheetES6 />} />
           <Route path="/cheatsheet-ts" element={<CheatsheetTS />} />
           <Route path="/cheatsheet-tanstack" element={<CheatsheetTanStack />} />
+          <Route path="/tanstack-query-demo" element={<TanStackQueryDemo />} />
           <Route path="/RadialChartBuilder" element={<RadialChartBuilder />} />
           <Route path="/TypescriptInterviewWidget" element={<TypescriptInterviewWidget />} />
           <Route path="/interview-challenges" element={<InterviewChallenges />} />

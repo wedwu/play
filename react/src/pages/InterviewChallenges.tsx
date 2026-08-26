@@ -3,6 +3,8 @@ import Autocomplete from "@/components/interview/Autocomplete";
 import CustomHooksDemo from "@/components/interview/CustomHooksDemo";
 import FocusTrapModal from "@/components/interview/FocusTrapModal";
 import GenericList from "@/components/interview/GenericList";
+import InterviewQA from "@/components/interview/InterviewQA";
+import InterviewQuiz from "@/components/interview/InterviewQuiz";
 
 type Challenge = {
   id: string;
@@ -35,6 +37,20 @@ const CHALLENGES: Challenge[] = [
     label: "Generic <List<T>>",
     blurb: "One generic component renders two different element types, fully type-safe.",
     Component: GenericList,
+  },
+  {
+    id: "qa",
+    label: "Q&A",
+    blurb:
+      "Model answers to the most-asked React, hooks, TanStack Query, TypeScript & tooling questions.",
+    Component: InterviewQA,
+  },
+  {
+    id: "quiz",
+    label: "Quiz",
+    blurb:
+      "Multiple-choice quiz built from the Q&A bank — pick an answer for instant correct/incorrect feedback and a running score.",
+    Component: InterviewQuiz,
   },
 ];
 

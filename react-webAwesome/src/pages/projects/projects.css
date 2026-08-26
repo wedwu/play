@@ -1,0 +1,63 @@
+/* projects.css */
+
+[slot="banner"] {
+  padding: 0.5rem 1rem;
+  text-align: center;
+  font-size: 0.875rem;
+  background: var(--wa-color-brand-fill-loud, #4f46e5);
+  color: #fff;
+}
+
+.page-main {
+  padding: 1.5rem;
+  max-width: 1100px;
+  margin-inline: auto;
+}
+
+.page-main h1 {
+  margin-block-start: 0;
+  color: var(--wa-color-text-default, #1f2933);
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+  margin-block-start: 1.5rem;
+}
+
+.card-grid wa-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.card-grid wa-card h3 {
+  margin-block-start: 0;
+}
+
+.card-grid wa-card p {
+  text-align: left;
+  margin-block-end: auto;
+}
+
+.page-aside {
+  padding: 1.5rem 1rem;
+  border-inline-start: 1px solid var(--wa-color-surface-border, #e5e7eb);
+  min-width: 220px;
+}
+
+.page-aside h4 {
+  margin-block-start: 0;
+}
+
+@media (max-width: 768px) {
+  .page-aside {
+    display: none;
+  }
+}
+
+@media (max-width: 1024px) {
+  .page-aside {
+    display: none;
+  }
+}

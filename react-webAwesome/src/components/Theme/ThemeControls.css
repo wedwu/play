@@ -1,0 +1,7 @@
+/* ThemeControls.css */
+
+.theme-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}

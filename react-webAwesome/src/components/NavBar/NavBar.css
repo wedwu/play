@@ -1,0 +1,19 @@
+/* NavBar.css */
+
+.page-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 1rem 0.75rem;
+  min-width: 200px;
+}
+
+.page-nav wa-button {
+  width: 100%;
+  text-align: start;
+}
+
+.page-nav wa-button::part(label) {
+  width: 100%;
+  text-align: start;
+}

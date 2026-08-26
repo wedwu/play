@@ -1,0 +1,11 @@
+/* Aside.css */
+
+.page-aside {
+  padding: 1.5rem 1rem;
+  border-inline-start: 1px solid var(--wa-color-surface-border, #e5e7eb);
+  min-width: 220px;
+}
+
+.page-aside h4 {
+  margin-block-start: 0;
+}*/
