@@ -1,0 +1,137 @@
+@use "mixins" as m;
+
+.muted {
+  color: var(--wa-color-text-quiet);
+  font-size: var(--wa-font-size-s);
+  margin: var(--wa-space-2xs) 0 0;
+}
+
+.coverage-summary {
+  display: flex;
+  align-items: center;
+  gap: var(--wa-space-l);
+  flex-wrap: wrap;
+
+  &__headline {
+    margin: 0;
+    font-size: var(--wa-font-size-l);
+  }
+}
+
+.inventory {
+  @include m.auto-grid(13rem);
+
+  inline-size: 100%;
+  gap: var(--wa-space-xs);
+
+  &__item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--wa-space-xs);
+    padding: var(--wa-space-2xs) var(--wa-space-s);
+    border: var(--wa-border-width-s) solid var(--wa-color-surface-border);
+    border-radius: var(--wa-border-radius-s);
+  }
+
+  &__tag {
+    font-family: var(--wa-font-family-code);
+    font-size: var(--wa-font-size-xs);
+  }
+}
+
+.comparison-demo {
+  inline-size: 100%;
+  max-inline-size: 36rem;
+
+  &__pane {
+    display: grid;
+    place-items: center;
+    block-size: 12rem;
+    font-size: var(--wa-font-size-l);
+    font-weight: var(--wa-font-weight-semibold);
+
+    &--before {
+      background-color: var(--wa-color-neutral-fill-normal);
+      color: var(--wa-color-neutral-on-normal);
+    }
+
+    &--after {
+      background-color: var(--wa-color-brand-fill-loud);
+      color: var(--wa-color-brand-on-loud);
+    }
+  }
+}
+
+.icon-demo {
+  &--sm {
+    font-size: 1rem;
+  }
+
+  &--md {
+    font-size: 1.75rem;
+  }
+
+  &--lg {
+    font-size: 2.5rem;
+  }
+
+  &--danger {
+    color: var(--wa-color-danger-fill-loud);
+  }
+
+  &--success {
+    color: var(--wa-color-success-fill-loud);
+  }
+}
+
+.type-sample {
+  margin: 0;
+
+  &--3xl {
+    font-size: var(--wa-font-size-3xl);
+  }
+  &--2xl {
+    font-size: var(--wa-font-size-2xl);
+  }
+  &--xl {
+    font-size: var(--wa-font-size-xl);
+  }
+  &--l {
+    font-size: var(--wa-font-size-l);
+  }
+  &--m {
+    font-size: var(--wa-font-size-m);
+  }
+  &--s {
+    font-size: var(--wa-font-size-s);
+  }
+  &--xs {
+    font-size: var(--wa-font-size-xs);
+  }
+}
+
+.swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--wa-space-l);
+
+  &__group {
+    display: flex;
+    align-items: center;
+    gap: var(--wa-space-3xs);
+  }
+
+  &__chip {
+    inline-size: 2rem;
+    block-size: 2rem;
+    border-radius: var(--wa-border-radius-s);
+    border: var(--wa-border-width-s) solid var(--wa-color-surface-border);
+  }
+
+  &__label {
+    margin-inline-start: var(--wa-space-2xs);
+    font-size: var(--wa-font-size-s);
+    text-transform: capitalize;
+  }
+}

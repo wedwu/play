@@ -1,0 +1,4 @@
+# Static assets served at the site root.
+#
+# `wa-assets/` is generated here by scripts/sync-wa-assets.mjs (postinstall)
+# and is git-ignored — do not commit it.

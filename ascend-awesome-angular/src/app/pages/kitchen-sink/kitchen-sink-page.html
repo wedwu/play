@@ -1,0 +1,93 @@
+<aa-page-header
+  title="Kitchen sink"
+  summary="Components that did not fit the themed pages, plus a coverage inventory of the whole library."
+  [components]="['wa-comparison', 'wa-animation', 'wa-include', 'wa-resize-observer', 'wa-icon']"
+/>
+
+<aa-demo-section
+  heading="Coverage"
+  note="Every component Web Awesome 3.13 ships, and whether this repo renders it live."
+  [stack]="true"
+>
+  <div class="coverage-summary">
+    <wa-progress-ring [attr.value]="(demonstratedCount() / totalCount) * 100">
+      {{ demonstratedCount() }}/{{ totalCount }}
+    </wa-progress-ring>
+    <div>
+      <p class="coverage-summary__headline">
+        <strong>{{ demonstratedCount() }}</strong> of {{ totalCount }} components demonstrated
+      </p>
+      <p class="muted">
+        The remainder are behavioural utilities (observers, animation drivers) with no standalone visual output.
+      </p>
+    </div>
+  </div>
+
+  <wa-button-group label="Filter by group">
+    <wa-button size="small" appearance="outlined" (click)="setFilter('all')">All</wa-button>
+    <wa-button size="small" appearance="outlined" (click)="setFilter('Form')">Form</wa-button>
+    <wa-button size="small" appearance="outlined" (click)="setFilter('Display')">Display</wa-button>
+    <wa-button size="small" appearance="outlined" (click)="setFilter('Overlay')">Overlay</wa-button>
+    <wa-button size="small" appearance="outlined" (click)="setFilter('Navigation')">Navigation</wa-button>
+    <wa-button size="small" appearance="outlined" (click)="setFilter('Utility')">Utility</wa-button>
+  </wa-button-group>
+
+  <div class="inventory">
+    @for (entry of visibleInventory(); track entry.tag) {
+      <div class="inventory__item">
+        <code class="inventory__tag">{{ entry.tag }}</code>
+        <wa-badge size="small" [attr.variant]="entry.demonstrated ? 'success' : 'neutral'" appearance="outlined">
+          {{ entry.demonstrated ? 'live' : 'catalogued' }}
+        </wa-badge>
+      </div>
+    } @empty {
+      <p class="muted">No components in this group.</p>
+    }
+  </div>
+</aa-demo-section>
+
+<aa-demo-section
+  heading="Image comparison"
+  note="Draggable split between two layers — useful for before/after theming shots."
+  [stack]="true"
+>
+  <wa-comparison class="comparison-demo">
+    <div slot="before" class="comparison-demo__pane comparison-demo__pane--before">Before theming</div>
+    <div slot="after" class="comparison-demo__pane comparison-demo__pane--after">After theming</div>
+  </wa-comparison>
+</aa-demo-section>
+
+<aa-demo-section heading="Icons" note="Sized and coloured through ordinary CSS.">
+  <wa-icon name="house" class="icon-demo icon-demo--sm"></wa-icon>
+  <wa-icon name="gear" class="icon-demo icon-demo--md"></wa-icon>
+  <wa-icon name="rocket" class="icon-demo icon-demo--lg"></wa-icon>
+  <wa-icon name="heart" class="icon-demo icon-demo--lg icon-demo--danger"></wa-icon>
+  <wa-icon name="circle-check" class="icon-demo icon-demo--lg icon-demo--success"></wa-icon>
+</aa-demo-section>
+
+<aa-demo-section heading="Typography scale" note="Driven entirely by --wa-font-size-* tokens." [stack]="true">
+  <p class="type-sample type-sample--3xl">3XL — Display heading</p>
+  <p class="type-sample type-sample--2xl">2XL — Page title</p>
+  <p class="type-sample type-sample--xl">XL — Section heading</p>
+  <p class="type-sample type-sample--l">L — Subsection</p>
+  <p class="type-sample type-sample--m">M — Body copy</p>
+  <p class="type-sample type-sample--s">S — Secondary text</p>
+  <p class="type-sample type-sample--xs">XS — Captions and metadata</p>
+</aa-demo-section>
+
+<aa-demo-section
+  heading="Semantic colours"
+  note="The five groups AscendAwesome retargets in its theme layer."
+  [stack]="true"
+>
+  <div class="swatches">
+    @for (group of ['brand', 'neutral', 'success', 'warning', 'danger']; track group) {
+      <div class="swatches__group">
+        <div class="swatches__chip" [style.background-color]="'var(--wa-color-' + group + '-fill-loud)'"></div>
+        <div class="swatches__chip" [style.background-color]="'var(--wa-color-' + group + '-fill-normal)'"></div>
+        <div class="swatches__chip" [style.background-color]="'var(--wa-color-' + group + '-fill-quiet)'"></div>
+        <span class="swatches__label">{{ group }}</span>
+      </div>
+    }
+  </div>
+</aa-demo-section>

@@ -1,0 +1,57 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://registry.internal.example.com/
+          scope: "@ascend"
+
+      - name: Install
+        run: npm ci
+        env:
+          NPM_TOKEN: ${{ secrets.INTERNAL_NPM_TOKEN }}
+          # If using Web Awesome Pro, add the Font Awesome registry token here
+          # (and a matching @awesome.me scope entry in .npmrc). This is the ONLY
+          # place the FA token should live — client teams never need it.
+          # FA_NPM_TOKEN: ${{ secrets.FA_NPM_TOKEN }}
+
+      - name: Verify tag matches package version
+        run: |
+          PKG_VERSION=$(node -p "require('./package.json').version")
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          if [ "$PKG_VERSION" != "$TAG_VERSION" ]; then
+            echo "Tag $TAG_VERSION does not match package.json version $PKG_VERSION" >&2
+            exit 1
+          fi
+
+      - name: Build
+        run: npm run build
+
+      - name: Check publish contents
+        run: npm pack --dry-run
+
+      - name: Publish
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.INTERNAL_NPM_TOKEN }}
+          NPM_TOKEN: ${{ secrets.INTERNAL_NPM_TOKEN }}
+
+      # Uncomment when cutting a release on the maintenance line:
+      # - name: Tag as lts
+      #   run: npm dist-tag add @ascend/ascendawesome@${GITHUB_REF_NAME#v} lts
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{ secrets.INTERNAL_NPM_TOKEN }}

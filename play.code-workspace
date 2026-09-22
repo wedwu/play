@@ -1,20 +1,68 @@
 {
   "folders": [
     {
+      "name": "Chrome Extension React",
+      "path": "chrome-extension-mv3",
+    },
+    {
+      "name": "angular advanced (v21)",
+      "path": "angular-advanced-app-v21",
+    },
+    {
+      "name": "angular advanced (v17)",
+      "path": "angular-advanced-app",
+    },
+    {
       "name": "angular (v21)",
-      "path": "angular"
+      "path": "angular",
     },
     {
       "name": "angular-client (v17)",
-      "path": "graphql-fullstack/angular-client"
+      "path": "graphql-fullstack/angular-client",
     },
     {
       "name": "graphql-fullstack",
-      "path": "graphql-fullstack"
+      "path": "graphql-fullstack",
     },
     {
       "name": "react",
-      "path": "react"
-    }
-  ]
+      "path": "react",
+    },
+    {
+      "name": "system-map",
+      "path": "system-map",
+    },
+    {
+      "name": "reactive-angular-course",
+      "path": "reactive-angular-course",
+    },
+    {
+      "name": "CodeSandbox",
+      "path": "CodeSandbox",
+    },
+    {
+      "name": "react-webAwesome",
+      "path": "react-webAwesome",
+    },
+    {
+      "name": "angular-webawesome",
+      "path": "angular-webawesome",
+    },
+    {
+      "name": "auth-example",
+      "path": "auth-example",
+    },
+    {
+      "name": "thymesaved",
+      "path": "thymesaved",
+    },
+    {
+      "name": "planning-poker",
+      "path": "planning-poker",
+    },
+    {
+      "name": "ascend-awesome-angular",
+      "path": "ascend-awesome-angular",
+    },
+  ],
 }

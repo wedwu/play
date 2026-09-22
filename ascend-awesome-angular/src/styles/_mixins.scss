@@ -1,0 +1,56 @@
+@use "sass:map";
+
+/// Breakpoints used across the demo pages.
+$breakpoints: (
+  "sm": 480px,
+  "md": 768px,
+  "lg": 1024px,
+  "xl": 1280px,
+);
+
+/// Applies styles from the given breakpoint upwards.
+///
+/// @param {String} $name - Key from $breakpoints.
+/// @example scss
+///   .sidebar { display: none; @include from("md") { display: block; } }
+@mixin from($name) {
+  $size: map.get($breakpoints, $name);
+
+  @if $size == null {
+    @error "Unknown breakpoint `#{$name}`. Expected one of: #{map.keys($breakpoints)}.";
+  }
+
+  @media (min-width: $size) {
+    @content;
+  }
+}
+
+/// Panel treatment used to frame live component examples.
+@mixin example-surface {
+  padding: var(--wa-space-l);
+  border: var(--wa-border-width-s) solid var(--wa-color-surface-border);
+  border-radius: var(--wa-border-radius-m);
+  background-color: var(--wa-color-surface-default);
+}
+
+/// Responsive auto-fitting grid.
+///
+/// @param {Length} $min - Minimum track width before wrapping.
+@mixin auto-grid($min: 16rem) {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax($min, 1fr));
+  gap: var(--wa-space-l);
+}
+
+/// Hides content visually while leaving it available to assistive technology.
+@mixin visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

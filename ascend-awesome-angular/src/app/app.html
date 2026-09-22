@@ -1,0 +1,60 @@
+<div class="shell">
+  <header class="shell__header">
+    <a class="shell__brand" routerLink="/">
+      <wa-icon name="mountain-sun" label="AscendAwesome"></wa-icon>
+      <span class="shell__brand-text">AscendAwesome</span>
+      <wa-badge variant="neutral" appearance="outlined">Angular</wa-badge>
+    </a>
+
+    <div class="shell__header-actions">
+      <wa-tooltip for="theme-toggle" placement="bottom">
+        Switch to {{ themeMode() === 'dark' ? 'light' : 'dark' }} theme
+      </wa-tooltip>
+      <wa-button id="theme-toggle" appearance="plain" size="small" (click)="toggleTheme()">
+        <wa-icon [attr.name]="themeMode() === 'dark' ? 'sun' : 'moon'" label="Toggle theme"></wa-icon>
+      </wa-button>
+
+      <wa-button
+        appearance="outlined"
+        size="small"
+        href="https://webawesome.com/docs/"
+        target="_blank"
+        rel="noreferrer"
+      >
+        <wa-icon slot="start" name="book"></wa-icon>
+        Docs
+      </wa-button>
+    </div>
+  </header>
+
+  <div class="shell__body">
+    <nav class="shell__sidebar" aria-label="Demo pages">
+      <ul class="shell__nav">
+        @for (page of pages; track page.path) {
+          <li>
+            <a
+              class="shell__nav-link"
+              [routerLink]="page.path"
+              routerLinkActive="shell__nav-link--active"
+              [attr.aria-label]="page.label"
+            >
+              <wa-icon [attr.name]="page.icon"></wa-icon>
+              <span>{{ page.label }}</span>
+            </a>
+          </li>
+        }
+      </ul>
+
+      <wa-divider></wa-divider>
+
+      <p class="shell__sidebar-note">
+        Components are cherry-picked from
+        <code>&#64;awesome.me/webawesome</code> and themed through <code>--wa-*</code> tokens.
+      </p>
+    </nav>
+
+    <main class="shell__content">
+      <router-outlet />
+    </main>
+  </div>
+</div>

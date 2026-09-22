@@ -1,0 +1,30 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": ["src/app"],
+  "entryPointStrategy": "expand",
+  "exclude": ["**/*.spec.ts", "**/*.stories.ts", "**/node_modules/**"],
+  "out": "docs",
+  "name": "AscendAwesome Angular",
+  "readme": "README.md",
+  "includeVersion": true,
+  "excludePrivate": true,
+  "excludeProtected": false,
+  "categorizeByGroup": true,
+  "navigationLinks": {
+    "Web Awesome": "https://webawesome.com"
+  },
+  "externalSymbolLinkMappings": {
+    "@awesome.me/webawesome": {
+      "setBasePath": "https://webawesome.com/docs/#setting-the-base-path"
+    },
+    "@angular/forms": {
+      "ControlValueAccessor": "https://angular.dev/api/forms/ControlValueAccessor",
+      "AbstractControl": "https://angular.dev/api/forms/AbstractControl"
+    }
+  },
+  "validation": {
+    "notExported": false,
+    "invalidLink": true,
+    "notDocumented": true
+  }
+}

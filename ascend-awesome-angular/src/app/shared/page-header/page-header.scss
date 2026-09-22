@@ -1,0 +1,23 @@
+.page-header {
+  margin-block-end: var(--wa-space-2xl);
+
+  &__title {
+    margin: 0;
+    font-size: var(--wa-font-size-2xl);
+    font-weight: var(--wa-font-weight-bold);
+    line-height: var(--wa-line-height-condensed);
+  }
+
+  &__summary {
+    margin: var(--wa-space-xs) 0 0;
+    color: var(--wa-color-text-quiet);
+    max-inline-size: 70ch;
+  }
+
+  &__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--wa-space-2xs);
+    margin-block-start: var(--wa-space-m);
+  }
+}

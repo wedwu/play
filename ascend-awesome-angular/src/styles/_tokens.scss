@@ -1,0 +1,33 @@
+/// AscendAwesome theme layer.
+///
+/// Web Awesome components are styled through `--wa-*` custom properties, so
+/// theming is a matter of overriding tokens rather than reaching into shadow
+/// DOM. The values below are placeholders standing in for the real TruStage
+/// palette and type scale — replace them with the tokens exported from Figma.
+///
+/// Only semantic groups are retargeted here. The underlying palette scales
+/// (`--wa-color-blue-*` and friends) are left alone so component defaults keep
+/// working.
+
+:root {
+  // --- Brand ------------------------------------------------------------
+  --wa-color-brand-fill-loud: #0f4c81;
+  --wa-color-brand-fill-normal: #3d7ab0;
+  --wa-color-brand-fill-quiet: #e7eef5;
+  --wa-color-brand-on-loud: #ffffff;
+  --wa-color-brand-border-normal: #3d7ab0;
+
+  // --- Typography -------------------------------------------------------
+  // The SulSans variant stylesheet swaps this for the licensed family.
+  --wa-font-family-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --wa-font-family-heading: var(--wa-font-family-body);
+
+  // --- Shape ------------------------------------------------------------
+  --wa-border-radius-m: 0.375rem;
+  --wa-border-radius-l: 0.625rem;
+
+  // --- App chrome -------------------------------------------------------
+  --aa-sidebar-width: 15rem;
+  --aa-content-max-width: 72rem;
+  --aa-header-height: 3.5rem;
+}

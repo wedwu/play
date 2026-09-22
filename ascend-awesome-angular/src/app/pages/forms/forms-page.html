@@ -1,0 +1,151 @@
+<aa-page-header
+  title="Forms"
+  summary="Web Awesome input primitives, and how they bind to Angular's reactive forms."
+  [components]="[
+    'wa-input',
+    'wa-textarea',
+    'wa-select',
+    'wa-option',
+    'wa-checkbox',
+    'wa-radio-group',
+    'wa-radio',
+    'wa-switch',
+    'wa-slider',
+    'wa-rating',
+    'wa-number-input',
+    'wa-color-picker',
+    'wa-time-input',
+    'wa-otp-input',
+    'wa-tag-input',
+    'wa-button',
+    'wa-button-group',
+  ]"
+/>
+
+<aa-demo-section
+  heading="Bound to Angular forms"
+  note="Custom elements are not native inputs, so formControlName only works through a ControlValueAccessor. Submit to see the parsed value."
+  [stack]="true"
+>
+  <form class="profile-form" [formGroup]="profileForm" (ngSubmit)="handleSubmit()">
+    <div class="profile-form__grid">
+      <wa-input label="Full name" formControlName="fullName" required></wa-input>
+      <wa-input label="Email" type="email" formControlName="email" required></wa-input>
+
+      <wa-select label="Plan" formControlName="plan">
+        <wa-option value="starter">Starter</wa-option>
+        <wa-option value="standard">Standard</wa-option>
+        <wa-option value="enterprise">Enterprise</wa-option>
+      </wa-select>
+
+      <wa-number-input label="Seats" min="1" max="100" formControlName="seats"></wa-number-input>
+    </div>
+
+    <wa-slider label="Satisfaction" min="1" max="5" with-markers formControlName="satisfaction"></wa-slider>
+
+    <wa-radio-group label="Preferred contact" formControlName="contactMethod">
+      <wa-radio value="email">Email</wa-radio>
+      <wa-radio value="phone">Phone</wa-radio>
+      <wa-radio value="post">Post</wa-radio>
+    </wa-radio-group>
+
+    <wa-switch formControlName="newsletter">Subscribe to product updates</wa-switch>
+
+    <wa-textarea label="Notes" rows="3" formControlName="notes" hint="Optional."></wa-textarea>
+
+    <div class="profile-form__actions">
+      <wa-button type="submit" variant="brand">Submit</wa-button>
+      <wa-button type="button" appearance="outlined" (click)="handleReset()">Reset</wa-button>
+    </div>
+
+    @if (profileForm.invalid && profileForm.touched) {
+      <wa-callout variant="danger">
+        <wa-icon slot="icon" name="circle-exclamation"></wa-icon>
+        Fix the highlighted fields before submitting.
+      </wa-callout>
+    }
+
+    @if (submitted(); as payload) {
+      <wa-callout variant="success">
+        <wa-icon slot="icon" name="circle-check"></wa-icon>
+        <strong>Submitted value</strong>
+        <pre class="profile-form__payload">{{ payload }}</pre>
+      </wa-callout>
+    }
+  </form>
+</aa-demo-section>
+
+<aa-demo-section heading="Text inputs" note="Sizes, appearances, affixes and hints." [stack]="true">
+  <wa-input label="Default" placeholder="Type something"></wa-input>
+  <wa-input label="With hint" hint="We never share this." placeholder="you@example.com"></wa-input>
+  <wa-input label="With icons" placeholder="Search">
+    <wa-icon slot="start" name="magnifying-glass"></wa-icon>
+    <wa-icon slot="end" name="circle-xmark"></wa-icon>
+  </wa-input>
+  <wa-input label="Password" type="password" password-toggle value="hunter2"></wa-input>
+  <wa-input label="Disabled" disabled value="Not editable"></wa-input>
+  <wa-input label="Filled appearance" appearance="filled" placeholder="Filled"></wa-input>
+</aa-demo-section>
+
+<aa-demo-section heading="Input sizes">
+  <wa-input size="small" placeholder="Small"></wa-input>
+  <wa-input size="medium" placeholder="Medium"></wa-input>
+  <wa-input size="large" placeholder="Large"></wa-input>
+</aa-demo-section>
+
+<aa-demo-section heading="Specialised inputs" note="Purpose-built controls for dates, codes and lists." [stack]="true">
+  <wa-time-input label="Start time" value="09:00"></wa-time-input>
+  <wa-number-input label="Quantity" min="0" max="10" value="3"></wa-number-input>
+  <wa-tag-input label="Tags" value="design,system"></wa-tag-input>
+  <div>
+    <label class="field-label" for="otp">One-time code</label>
+    <wa-otp-input id="otp" length="6"></wa-otp-input>
+  </div>
+  <wa-color-picker label="Accent colour" value="#0f4c81"></wa-color-picker>
+</aa-demo-section>
+
+<aa-demo-section heading="Selection controls">
+  <wa-checkbox checked>Checked</wa-checkbox>
+  <wa-checkbox>Unchecked</wa-checkbox>
+  <wa-checkbox indeterminate>Indeterminate</wa-checkbox>
+  <wa-checkbox disabled>Disabled</wa-checkbox>
+  <wa-switch checked>Switch on</wa-switch>
+  <wa-switch>Switch off</wa-switch>
+</aa-demo-section>
+
+<aa-demo-section heading="Rating and slider" [stack]="true">
+  <wa-rating label="Overall rating" value="4"></wa-rating>
+  <wa-rating label="Read only" value="3" readonly></wa-rating>
+  <wa-slider label="Volume" value="60"></wa-slider>
+  <wa-slider label="Range with markers" min="0" max="100" step="25" value="50" with-markers with-tooltip></wa-slider>
+</aa-demo-section>
+
+<aa-demo-section heading="Buttons" note="Variants, appearances, sizes and grouping.">
+  <wa-button variant="brand">Brand</wa-button>
+  <wa-button variant="neutral">Neutral</wa-button>
+  <wa-button variant="success">Success</wa-button>
+  <wa-button variant="warning">Warning</wa-button>
+  <wa-button variant="danger">Danger</wa-button>
+</aa-demo-section>
+
+<aa-demo-section heading="Button appearances">
+  <wa-button variant="brand" appearance="accent">Accent</wa-button>
+  <wa-button variant="brand" appearance="filled">Filled</wa-button>
+  <wa-button variant="brand" appearance="outlined">Outlined</wa-button>
+  <wa-button variant="brand" appearance="plain">Plain</wa-button>
+  <wa-button variant="brand" loading>Loading</wa-button>
+  <wa-button variant="brand" disabled>Disabled</wa-button>
+  <wa-button variant="brand" pill>Pill</wa-button>
+  <wa-button variant="brand">
+    <wa-icon slot="start" name="cloud-arrow-up"></wa-icon>
+    With icon
+  </wa-button>
+</aa-demo-section>
+
+<aa-demo-section heading="Button group">
+  <wa-button-group label="Text alignment">
+    <wa-button appearance="outlined">Left</wa-button>
+    <wa-button appearance="outlined">Center</wa-button>
+    <wa-button appearance="outlined">Right</wa-button>
+  </wa-button-group>
+</aa-demo-section>

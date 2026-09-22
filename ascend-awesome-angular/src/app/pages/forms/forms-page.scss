@@ -1,0 +1,32 @@
+@use "mixins" as m;
+
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--wa-space-l);
+  inline-size: 100%;
+
+  &__grid {
+    @include m.auto-grid(14rem);
+  }
+
+  &__actions {
+    display: flex;
+    gap: var(--wa-space-xs);
+  }
+
+  &__payload {
+    margin: var(--wa-space-xs) 0 0;
+    font-family: var(--wa-font-family-code);
+    font-size: var(--wa-font-size-xs);
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+}
+
+.field-label {
+  display: block;
+  margin-block-end: var(--wa-space-2xs);
+  font-size: var(--wa-font-size-s);
+  font-weight: var(--wa-font-weight-semibold);
+}

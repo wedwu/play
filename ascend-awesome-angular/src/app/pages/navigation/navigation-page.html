@@ -1,0 +1,163 @@
+<aa-page-header
+  title="Navigation & layout"
+  summary="Structural components — tabs, accordions, breadcrumbs, menus and resizable panels."
+  [components]="[
+    'wa-tab-group',
+    'wa-tab',
+    'wa-tab-panel',
+    'wa-accordion',
+    'wa-accordion-item',
+    'wa-breadcrumb',
+    'wa-breadcrumb-item',
+    'wa-dropdown',
+    'wa-dropdown-item',
+    'wa-pagination',
+    'wa-split-panel',
+    'wa-divider',
+    'wa-scroller',
+  ]"
+/>
+
+<aa-demo-section heading="Breadcrumb" [stack]="true">
+  <wa-breadcrumb label="Breadcrumb">
+    <wa-breadcrumb-item href="#">Design system</wa-breadcrumb-item>
+    <wa-breadcrumb-item href="#">Packages</wa-breadcrumb-item>
+    <wa-breadcrumb-item href="#">ascend-awesome</wa-breadcrumb-item>
+    <wa-breadcrumb-item>v2.4.0</wa-breadcrumb-item>
+  </wa-breadcrumb>
+
+  <wa-breadcrumb label="Breadcrumb with icons">
+    <wa-breadcrumb-item href="#">
+      <wa-icon slot="start" name="house"></wa-icon>
+      Home
+    </wa-breadcrumb-item>
+    <wa-breadcrumb-item href="#">Components</wa-breadcrumb-item>
+    <wa-breadcrumb-item>Button</wa-breadcrumb-item>
+  </wa-breadcrumb>
+</aa-demo-section>
+
+<aa-demo-section heading="Tabs" note="Top and start placements." [stack]="true">
+  <wa-tab-group>
+    <wa-tab panel="install">Install</wa-tab>
+    <wa-tab panel="usage">Usage</wa-tab>
+    <wa-tab panel="theming">Theming</wa-tab>
+    <wa-tab panel="disabled" disabled>Disabled</wa-tab>
+
+    <wa-tab-panel name="install">
+      <p>Install from the private feed:</p>
+      <pre class="code-block">npm install &#64;trustage/ascend-awesome</pre>
+    </wa-tab-panel>
+    <wa-tab-panel name="usage">
+      <p>Import the theme and cherry-pick the components you need:</p>
+      <pre class="code-block">
+import '&#64;trustage/ascend-awesome/css';
+import '&#64;trustage/ascend-awesome/components/button';</pre>
+    </wa-tab-panel>
+    <wa-tab-panel name="theming">
+      <p>Override <code>--wa-*</code> custom properties — no shadow DOM surgery required.</p>
+    </wa-tab-panel>
+    <wa-tab-panel name="disabled">Never shown.</wa-tab-panel>
+  </wa-tab-group>
+
+  <wa-tab-group placement="start">
+    <wa-tab panel="overview">Overview</wa-tab>
+    <wa-tab panel="security">Security</wa-tab>
+    <wa-tab panel="support">Support</wa-tab>
+
+    <wa-tab-panel name="overview">Vertical tab placement, useful for settings screens.</wa-tab-panel>
+    <wa-tab-panel name="security">Publishing is CI-only; no static tokens are stored.</wa-tab-panel>
+    <wa-tab-panel name="support">Current major plus the previous major receive fixes.</wa-tab-panel>
+  </wa-tab-group>
+</aa-demo-section>
+
+<aa-demo-section heading="Accordion" [stack]="true">
+  <wa-accordion>
+    <wa-accordion-item open>
+      <span slot="summary">What ships in the package?</span>
+      Two stylesheets and two scripts, plus the Web Awesome asset tree the loader resolves against.
+    </wa-accordion-item>
+    <wa-accordion-item>
+      <span slot="summary">How is versioning handled?</span>
+      Strict semver. A Web Awesome major upgrade always forces a package major.
+    </wa-accordion-item>
+    <wa-accordion-item>
+      <span slot="summary">Can I use it without a bundler?</span>
+      Yes — serve the self-contained bundle and the asset tree from your static pipeline.
+    </wa-accordion-item>
+  </wa-accordion>
+</aa-demo-section>
+
+<aa-demo-section heading="Dropdown" note="Menus, submenus, icons and destructive items." [stack]="true">
+  <div class="inline-row">
+    <wa-dropdown>
+      <wa-button slot="trigger" appearance="outlined" with-caret>Actions</wa-button>
+      <wa-dropdown-item (click)="handleSelect('Publish')">
+        <wa-icon slot="icon" name="cloud-arrow-up"></wa-icon>
+        Publish
+      </wa-dropdown-item>
+      <wa-dropdown-item (click)="handleSelect('Tag as lts')">
+        <wa-icon slot="icon" name="tag"></wa-icon>
+        Tag as lts
+      </wa-dropdown-item>
+      <wa-divider></wa-divider>
+      <wa-dropdown-item variant="danger" (click)="handleSelect('Deprecate')">
+        <wa-icon slot="icon" name="trash"></wa-icon>
+        Deprecate
+      </wa-dropdown-item>
+    </wa-dropdown>
+
+    <span class="muted"
+      >Last selection: <strong>{{ lastSelection() }}</strong></span
+    >
+  </div>
+
+  <wa-dropdown>
+    <wa-button slot="trigger" appearance="plain" with-caret>
+      <wa-icon slot="start" name="filter"></wa-icon>
+      Filter
+    </wa-button>
+    <wa-dropdown-item type="checkbox" checked>Active</wa-dropdown-item>
+    <wa-dropdown-item type="checkbox">Invited</wa-dropdown-item>
+    <wa-dropdown-item type="checkbox">Suspended</wa-dropdown-item>
+  </wa-dropdown>
+</aa-demo-section>
+
+<aa-demo-section heading="Pagination" [stack]="true">
+  <wa-pagination
+    total-pages="12"
+    [attr.current-page]="currentPage()"
+    (change)="handlePageChange($event)"
+  ></wa-pagination>
+  <span class="muted"
+    >Current page: <strong>{{ currentPage() }}</strong></span
+  >
+</aa-demo-section>
+
+<aa-demo-section heading="Split panel" note="Draggable divider between two resizable regions." [stack]="true">
+  <wa-split-panel position="35" class="demo-split">
+    <div slot="start" class="demo-split__pane">
+      <strong>Navigation</strong>
+      <p>Drag the divider to resize.</p>
+    </div>
+    <div slot="end" class="demo-split__pane">
+      <strong>Content</strong>
+      <p>Both panes keep their own scroll context.</p>
+    </div>
+  </wa-split-panel>
+</aa-demo-section>
+
+<aa-demo-section heading="Scroller" note="Constrains overflow and adds shadow affordances." [stack]="true">
+  <wa-scroller orientation="horizontal" class="demo-scroller">
+    <div class="demo-scroller__row">
+      @for (item of [1, 2, 3, 4, 5, 6, 7, 8]; track item) {
+        <wa-card appearance="outlined" class="demo-scroller__card">Panel {{ item }}</wa-card>
+      }
+    </div>
+  </wa-scroller>
+</aa-demo-section>
+
+<aa-demo-section heading="Dividers" [stack]="true">
+  <p>Content above the divider.</p>
+  <wa-divider></wa-divider>
+  <p>Content below the divider.</p>
+</aa-demo-section>

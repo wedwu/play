@@ -1,0 +1,203 @@
+<aa-page-header
+  title="Data display"
+  summary="Presentational components and the formatting primitives that localise dates, numbers and sizes."
+  [components]="[
+    'wa-card',
+    'wa-badge',
+    'wa-avatar',
+    'wa-tag',
+    'wa-progress-bar',
+    'wa-progress-ring',
+    'wa-spinner',
+    'wa-skeleton',
+    'wa-tree',
+    'wa-tree-item',
+    'wa-format-bytes',
+    'wa-format-date',
+    'wa-format-number',
+    'wa-relative-time',
+    'wa-carousel',
+    'wa-qr-code',
+    'wa-comparison',
+  ]"
+/>
+
+<aa-demo-section heading="Cards" note="Header, body, footer and media slots." [stack]="true">
+  <div class="card-grid">
+    <wa-card appearance="outlined">
+      <span slot="header">Standard plan</span>
+      <p>Everything a small team needs to ship a design system.</p>
+      <div slot="footer" class="card-grid__footer">
+        <wa-badge variant="brand">Current</wa-badge>
+        <wa-button size="small" appearance="outlined">Manage</wa-button>
+      </div>
+    </wa-card>
+
+    <wa-card appearance="filled">
+      <span slot="header">Enterprise</span>
+      <p>SSO, audit logs and a private package registry.</p>
+      <div slot="footer" class="card-grid__footer">
+        <wa-badge variant="neutral" appearance="outlined">Available</wa-badge>
+        <wa-button size="small" variant="brand">Upgrade</wa-button>
+      </div>
+    </wa-card>
+
+    <wa-card appearance="accent">
+      <span slot="header">Usage this month</span>
+      <p class="card-grid__metric">
+        <wa-format-number value="128493" type="decimal"></wa-format-number>
+      </p>
+      <span slot="footer">component renders</span>
+    </wa-card>
+  </div>
+</aa-demo-section>
+
+<aa-demo-section heading="Badges" note="Status markers in every semantic variant.">
+  <wa-badge variant="brand">Brand</wa-badge>
+  <wa-badge variant="neutral">Neutral</wa-badge>
+  <wa-badge variant="success">Success</wa-badge>
+  <wa-badge variant="warning">Warning</wa-badge>
+  <wa-badge variant="danger">Danger</wa-badge>
+  <wa-badge variant="brand" appearance="outlined">Outlined</wa-badge>
+  <wa-badge variant="success" pill>Pill</wa-badge>
+</aa-demo-section>
+
+<aa-demo-section heading="Tags" note="Removable labels, typically for filters or chips.">
+  <wa-tag variant="brand">Design</wa-tag>
+  <wa-tag variant="neutral">Engineering</wa-tag>
+  <wa-tag variant="success" with-remove>Removable</wa-tag>
+  <wa-tag size="small">Small</wa-tag>
+  <wa-tag size="large" appearance="outlined">Large outlined</wa-tag>
+</aa-demo-section>
+
+<aa-demo-section heading="Avatars">
+  <wa-avatar label="Ada Lovelace" initials="AL"></wa-avatar>
+  <wa-avatar label="Grace Hopper" initials="GH" shape="rounded"></wa-avatar>
+  <wa-avatar label="Alan Turing" initials="AT" shape="square"></wa-avatar>
+  <wa-avatar label="Generic user"></wa-avatar>
+</aa-demo-section>
+
+<aa-demo-section
+  heading="Table with formatting primitives"
+  note="wa-format-bytes and wa-relative-time handle localisation without Angular pipes."
+  [stack]="true"
+>
+  <div class="table-wrapper">
+    <table class="data-table">
+      <caption class="visually-hidden">
+        Team members and their storage usage
+      </caption>
+      <thead>
+        <tr>
+          <th scope="col">Member</th>
+          <th scope="col">Status</th>
+          <th scope="col">Storage</th>
+          <th scope="col">Last seen</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (member of team; track member.name) {
+          <tr>
+            <td>
+              <div class="data-table__member">
+                <wa-avatar [attr.label]="member.name" [attr.initials]="member.initials" size="small"></wa-avatar>
+                <div>
+                  <div class="data-table__name">{{ member.name }}</div>
+                  <div class="data-table__role">{{ member.role }}</div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <wa-badge [attr.variant]="badgeVariant(member.status)" appearance="outlined">
+                {{ member.status }}
+              </wa-badge>
+            </td>
+            <td><wa-format-bytes [attr.value]="member.usageBytes"></wa-format-bytes></td>
+            <td><wa-relative-time [attr.date]="member.lastSeen.toISOString()"></wa-relative-time></td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</aa-demo-section>
+
+<aa-demo-section heading="Formatting primitives" [stack]="true">
+  <p>Bytes: <wa-format-bytes value="2048000"></wa-format-bytes></p>
+  <p>Bitrate: <wa-format-bytes value="2048000" unit="bit"></wa-format-bytes></p>
+  <p>Currency: <wa-format-number value="1299.5" type="currency" currency="USD" lang="en-US"></wa-format-number></p>
+  <p>Percent: <wa-format-number value="0.847" type="percent"></wa-format-number></p>
+  <p>Date: <wa-format-date date="2026-03-14T09:30:00Z" month="long" day="numeric" year="numeric"></wa-format-date></p>
+</aa-demo-section>
+
+<aa-demo-section heading="Progress and loading" [stack]="true">
+  <wa-progress-bar [attr.value]="progress()"></wa-progress-bar>
+  <wa-progress-bar indeterminate></wa-progress-bar>
+  <div class="inline-row">
+    <wa-progress-ring [attr.value]="progress()">{{ progress() }}%</wa-progress-ring>
+    <wa-spinner></wa-spinner>
+    <wa-spinner style="font-size: 2rem"></wa-spinner>
+  </div>
+</aa-demo-section>
+
+<aa-demo-section
+  heading="Skeletons"
+  note="Placeholder shapes shown while content loads. Toggle to compare states."
+  [stack]="true"
+>
+  <wa-button size="small" appearance="outlined" (click)="toggleLoading()">
+    {{ loading() ? 'Show loaded content' : 'Show skeletons' }}
+  </wa-button>
+
+  @if (loading()) {
+    <div class="skeleton-stack">
+      <wa-skeleton effect="sheen" class="skeleton-stack__title"></wa-skeleton>
+      <wa-skeleton effect="sheen"></wa-skeleton>
+      <wa-skeleton effect="sheen" class="skeleton-stack__short"></wa-skeleton>
+    </div>
+  } @else {
+    <div class="skeleton-stack">
+      <h3 class="skeleton-stack__loaded-title">Quarterly design system report</h3>
+      <p>Adoption reached 82% of production surfaces this quarter.</p>
+      <p>Twelve teams migrated off the legacy CDN distribution.</p>
+    </div>
+  }
+</aa-demo-section>
+
+<aa-demo-section heading="Tree" note="Hierarchical navigation with lazy expansion." [stack]="true">
+  <wa-tree>
+    <wa-tree-item expanded>
+      packages
+      <wa-tree-item expanded>
+        ascend-awesome
+        <wa-tree-item>trustage-aa.css</wa-tree-item>
+        <wa-tree-item>trustage-aa_sulsans.css</wa-tree-item>
+        <wa-tree-item>designsystem-webcomponents.js</wa-tree-item>
+        <wa-tree-item>webawesome.loader.js</wa-tree-item>
+      </wa-tree-item>
+      <wa-tree-item>
+        ascend-awesome-angular
+        <wa-tree-item>src</wa-tree-item>
+        <wa-tree-item>.storybook</wa-tree-item>
+      </wa-tree-item>
+    </wa-tree-item>
+    <wa-tree-item>docs</wa-tree-item>
+  </wa-tree>
+</aa-demo-section>
+
+<aa-demo-section heading="Carousel" [stack]="true">
+  <wa-carousel pagination navigation class="demo-carousel">
+    <wa-carousel-item>
+      <div class="demo-carousel__slide demo-carousel__slide--one">Tokens</div>
+    </wa-carousel-item>
+    <wa-carousel-item>
+      <div class="demo-carousel__slide demo-carousel__slide--two">Components</div>
+    </wa-carousel-item>
+    <wa-carousel-item>
+      <div class="demo-carousel__slide demo-carousel__slide--three">Patterns</div>
+    </wa-carousel-item>
+  </wa-carousel>
+</aa-demo-section>
+
+<aa-demo-section heading="QR code">
+  <wa-qr-code value="https://webawesome.com" label="Web Awesome documentation"></wa-qr-code>
+</aa-demo-section>

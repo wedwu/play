@@ -1,0 +1,120 @@
+@use "mixins" as m;
+
+.card-grid {
+  @include m.auto-grid(15rem);
+
+  inline-size: 100%;
+
+  &__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--wa-space-s);
+  }
+
+  &__metric {
+    margin: 0;
+    font-size: var(--wa-font-size-2xl);
+    font-weight: var(--wa-font-weight-bold);
+  }
+}
+
+.table-wrapper {
+  inline-size: 100%;
+  overflow-x: auto;
+}
+
+.data-table {
+  inline-size: 100%;
+  border-collapse: collapse;
+  font-size: var(--wa-font-size-s);
+
+  th,
+  td {
+    padding: var(--wa-space-s);
+    text-align: start;
+    border-block-end: var(--wa-border-width-s) solid var(--wa-color-surface-border);
+    vertical-align: middle;
+  }
+
+  th {
+    font-weight: var(--wa-font-weight-semibold);
+    color: var(--wa-color-text-quiet);
+    white-space: nowrap;
+  }
+
+  &__member {
+    display: flex;
+    align-items: center;
+    gap: var(--wa-space-s);
+  }
+
+  &__name {
+    font-weight: var(--wa-font-weight-semibold);
+  }
+
+  &__role {
+    color: var(--wa-color-text-quiet);
+    font-size: var(--wa-font-size-xs);
+  }
+}
+
+.inline-row {
+  display: flex;
+  align-items: center;
+  gap: var(--wa-space-l);
+}
+
+.skeleton-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--wa-space-s);
+  inline-size: 100%;
+  min-block-size: 6rem;
+
+  &__title {
+    inline-size: 60%;
+    block-size: 1.5rem;
+  }
+
+  &__short {
+    inline-size: 40%;
+  }
+
+  &__loaded-title {
+    margin: 0;
+    font-size: var(--wa-font-size-l);
+  }
+
+  p {
+    margin: 0;
+    color: var(--wa-color-text-quiet);
+  }
+}
+
+.demo-carousel {
+  inline-size: 100%;
+  max-inline-size: 32rem;
+
+  &__slide {
+    display: grid;
+    place-items: center;
+    block-size: 10rem;
+    border-radius: var(--wa-border-radius-m);
+    color: var(--wa-color-brand-on-loud);
+    font-size: var(--wa-font-size-xl);
+    font-weight: var(--wa-font-weight-semibold);
+
+    &--one {
+      background-color: var(--wa-color-brand-fill-loud);
+    }
+
+    &--two {
+      background-color: var(--wa-color-success-fill-loud);
+    }
+
+    &--three {
+      background-color: var(--wa-color-warning-fill-loud);
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "noUnusedLocals": false,
+    "noPropertyAccessFromIndexSignature": false
+  },
+  "include": ["../src/**/*.stories.ts", "../src/**/*.ts", "./*.ts"],
+  "exclude": ["../src/**/*.spec.ts"]
+}

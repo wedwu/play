@@ -1,0 +1,50 @@
+{
+  "name": "@ascend/ascendawesome",
+  "version": "4.2.0",
+  "description": "AscendAwesome design system — Ascend theme and curated components built on Web Awesome",
+  "license": "UNLICENSED",
+  "type": "module",
+  "_comment": "Publish registry comes from .npmrc — Azure Artifacts does not support publishConfig.registry overrides at publish time.",
+  "files": [
+    "dist",
+    "dist-cdn",
+    "CHANGELOG.md"
+  ],
+  "sideEffects": [
+    "*.css",
+    "./dist/components/*.js",
+    "./dist-cdn/**"
+  ],
+  "exports": {
+    ".": "./dist/index.js",
+    "./css": "./dist/themes/ascend.css",
+    "./css/min": "./dist/themes/ascend.min.css",
+    "./components/*": "./dist/components/*.js",
+    "./dist-cdn/*": "./dist-cdn/*",
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "clean": "rm -rf dist dist-cdn",
+    "build:js": "mkdir -p dist && cp src/index.js dist/index.js",
+    "build:components": "node scripts/build-components.mjs",
+    "build:css": "mkdir -p dist/themes && postcss src/themes/ascend.css -o dist/themes/ascend.css && postcss src/themes/ascend.css -o dist/themes/ascend.min.css --env production",
+    "build:cdn": "esbuild src/cdn-bundle.js --bundle --format=esm --minify --outfile=dist-cdn/ascendawesome.bundle.js && node scripts/copy-assets.mjs",
+    "build": "npm run clean && npm run build:js && npm run build:components && npm run build:css && npm run build:cdn",
+    "prepublishOnly": "npm run build",
+    "pack:check": "npm pack --dry-run"
+  },
+  "dependencies": {
+    "@awesome.me/webawesome": "3.11.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.23.0",
+    "postcss": "^8.4.0",
+    "postcss-cli": "^11.0.0",
+    "postcss-import": "^16.0.0",
+    "cssnano": "^7.0.0",
+    "autoprefixer": "^10.4.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

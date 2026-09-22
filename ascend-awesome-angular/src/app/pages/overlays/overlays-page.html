@@ -1,0 +1,135 @@
+<aa-page-header
+  title="Overlays & feedback"
+  summary="Dialogs, drawers, tooltips, popovers and inline messaging — the imperative corner of the library."
+  [components]="[
+    'wa-dialog',
+    'wa-drawer',
+    'wa-tooltip',
+    'wa-popover',
+    'wa-callout',
+    'wa-details',
+    'wa-copy-button',
+    'wa-spinner',
+    'wa-badge',
+  ]"
+/>
+
+<aa-demo-section
+  heading="Dialog"
+  note="The element owns its open state, so Angular sets .open on the element reference instead of re-rendering."
+  [stack]="true"
+>
+  <div class="inline-row">
+    <wa-button variant="brand" (click)="openDialog()">Open dialog</wa-button>
+    <span class="muted"
+      >Last action: <strong>{{ lastAction() }}</strong></span
+    >
+  </div>
+
+  <wa-dialog #dialog label="Publish to the private feed">
+    <p>
+      This publishes <code>&#64;trustage/ascend-awesome</code> to the internal registry and moves the
+      <code>latest</code> dist-tag. Client apps stay pinned until they update their lockfiles.
+    </p>
+    <wa-callout variant="warning">
+      <wa-icon slot="icon" name="triangle-exclamation"></wa-icon>
+      Publishing cannot be undone — versions are immutable.
+    </wa-callout>
+    <div slot="footer" class="dialog-footer">
+      <wa-button appearance="outlined" (click)="closeDialog('cancelled')">Cancel</wa-button>
+      <wa-button variant="brand" (click)="closeDialog('published')">Publish</wa-button>
+    </div>
+  </wa-dialog>
+</aa-demo-section>
+
+<aa-demo-section heading="Drawer" [stack]="true">
+  <wa-button appearance="outlined" (click)="openDrawer()">Open drawer</wa-button>
+
+  <wa-drawer #drawer label="Release settings" placement="end">
+    <div class="drawer-body">
+      <wa-input label="Version" value="2.4.0"></wa-input>
+      <wa-select label="Dist tag" value="latest">
+        <wa-option value="latest">latest</wa-option>
+        <wa-option value="lts">lts</wa-option>
+        <wa-option value="next">next</wa-option>
+      </wa-select>
+      <wa-switch checked>Run parity check before publishing</wa-switch>
+    </div>
+    <div slot="footer">
+      <wa-button variant="brand" (click)="closeDrawer()">Done</wa-button>
+    </div>
+  </wa-drawer>
+</aa-demo-section>
+
+<aa-demo-section heading="Tooltips" note="Positioned on every side of the trigger.">
+  <wa-tooltip for="tip-top" placement="top">Shown above</wa-tooltip>
+  <wa-button id="tip-top" appearance="outlined">Top</wa-button>
+
+  <wa-tooltip for="tip-right" placement="right">Shown to the right</wa-tooltip>
+  <wa-button id="tip-right" appearance="outlined">Right</wa-button>
+
+  <wa-tooltip for="tip-bottom" placement="bottom">Shown below</wa-tooltip>
+  <wa-button id="tip-bottom" appearance="outlined">Bottom</wa-button>
+
+  <wa-tooltip for="tip-left" placement="left">Shown to the left</wa-tooltip>
+  <wa-button id="tip-left" appearance="outlined">Left</wa-button>
+</aa-demo-section>
+
+<aa-demo-section heading="Popover" note="Richer than a tooltip — can contain interactive content.">
+  <wa-button id="popover-trigger" appearance="outlined">
+    <wa-icon slot="start" name="circle-info"></wa-icon>
+    What is a dist-tag?
+  </wa-button>
+  <wa-popover for="popover-trigger" placement="bottom">
+    <div class="popover-body">
+      <strong>Dist-tags</strong>
+      <p>
+        Named pointers to a version. Installing <code>&#64;lts</code> resolves at install time only — the lockfile keeps
+        the app pinned afterwards.
+      </p>
+      <wa-button size="small" variant="brand">Read the RFC</wa-button>
+    </div>
+  </wa-popover>
+</aa-demo-section>
+
+<aa-demo-section heading="Callouts" note="Inline messaging in each semantic variant." [stack]="true">
+  <wa-callout variant="brand">
+    <wa-icon slot="icon" name="circle-info"></wa-icon>
+    A new version of the design system is available.
+  </wa-callout>
+  <wa-callout variant="success">
+    <wa-icon slot="icon" name="circle-check"></wa-icon>
+    Parity check passed against the CDN build.
+  </wa-callout>
+  <wa-callout variant="warning">
+    <wa-icon slot="icon" name="triangle-exclamation"></wa-icon>
+    The <code>/lts/</code> pointer will be frozen next quarter.
+  </wa-callout>
+  <wa-callout variant="danger">
+    <wa-icon slot="icon" name="circle-exclamation"></wa-icon>
+    Registry authentication failed — check your token.
+  </wa-callout>
+  <wa-callout variant="neutral">
+    <wa-icon slot="icon" name="circle-question"></wa-icon>
+    Need help? Ask in the design system channel.
+  </wa-callout>
+</aa-demo-section>
+
+<aa-demo-section heading="Details" note="Progressive disclosure for long-form content." [stack]="true">
+  <wa-details summary="How do I pin a version?">
+    Commit your lockfile. The range in <code>package.json</code> describes what you accept on the next install; the
+    lockfile records what you actually resolved.
+  </wa-details>
+  <wa-details summary="Why is there no CommonJS build?">
+    Web Awesome and Lit are ESM-only, so the package ships ESM plus a self-contained bundle for non-bundled
+    applications.
+  </wa-details>
+  <wa-details summary="What happens to the CDN?" disabled>
+    Disabled example — this section is not expandable.
+  </wa-details>
+</aa-demo-section>
+
+<aa-demo-section heading="Copy button" note="Copies text to the clipboard with built-in feedback.">
+  <span class="code-inline">npm install &#64;trustage/ascend-awesome</span>
+  <wa-copy-button value="npm install @trustage/ascend-awesome"></wa-copy-button>
+</aa-demo-section>

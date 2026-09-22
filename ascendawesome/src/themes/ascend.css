@@ -1,0 +1,32 @@
+/* AscendAwesome theme — design tokens layered over Web Awesome.
+   Replace placeholder values with the real Ascend tokens.
+
+   Web Awesome components are styled via --wa-* custom properties;
+   overriding them here themes every component without touching
+   shadow DOM internals. */
+
+/* Pull in Web Awesome's base theme so this file is the only CSS
+   clients need. postcss-import resolves this at build time from
+   the pinned @awesome.me/webawesome dependency. */
+@import "@awesome.me/webawesome/dist/styles/webawesome.css";
+
+:root,
+:host,
+.wa-theme-ascend {
+  /* Brand */
+  --wa-color-brand-fill-loud: #0f4c81;          /* TODO: real Ascend primary */
+  --wa-color-brand-on-loud: #ffffff;
+
+  /* Typography */
+  --wa-font-family-body: "Inter", system-ui, sans-serif;   /* TODO */
+  --wa-font-family-heading: var(--wa-font-family-body);
+
+  /* Shape */
+  --wa-border-radius-m: 6px;                    /* TODO */
+}
+
+/* FOUCE guard: hide Web Awesome elements until their definitions
+   register, so pages don't flash unstyled custom elements. */
+:where(wa-button, wa-dialog, wa-input, wa-select, wa-checkbox, wa-card):not(:defined) {
+  visibility: hidden;
+}

@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+storybook-static/
+docs/
+.angular/
+
+# Generated — recreated by `npm run sync:wa-assets` (postinstall)
+public/wa-assets/
+
+# Testing
+coverage/
+
+# Editors
+.idea/
+*.swp
+.DS_Store
+
+# Logs
+npm-debug.log*
+yarn-error.log*
+*.log

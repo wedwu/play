@@ -1,0 +1,58 @@
+// Global application stylesheet.
+//
+// Web Awesome's own base styles and theme are listed ahead of this file in
+// angular.json's `styles` array. They are loaded there rather than @use'd here
+// because webawesome.css chains `@import url(...)` statements that the Sass
+// compiler cannot resolve through a node_modules specifier.
+//
+// Order therefore is: Web Awesome base -> tokens (this file) -> app layout.
+
+@use "tokens";
+@use "mixins" as m;
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-block-size: 100%;
+}
+
+body {
+  font-family: var(--wa-font-family-body);
+  color: var(--wa-color-text-normal);
+  background-color: var(--wa-color-surface-lowered);
+  -webkit-font-smoothing: antialiased;
+}
+
+// Flash-of-undefined-custom-elements guard. Web Awesome elements render as
+// inert inline boxes until their definitions register; hiding them until
+// `:defined` avoids a visible layout jump on first paint.
+:where(
+  wa-avatar,
+  wa-badge,
+  wa-button,
+  wa-callout,
+  wa-card,
+  wa-checkbox,
+  wa-dialog,
+  wa-drawer,
+  wa-dropdown,
+  wa-input,
+  wa-select,
+  wa-switch,
+  wa-tab-group,
+  wa-tag,
+  wa-textarea
+):not(:defined) {
+  visibility: hidden;
+}
+
+.visually-hidden {
+  @include m.visually-hidden;
+}
